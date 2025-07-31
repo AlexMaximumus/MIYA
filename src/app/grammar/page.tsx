@@ -169,7 +169,7 @@ export default function GrammarPage() {
                     <div className="flex items-center space-x-4 p-4 rounded-lg bg-card/70">
                         <span className="font-bold">Форма:</span>
                         <Label htmlFor="tense-switch">Утвердительная</Label>
-                        <Switch id="tense-switch" checked={useJaArimasen} onCheckedChange={setUseJaArimasen} />
+                        <Switch id="tense-switch" checked={!useJaArimasen} onCheckedChange={(checked) => setUseJaArimasen(!checked)} />
                         <Label htmlFor="tense-switch">Отрицательная</Label>
                     </div>
                     <div className="p-4 bg-muted rounded-lg text-center">
@@ -286,5 +286,3 @@ export default function GrammarPage() {
     </div>
   );
 }
-
-    
