@@ -97,7 +97,7 @@ export default function GrammarPage() {
             const newProgress = 60 + Math.floor((answeredCorrectly / totalQuestions) * 40);
             setProgress(Math.min(newProgress, 100));
         }
-    }
+    };
     
     const renderExercise = (exercise: Exercise) => {
         const { id, type, title, description, options, correctAnswer } = exercise;
@@ -255,7 +255,7 @@ export default function GrammarPage() {
                             <CardHeader>
                                 <CardTitle className="text-lg">Отрицательные предложения</CardTitle>
                                 <CardDescription>Схема: N1 は N2 ではありません</CardDescription>
-                            </Header>
+                            </CardHeader>
                             <CardContent>
                                  <InteractiveText text="あのかたはせんせいではありません" />
                                  <hr className="my-4"/>
