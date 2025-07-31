@@ -1,11 +1,28 @@
+
 'use client';
 
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { termExplanations } from '@/ai/precomputed-analysis';
 
 interface InteractiveTextProps {
   analysis: JapaneseAnalysisOutput | null;
 }
+
+const TermTooltip = ({ term }: { term: string }) => {
+    const explanation = termExplanations[term as keyof typeof termExplanations] || "Нет объяснения.";
+  
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="underline decoration-dotted cursor-pointer">{term}</span>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-xs">
+          <p>{explanation}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
+};
 
 export default function InteractiveText({ analysis }: InteractiveTextProps) {
 
@@ -14,7 +31,7 @@ export default function InteractiveText({ analysis }: InteractiveTextProps) {
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <div className="flex flex-wrap items-end leading-loose cursor-pointer" lang="ja">
         {analysis.sentence.map((word, index) => (
           <Tooltip key={index}>
@@ -30,7 +47,9 @@ export default function InteractiveText({ analysis }: InteractiveTextProps) {
             </TooltipTrigger>
             <TooltipContent>
               <p className="font-bold">{word.translation}</p>
-              <p className="text-muted-foreground">{word.partOfSpeech}</p>
+              <div className="text-muted-foreground">
+                <TermTooltip term={word.partOfSpeech} />
+              </div>
             </TooltipContent>
           </Tooltip>
         ))}
