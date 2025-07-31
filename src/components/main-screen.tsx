@@ -92,11 +92,13 @@ export default function MainScreen() {
             description="Изучите японские слоги"
           />
         </Link>
-        <CategoryCard
-          icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
-          title="Лексика"
-          description="Пополняйте словарный запас"
-        />
+        <Link href="/vocabulary">
+          <CategoryCard
+            icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
+            title="Лексика"
+            description="Пополняйте словарный запас"
+          />
+        </Link>
         <CategoryCard
           icon={<Puzzle className="w-10 h-10 md:w-12 md:h-12" />}
           title="Грамматика"
