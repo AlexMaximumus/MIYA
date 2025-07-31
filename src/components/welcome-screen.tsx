@@ -3,11 +3,17 @@
 import { useState } from 'react';
 import { Cherry } from 'lucide-react';
 
-const floatingWords = ['美しい', '空', '猫', '夢'];
+const floatingWords = [
+  { text: '美しい', highlighted: false },
+  { text: 'Yamazaki Kento', highlighted: true },
+  { text: '猫', highlighted: false },
+  { text: 'G-Dragon', highlighted: true },
+  { text: '127', highlighted: true },
+];
 
 export default function WelcomeScreen() {
   const [isVibrating, setIsVibrating] = useState(false);
-  const [animatedWords, setAnimatedWords] = useState<string[]>([]);
+  const [animatedWords, setAnimatedWords] = useState<typeof floatingWords>([]);
 
   const handleTitleClick = () => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
@@ -34,14 +40,14 @@ export default function WelcomeScreen() {
         {animatedWords.map((word, index) => (
           <span
             key={index}
-            className="absolute text-primary text-lg animate-float-up"
+            className={`absolute text-lg animate-float-up ${word.highlighted ? 'text-primary font-bold' : 'text-foreground/80'}`}
             style={{
               top: `${Math.random() * 80 - 40}%`,
               left: `${Math.random() * 80 + 10}%`,
               animationDelay: `${index * 0.1}s`,
             }}
           >
-            {word}
+            {word.text}
           </span>
         ))}
       </div>

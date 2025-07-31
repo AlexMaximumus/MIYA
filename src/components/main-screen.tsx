@@ -6,11 +6,19 @@ import InteractiveText from '@/components/interactive-text';
 import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
 import Link from 'next/link';
 
-const floatingWords = ['こんにちは', 'ありがとう', 'すごい', '日本語'];
+const floatingWords = [
+  { text: 'こんにちは', highlighted: false },
+  { text: 'ありがとう', highlighted: false },
+  { text: 'Yamazaki Kento', highlighted: true },
+  { text: 'G-Dragon', highlighted: true },
+  { text: '127', highlighted: true },
+  { text: 'すごい', highlighted: false },
+  { text: '日本語', highlighted: false },
+];
 
 export default function MainScreen() {
   const [isVibrating, setIsVibrating] = useState(false);
-  const [animatedWords, setAnimatedWords] = useState<string[]>([]);
+  const [animatedWords, setAnimatedWords] = useState<typeof floatingWords>([]);
 
   const handleTitleClick = () => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
@@ -36,14 +44,14 @@ export default function MainScreen() {
         {animatedWords.map((word, index) => (
           <span
             key={index}
-            className="absolute text-primary text-xl animate-float-up"
+            className={`absolute text-xl animate-float-up ${word.highlighted ? 'text-primary font-bold' : 'text-foreground/80'}`}
             style={{
                 top: `${Math.random() * 80 - 40}%`,
                 left: `${Math.random() * 80 + 10}%`,
                 animationDelay: `${index * 0.1}s`,
             }}
           >
-            {word}
+            {word.text}
           </span>
         ))}
       </div>
