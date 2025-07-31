@@ -14,6 +14,7 @@ import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import { cn } from '@/lib/utils';
+import { grammarAnalyses } from '@/ai/precomputed-analysis';
 
 type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'select-options';
 
@@ -60,15 +61,6 @@ const pronouns = [
     { pronoun: 'あの人', romaji: 'ano hito', politeness: 'Нейтральное "он/она"', translation: 'Он, она, то лицо (буквально: "тот человек")', role: '3-е лицо, ед.ч.' },
     { pronoun: 'あの方', romaji: 'ano kata', politeness: 'Очень вежливое "он/она"', translation: 'Он, она (уважительный, вежливый вариант)', role: '3-е лицо, ед.ч.' },
 ]
-
-const bunreiSentences = [
-    "わたしはがくせいです。",
-    "あのかたはがくせいではありません。",
-    "わたしはやまだです。",
-    "わたしはせんせいではありません。がくせいです。",
-    "あのかたはたなかさんです。",
-    "あのかたはせんせいです。"
-];
 
 export default function GrammarPage() {
     const [useJaArimasen, setUseJaArimasen] = useState(false);
@@ -146,7 +138,7 @@ export default function GrammarPage() {
                     {result === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Верно!</span>}
                     {result === false && (
                         <span className="flex items-center gap-2 text-destructive ml-4">
-                            <XCircle/> Ошибка. Правильный ответ: {correctAnswer}
+                            <XCircle/> Ошибка. Правильный ответ: {Array.isArray(correctAnswer) ? correctAnswer.join(', ') : correctAnswer}
                         </span>
                     )}
                 </CardFooter>
@@ -211,7 +203,7 @@ export default function GrammarPage() {
                         <p>Местоимение <span className="font-japanese">何</span> означает "что?" и используется в вопросах о предметах. Его произношение меняется в зависимости от следующего за ним звука.</p>
                         <ul className="list-disc list-inside space-y-2">
                              <li>Произносится как <strong className="font-japanese">なに</strong>, когда за ним следует самостоятельное слово.</li>
-                             <li>Произносится как <strong className="font-japanese">なん</strong> перед звуками [н], [т], [д], а также перед счетными суффиксами: <InteractiveText text="それは何ですか。" /> <span className="text-muted-foreground text-sm">(нан-десу ка)</span></li>
+                             <li>Произносится как <strong className="font-japanese">なん</strong> перед звуками [н], [т], [д], а также перед счетными суффиксами: <InteractiveText analysis={grammarAnalyses.sorewanandesuka} /> <span className="text-muted-foreground text-sm">(нан-десу ка)</span></li>
                         </ul>
                     </AccordionContent>
                 </AccordionItem>
@@ -245,9 +237,9 @@ export default function GrammarPage() {
                                 <CardDescription>Схема: N1 は N2 です</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <InteractiveText text="あのかたはせんせいです" />
+                                <InteractiveText analysis={grammarAnalyses.anokatahasenseidesu} />
                                 <hr className="my-4"/>
-                                <InteractiveText text="がくせいはあのひとです" />
+                                <InteractiveText analysis={grammarAnalyses.gakuseihaanohitodesu} />
                             </CardContent>
                         </Card>
 
@@ -257,12 +249,12 @@ export default function GrammarPage() {
                                 <CardDescription>Схема: N1 は N2 ではありません</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                 <InteractiveText text="あのかたはせんせいではありません" />
+                                 <InteractiveText analysis={grammarAnalyses.anokatahasenseidehaarimasen} />
                                  <hr className="my-4"/>
-                                <InteractiveText text="がくせいはあのひとじゃありません" />
+                                <InteractiveText analysis={grammarAnalyses.gakuseihaanohitojaarimasen} />
                             </CardContent>
                         </Card>
-                        <div className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText text="せんсеいです"/>, и это будет означать "(Он/Она/Я) — преподаватель."</div>
+                        <div className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText analysis={grammarAnalyses.senseidesu}/>, и это будет означать "(Он/Она/Я) — преподаватель."</div>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
@@ -270,9 +262,9 @@ export default function GrammarPage() {
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">ぶんれい (Примеры)</h2>
             <Card className="mb-12">
                 <CardContent className="p-6 space-y-4">
-                    {bunreiSentences.map((sentence, index) => (
+                    {Object.values(grammarAnalyses.bunrei).map((analysis, index) => (
                         <div key={index} className="border-b pb-2">
-                             <InteractiveText text={sentence} />
+                             <InteractiveText analysis={analysis} />
                         </div>
                     ))}
                 </CardContent>

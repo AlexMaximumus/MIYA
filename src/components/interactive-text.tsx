@@ -1,51 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { analyzeJapaneseText, JapaneseAnalysisOutput } from '@/ai/flows/analyze-text-flow';
+import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Skeleton } from '@/components/ui/skeleton';
 
 interface InteractiveTextProps {
-  text: string;
+  analysis: JapaneseAnalysisOutput | null;
 }
 
-export default function InteractiveText({ text }: InteractiveTextProps) {
-  const [analysis, setAnalysis] = useState<JapaneseAnalysisOutput | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const getAnalysis = async () => {
-      try {
-        setIsLoading(true);
-        const result = await analyzeJapaneseText({ text });
-        setAnalysis(result);
-      } catch (e) {
-        setError('Не удалось проанализировать текст.');
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getAnalysis();
-  }, [text]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center space-x-1">
-        <Skeleton className="h-6 w-20" />
-        <Skeleton className="h-6 w-12" />
-        <Skeleton className="h-6 w-24" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <span className="text-destructive">{error}</span>;
-  }
+export default function InteractiveText({ analysis }: InteractiveTextProps) {
 
   if (!analysis) {
-    return <span>{text}</span>;
+    return <span className="text-destructive">Ошибка: нет данных для анализа.</span>;
   }
 
   return (
