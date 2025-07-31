@@ -1,16 +1,16 @@
-
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import type { KanaCharacter } from '@/lib/kana-data';
+import { KanaCharacter, hiraganaData, katakanaData } from '@/lib/kana-data';
+import type { KanaSet, QuizLength } from '@/app/kana/page';
 
 interface KanaQuizProps {
-  data: (KanaCharacter | null)[][];
   onQuizEnd: () => void;
-  quizType: 'hiragana' | 'katakana';
+  kanaSet: KanaSet;
+  quizLength: QuizLength;
   questionType: 'kana-to-romaji' | 'romaji-to-kana';
 }
 
@@ -18,8 +18,17 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
-export default function KanaQuiz({ data, onQuizEnd, quizType, questionType }: KanaQuizProps) {
-  const allChars = useMemo(() => data.flat().filter((c): c is KanaCharacter => c !== null), [data]);
+const flattenKana = (data: (KanaCharacter | null)[][]): KanaCharacter[] => {
+    return data.flat().filter((c): c is KanaCharacter => c !== null);
+}
+
+export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType }: KanaQuizProps) {
+  const allChars = useMemo(() => {
+    if (kanaSet === 'hiragana') return flattenKana(hiraganaData);
+    if (kanaSet === 'katakana') return flattenKana(katakanaData);
+    return [...flattenKana(hiraganaData), ...flattenKana(katakanaData)];
+  }, [kanaSet]);
+
   const [questions, setQuestions] = useState<KanaCharacter[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState<string[]>([]);
@@ -29,8 +38,14 @@ export default function KanaQuiz({ data, onQuizEnd, quizType, questionType }: Ka
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
 
   const generateQuestions = (retryIncorrect = false) => {
-    const questionPool = retryIncorrect ? incorrectAnswers : allChars;
-    setQuestions(shuffleArray(questionPool).slice(0, 10));
+    let questionPool = retryIncorrect ? incorrectAnswers : allChars;
+    questionPool = shuffleArray(questionPool);
+    
+    if (quizLength === '25' && !retryIncorrect) {
+      questionPool = questionPool.slice(0, 25);
+    }
+
+    setQuestions(questionPool);
     setCurrentQuestionIndex(0);
     setScore(0);
     setIncorrectAnswers([]);
@@ -40,7 +55,7 @@ export default function KanaQuiz({ data, onQuizEnd, quizType, questionType }: Ka
   
   useEffect(() => {
     generateQuestions();
-  }, [allChars, questionType]);
+  }, [allChars, questionType, quizLength]);
 
   const generateOptions = (correctAnswer: KanaCharacter) => {
     const isKanaToRomaji = questionType === 'kana-to-romaji';
@@ -136,12 +151,19 @@ export default function KanaQuiz({ data, onQuizEnd, quizType, questionType }: Ka
   const questionText = questionType === 'kana-to-romaji' ? currentQuestion.kana : currentQuestion.romaji;
   const optionIsKana = questionType === 'romaji-to-kana';
 
+  const getQuizTitle = () => {
+    const setLabel = { hiragana: 'Хирагана', katakana: 'Катакана', all: 'Смешанный' }[kanaSet];
+    const lengthLabel = quizLength === '25' ? ' (25)' : '';
+    return `Тест: ${setLabel}${lengthLabel}`;
+  }
+
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center text-xl">
-            Тест: {quizType === 'hiragana' ? 'Хирагана' : 'Катакана'} ({currentQuestionIndex + 1} из {questions.length})
+            {getQuizTitle()} ({currentQuestionIndex + 1} из {questions.length})
           </CardTitle>
            <Progress value={progress} className="mt-2" />
         </CardHeader>

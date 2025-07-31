@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import KanaTable from '@/components/kana-table';
 import KanaQuiz from '@/components/kana-quiz';
 import { hiraganaData, katakanaData } from '@/lib/kana-data';
@@ -17,9 +16,13 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+export type KanaSet = 'hiragana' | 'katakana' | 'all';
+export type QuizLength = 'full' | '25';
+
 export default function KanaPage() {
   const [isQuizActive, setQuizActive] = useState(false);
-  const [activeKana, setActiveKana] = useState<'hiragana' | 'katakana'>('hiragana');
+  const [activeKanaSet, setActiveKanaSet] = useState<KanaSet>('hiragana');
+  const [quizLength, setQuizLength] = useState<QuizLength>('full');
   const [quizQuestionType, setQuizQuestionType] = useState<'kana-to-romaji' | 'romaji-to-kana'>('kana-to-romaji');
 
   const startQuiz = () => {
@@ -31,9 +34,15 @@ export default function KanaPage() {
   };
 
   if (isQuizActive) {
-    const quizData = activeKana === 'hiragana' ? hiraganaData : katakanaData;
-    return <KanaQuiz data={quizData} onQuizEnd={endQuiz} quizType={activeKana} questionType={quizQuestionType} />;
+    return <KanaQuiz 
+        onQuizEnd={endQuiz} 
+        kanaSet={activeKanaSet}
+        quizLength={quizLength}
+        questionType={quizQuestionType} 
+    />;
   }
+
+  const currentData = activeKanaSet === 'hiragana' ? hiraganaData : katakanaData;
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
@@ -49,24 +58,34 @@ export default function KanaPage() {
         Хирагана и Катакана
       </h1>
 
-      <Tabs defaultValue="hiragana" className="w-full max-w-5xl" onValueChange={(value) => setActiveKana(value as 'hiragana' | 'katakana')}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="hiragana">Хирагана</TabsTrigger>
-          <TabsTrigger value="katakana">Катакана</TabsTrigger>
-        </TabsList>
-        <TabsContent value="hiragana">
-          <KanaTable data={hiraganaData} />
-        </TabsContent>
-        <TabsContent value="katakana">
-          <KanaTable data={katakanaData} />
-        </TabsContent>
-      </Tabs>
+      {activeKanaSet !== 'all' && <KanaTable data={currentData} />}
       
       <Card className="w-full max-w-5xl mt-8 p-6 bg-card/70 shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Проверьте свои знания</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <CardContent className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
+            <Select value={activeKanaSet} onValueChange={(value) => setActiveKanaSet(value as KanaSet)}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Набор символов" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="hiragana">Хирагана</SelectItem>
+                    <SelectItem value="katakana">Катакана</SelectItem>
+                    <SelectItem value="all">Смешанный (Все подряд)</SelectItem>
+                </SelectContent>
+            </Select>
+
+            <Select value={quizLength} onValueChange={(value) => setQuizLength(value as QuizLength)}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Длина теста" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="full">Полный тест</SelectItem>
+                    <SelectItem value="25">Случайные 25</SelectItem>
+                </SelectContent>
+            </Select>
+
             <Select value={quizQuestionType} onValueChange={(value) => setQuizQuestionType(value as 'kana-to-romaji' | 'romaji-to-kana')}>
                 <SelectTrigger className="w-full sm:w-[240px]">
                     <SelectValue placeholder="Тип теста" />
@@ -83,7 +102,9 @@ export default function KanaPage() {
       </Card>
 
       <div className="mt-8 text-center">
-        <Button size="lg" className="btn-gradient">Продолжить к Лексике</Button>
+        <Button size="lg" asChild className="btn-gradient">
+            <Link href="/vocabulary">Продолжить к Лексике</Link>
+        </Button>
       </div>
     </div>
   );
