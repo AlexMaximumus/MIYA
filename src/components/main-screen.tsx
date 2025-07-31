@@ -1,22 +1,31 @@
 'use client';
 
+import { useState } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
 import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MainScreen() {
+  const [isVibrating, setIsVibrating] = useState(false);
 
   const handleTitleClick = () => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(100);
     }
+    setIsVibrating(true);
+    setTimeout(() => setIsVibrating(false), 500); // Duration of the animation
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
       <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 font-headline text-center">
-        <span onClick={handleTitleClick} className="cursor-pointer select-none">MIYA</span> LINGO
+        <span 
+          onClick={handleTitleClick} 
+          className={`cursor-pointer select-none inline-block ${isVibrating ? 'animate-shake' : ''}`}
+        >
+          MIYA
+        </span> LINGO
       </h1>
       <div className="mb-12">
         <InteractiveText text="今日はいい天気ですね" />
