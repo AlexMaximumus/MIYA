@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -32,26 +32,25 @@ const pronouns = [
     { pronoun: 'あの方', romaji: 'ano kata', politeness: 'Очень вежливое "он/она"', translation: 'Он, она (уважительный, вежливый вариант)', role: '3-е лицо, ед.ч.' },
 ]
 
-const cases = [
-    { case: 'Основной', suffix: 'Нет', function: 'Обращение, именная часть сказуемого, подлежащее с は.' },
-    { case: 'Именительный', suffix: 'が', function: 'Подлежащее, часто с акцентом на нем.' },
-    { case: 'Винительный', suffix: 'を', function: 'Прямое дополнение (объект действия).' },
-    // ... more cases can be added here
-]
+const bunreiSentences = [
+    "わたしはがくせいです。",
+    "あのかたはがくせいではありません。",
+    "わたしはやまだです。",
+    "わたしはせんせいではありません。がくせいです。",
+    "あのかたはたなかさんです。",
+    "あのかたはせんせいです。"
+];
 
 export default function GrammarPage() {
     const [useJaArimasen, setUseJaArimasen] = useState(false);
-    const [progress, setProgress] = useState(30); // Updated progress
+    const [progress, setProgress] = useState(60); // Updated progress
     const [answers, setAnswers] = useState<Record<string, string | null>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
 
     const exercises = {
         q1: { question: "К какой части речи относится слово わたし?", options: ['существительное', 'местоимение', 'частица'], correct: 'местоимение' },
-        q2: { question: '"Он — студент."', options: ['あのひと', 'わたし', 'あなた'], correct: 'あのひと' },
-        q3: { question: 'やまだ（　）がくせいです。', options: ['さん', 'は', 'を'], correct: 'さん' },
-        q4: { question: 'Соберите предложение: "Я - студент"', parts: ['わたし', 'は', 'がくせい', 'です'], correct: 'わたしはがくせいです' },
-        q5: { question: 'Какая отрицательная форма у связки です в разговорной речи?', options: ['ではありません', 'じゃないです', 'じゃありません'], correct: 'じゃありません'},
-        q6: { question: 'Как вежливо спросить "Что это?"', options: ['これはなんですか', 'これはなにですか'], correct: 'これはなんですか'},
+        q2: { question: 'Выберите правильный перевод: "Он не преподаватель."', options: ['あのかたはせんせいです', 'あのかたはせんせいではありません'], correct: 'あのかたはせんせいではありません' },
+        q3: { question: 'Вставьте правильную частицу и связку: "Я — Ямада."', text: 'わたし（　）やまだ（　）。', options: ['は / です', 'が / です', 'を / ではありません'], correct: 'は / です' },
     };
 
     const handleAnswer = (question: string, answer: string) => {
@@ -61,6 +60,9 @@ export default function GrammarPage() {
     const checkAnswer = (question: string) => {
         const isCorrect = answers[question] === (exercises as any)[question].correct;
         setResults(prev => ({ ...prev, [question]: isCorrect }));
+        if (isCorrect) {
+            setProgress(p => Math.min(p + 15, 100));
+        }
     }
 
   return (
@@ -75,145 +77,120 @@ export default function GrammarPage() {
             <Card className="w-full mb-8">
                 <CardHeader>
                     <p className="text-sm text-primary font-semibold">Урок 1 — Грамматика</p>
-                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи, падежи, связки, местоимения</CardTitle>
+                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи, связки, простые предложения</CardTitle>
                     <CardDescription>Прогресс по теме:</CardDescription>
                     <Progress value={progress} className="mt-2" />
                 </CardHeader>
             </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
-            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12">
-            <AccordionItem value="item-1">
-                <AccordionTrigger className="text-xl font-semibold">§1. Части речи в японском</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Все слова в японском языке делятся на знаменательные (несущие основной смысл) и служебные (помогающие строить предложения).</p>
-                    <div className="flex flex-wrap gap-2">
-                        {partsOfSpeech.map(part => (
-                            <Popover key={part.name}>
-                                <PopoverTrigger asChild>
-                                    <Button variant="outline" className="flex items-center gap-2">
-                                        {part.name} <Info className="w-4 h-4 text-muted-foreground"/>
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-80">
-                                    <CardHeader className="p-2">
-                                        <CardTitle>{part.name}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-2">
-                                        <p><span className="font-semibold">Пример:</span> {part.example}</p>
-                                        <p><span className="font-semibold">Перевод:</span> {part.translation}</p>
-                                        <p className="mt-2 text-sm text-muted-foreground">{part.role}</p>
-                                    </CardContent>
-                                </PopoverContent>
-                            </Popover>
-                        ))}
-                    </div>
-                </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-                <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное (名詞)</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>У японских существительных нет рода (мужского/женского) и, как правило, нет формы множественного числа. Множественность передается контекстом или специальными суффиксами (например, -たち для людей).</p>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Падеж</TableHead>
-                                <TableHead>Основная функция</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {cases.map(c => (
-                            <TableRow key={c.case}>
-                                <TableCell className="font-medium">{c.case}</TableCell>
-                                <TableCell>{c.function}</TableCell>
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-                <AccordionTrigger className="text-xl font-semibold">§3. Основной падеж</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Это базовая форма слова без падежных частиц. Используется в нескольких случаях:</p>
-                    <ul className="list-disc list-inside space-y-2">
-                        <li>При обращении: <InteractiveText text="山田さん！" /></li>
-                        <li>Как именная часть сказуемого: <InteractiveText text="田中は学生です" /></li>
-                    </ul>
-                </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-4">
-                <AccordionTrigger className="text-xl font-semibold">§4. Личные местоимения (代名詞)</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Выбор местоимения сильно зависит от уровня вежливости и социального контекста. Склоняются по падежам так же, как и существительные.</p>
-                     <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Местоимение</TableHead>
-                                <TableHead>Ромадзи</TableHead>
-                                <TableHead>Степень вежливости</TableHead>
-                                <TableHead>Пояснение</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {pronouns.map(p => (
-                            <TableRow key={p.pronoun}>
-                                <TableCell className="font-medium font-japanese text-xl">{p.pronoun}</TableCell>
-                                <TableCell>{p.romaji}</TableCell>
-                                <TableCell>{p.politeness}</TableCell>
-                                <TableCell className="text-sm">{p.translation}</TableCell>
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </AccordionContent>
-            </AccordionItem>
-             <AccordionItem value="item-5">
-                <AccordionTrigger className="text-xl font-semibold">§5. Вопросительное местоимение 何 (なに)</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Местоимение <span className="font-japanese">何</span> означает "что?" и используется в вопросах о предметах. Его произношение меняется в зависимости от следующего за ним звука.</p>
-                    <ul className="list-disc list-inside space-y-2">
-                         <li>Произносится как <strong className="font-japanese">なに</strong>, когда за ним следует самостоятельное слово: <InteractiveText text="これは何ですか。" /></li>
-                         <li>Произносится как <strong className="font-japanese">なん</strong> перед звуками [н], [т], [д], а также перед счетными суффиксами: <InteractiveText text="それは何ですか。" /> <span className="text-muted-foreground text-sm">(нан-дес ка)</span></li>
-                    </ul>
-                     <p className="text-sm text-muted-foreground">Местоимение 何 склоняется по падежам как обычное существительное.</p>
-                </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-6">
-                <AccordionTrigger className="text-xl font-semibold">§6. Формы связки です</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Связка です используется в конце предложения, чтобы сделать его вежливым (нейтрально-вежливый стиль). В японском языке два основных времени: настоящее-будущее и прошедшее. Связка имеет формы для обоих.</p>
-                    <div className="flex items-center space-x-4 p-4 rounded-lg bg-card/70">
-                        <Label htmlFor="tense-switch" className={cn(useJaArimasen && "text-muted-foreground")}>Утвердительная</Label>
-                        <Switch id="tense-switch" checked={useJaArimasen} onCheckedChange={(checked) => setUseJaArimasen(checked)} aria-readonly />
-                        <Label htmlFor="tense-switch" className={cn(!useJaArimasen && "text-muted-foreground")}>Отрицательная</Label>
-                    </div>
-                    <div className="p-4 bg-muted rounded-lg text-center">
-                        <p className="text-2xl font-japanese">
-                        {useJaArimasen ? '〜ではありません / 〜じゃありません' : '〜です'}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-2">
-                        {useJaArimasen ? 'Отрицательная форма (ではありません — нейтрально-вежливая, じゃありません — разговорный вариант)' : 'Настоящее-будущее время, утверждение'}
-                        </p>
-                    </div>
-                </AccordionContent>
-            </AccordionItem>
-             <AccordionItem value="item-7">
-                <AccordionTrigger className="text-xl font-semibold">§7. Простое предложение с именным сказуемым</AccordionTrigger>
-                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Простое нераспространенное предложение состоит из подлежащего и сказуемого. Наиболее частый способ выражения подлежащего — существительное или местоимение с частицей は (wa), которая выделяет тему высказывания.</p>
-                    <Card className="bg-card/70">
-                        <CardContent className="p-6">
-                            <p className="text-center text-muted-foreground text-sm">Подлежащее + Частица は + Сказуемое + Связка です</p>
-                            <div className="mt-4">
-                               <InteractiveText text="私 は 学生 です" />
-                            </div>
-                             <p className="mt-4 text-center">В таком предложении новым и главным является то, что передаётся сказуемым. (В примере: то, что я являюсь именно "студентом").</p>
-                        </CardContent>
-                    </Card>
-                </AccordionContent>
-            </AccordionItem>
+            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-7">
+                <AccordionItem value="item-1">
+                    <AccordionTrigger className="text-xl font-semibold">§1. Части речи в японском</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Все слова в японском языке делятся на знаменательные (несущие основной смысл) и служебные (помогающие строить предложения).</p>
+                    </AccordionContent>
+                </AccordionItem>
+                 <AccordionItem value="item-4">
+                    <AccordionTrigger className="text-xl font-semibold">§2. Личные местоимения (代名詞)</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Выбор местоимения сильно зависит от уровня вежливости и социального контекста. Склоняются по падежам так же, как и существительные.</p>
+                         <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Местоимение</TableHead>
+                                    <TableHead>Ромадзи</TableHead>
+                                    <TableHead>Пояснение</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {pronouns.map(p => (
+                                <TableRow key={p.pronoun}>
+                                    <TableCell className="font-medium font-japanese text-xl">{p.pronoun}</TableCell>
+                                    <TableCell>{p.romaji}</TableCell>
+                                    <TableCell className="text-sm">{p.politeness}. {p.translation}</TableCell>
+                                </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </AccordionContent>
+                </AccordionItem>
+                 <AccordionItem value="item-5">
+                    <AccordionTrigger className="text-xl font-semibold">§3. Вопросительное местоимение 何 (なに/なん)</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Местоимение <span className="font-japanese">何</span> означает "что?" и используется в вопросах о предметах. Его произношение меняется в зависимости от следующего за ним звука.</p>
+                        <ul className="list-disc list-inside space-y-2">
+                             <li>Произносится как <strong className="font-japanese">なに</strong>, когда за ним следует самостоятельное слово.</li>
+                             <li>Произносится как <strong className="font-japanese">なん</strong> перед звуками [н], [т], [д], а также перед счетными суффиксами: <InteractiveText text="それは何ですか。" /> <span className="text-muted-foreground text-sm">(нан-десу ка)</span></li>
+                        </ul>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-6">
+                    <AccordionTrigger className="text-xl font-semibold">§4. Связка です и её формы</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Связка です используется в конце предложения, чтобы сделать его вежливым (нейтрально-вежливый стиль). У неё есть утвердительная и отрицательная формы.</p>
+                        <div className="flex items-center space-x-4 p-4 rounded-lg bg-card/70 my-4">
+                            <Label htmlFor="tense-switch" className={cn(useJaArimasen && "text-muted-foreground")}>Утвердительная</Label>
+                            <Switch id="tense-switch" checked={useJaArimasen} onCheckedChange={(checked) => setUseJaArimasen(checked)} aria-readonly />
+                            <Label htmlFor="tense-switch" className={cn(!useJaArimasen && "text-muted-foreground")}>Отрицательная</Label>
+                        </div>
+                        <div className="p-4 bg-muted rounded-lg text-center">
+                            <p className="text-2xl font-japanese">
+                            {useJaArimasen ? '〜ではありません / 〜じゃありません' : '〜です'}
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-2">
+                            {useJaArimasen ? 'Отрицательная форма (ではありません — нейтрально-вежливая, じゃありません — разговорный вариант)' : 'Настоящее-будущее время, утверждение'}
+                            </p>
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+                 <AccordionItem value="item-7">
+                    <AccordionTrigger className="text-xl font-semibold">§5. Составное именное сказуемое</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Это самый простой тип предложения. Оно состоит из подлежащего (существительное или местоимение), частицы и сказуемого, выраженного другим существительным/местоимением со связкой.</p>
+                        
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Утвердительные предложения</CardTitle>
+                                <CardDescription>Схема: N1 は N2 です</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <InteractiveText text="あのかたはせんせいです" />
+                                <p className="text-muted-foreground text-sm mt-2">Он — преподаватель.</p>
+                                <hr className="my-4"/>
+                                <InteractiveText text="がくせいはあのひとです" />
+                                <p className="text-muted-foreground text-sm mt-2">Студент — он.</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Отрицательные предложения</CardTitle>
+                                <CardDescription>Схема: N1 は N2 ではありません</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                 <InteractiveText text="あのかたはせんせいではありません" />
+                                <p className="text-muted-foreground text-sm mt-2">Он — не преподаватель.</p>
+                                 <hr className="my-4"/>
+                                <InteractiveText text="がくせいはあのひとじゃありません" />
+                                <p className="text-muted-foreground text-sm mt-2">Студент — не он. (разговорная форма)</p>
+                            </CardContent>
+                        </Card>
+                        <p className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText text="せんせいです"/>, и это будет означать "(Он/Она/Я) — преподаватель."</p>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
+            
+            <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">ぶんれい (Примеры)</h2>
+            <Card className="mb-12">
+                <CardContent className="p-6 space-y-4">
+                    {bunreiSentences.map((sentence, index) => (
+                        <div key={index} className="border-b pb-2">
+                             <InteractiveText text={sentence} />
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-8 text-center">📝 Закрепление</h2>
             <div className="w-full max-w-4xl space-y-8">
@@ -232,22 +209,22 @@ export default function GrammarPage() {
                                 </div>
                             ))}
                         </RadioGroup>
-                        <div className="mt-4 flex items-center gap-4">
-                             <Button onClick={() => checkAnswer('q1')} disabled={!answers.q1}>Проверить</Button>
-                             {results.q1 === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
-                             {results.q1 === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка. Правильный ответ: местоимение.</span>}
-                        </div>
                     </CardContent>
+                    <CardFooter>
+                         <Button onClick={() => checkAnswer('q1')} disabled={!answers.q1}>Проверить</Button>
+                         {results.q1 === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Верно!</span>}
+                         {results.q1 === false && <span className="flex items-center gap-2 text-destructive ml-4"><XCircle/> Ошибка. Правильный ответ: местоимение.</span>}
+                    </CardFooter>
                 </Card>
 
                  {/* Exercise 2 */}
                  <Card>
                     <CardHeader>
-                        <CardTitle>Упражнение 2. Выбери подходящее местоимение</CardTitle>
+                        <CardTitle>Упражнение 2. Выбери правильный перевод</CardTitle>
                         <CardDescription>{exercises.q2.question}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <RadioGroup value={answers.q2} onValueChange={(val) => handleAnswer('q2', val)} className="flex flex-col sm:flex-row gap-4">
+                        <RadioGroup value={answers.q2} onValueChange={(val) => handleAnswer('q2', val)} className="flex flex-col gap-4">
                              {exercises.q2.options.map(option => (
                                 <div key={option} className="flex items-center space-x-2">
                                     <RadioGroupItem value={option} id={`q2-${option}`} />
@@ -255,19 +232,19 @@ export default function GrammarPage() {
                                 </div>
                             ))}
                         </RadioGroup>
-                        <div className="mt-4 flex items-center gap-4">
-                             <Button onClick={() => checkAnswer('q2')} disabled={!answers.q2}>Проверить</Button>
-                             {results.q2 === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Отлично!</span>}
-                             {results.q2 === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Неверно. Правильный ответ: あのひと.</span>}
-                        </div>
                     </CardContent>
+                    <CardFooter>
+                         <Button onClick={() => checkAnswer('q2')} disabled={!answers.q2}>Проверить</Button>
+                         {results.q2 === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Отлично!</span>}
+                         {results.q2 === false && <span className="flex items-center gap-2 text-destructive ml-4"><XCircle/> Неверно.</span>}
+                    </CardFooter>
                 </Card>
 
                  {/* Exercise 3 */}
                 <Card>
                     <CardHeader>
                         <CardTitle>Упражнение 3. Заполни пропуски</CardTitle>
-                        <CardDescription className="font-japanese text-xl">{exercises.q3.question}</CardDescription>
+                        <CardDescription className="font-japanese text-xl">{exercises.q3.text}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="flex flex-wrap gap-2">
@@ -276,7 +253,7 @@ export default function GrammarPage() {
                                     key={option}
                                     variant={answers.q3 === option ? 'default' : 'outline'}
                                     onClick={() => handleAnswer('q3', option)}
-                                    className={cn("font-japanese text-lg",
+                                    className={cn("text-lg",
                                         results.q3 === true && answers.q3 === option && 'bg-green-500 hover:bg-green-600',
                                         results.q3 === false && answers.q3 === option && 'bg-destructive hover:bg-destructive/90',
                                     )}
@@ -285,16 +262,16 @@ export default function GrammarPage() {
                                 </Button>
                             ))}
                         </div>
-                         <div className="mt-4 flex items-center gap-4">
-                             <Button onClick={() => checkAnswer('q3')} disabled={!answers.q3}>Проверить</Button>
-                             {results.q3 === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Правильно! さん - уважительный суффикс.</span>}
-                             {results.q3 === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Попробуйте еще раз.</span>}
-                        </div>
                     </CardContent>
+                    <CardFooter>
+                         <Button onClick={() => checkAnswer('q3')} disabled={!answers.q3}>Проверить</Button>
+                         {results.q3 === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Правильно!</span>}
+                         {results.q3 === false && <span className="flex items-center gap-2 text-destructive ml-4"><XCircle/> Попробуйте еще раз.</span>}
+                    </CardFooter>
                 </Card>
             </div>
              <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
-                <Button size="lg" variant="outline">Повторить теорию</Button>
+                <Button size="lg" variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Повторить теорию</Button>
                 <Button size="lg" asChild className="btn-gradient">
                     <Link href="/vocabulary">Следующий блок → Лексика</Link>
                 </Button>
@@ -303,3 +280,6 @@ export default function GrammarPage() {
     </div>
   );
 }
+
+
+    
