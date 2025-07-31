@@ -176,7 +176,7 @@ export default function GrammarPage() {
                                 <p className="text-muted-foreground text-sm mt-2">Студент — не он. (разговорная форма)</p>
                             </CardContent>
                         </Card>
-                        <p className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText text="せんせいです"/>, и это будет означать "(Он/Она/Я) — преподаватель."</p>
+                        <div className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText text="せんせいです"/>, и это будет означать "(Он/Она/Я) — преподаватель."</div>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
@@ -281,5 +281,7 @@ export default function GrammarPage() {
   );
 }
 
+
+    
 
     
