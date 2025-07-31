@@ -1,12 +1,13 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
 import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
 import Link from 'next/link';
-import { mainScreenAnalysis } from '@/ai/precomputed-analysis';
+import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
+import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
 
 const floatingWords = [
   { text: 'こんにちは', highlighted: false },
@@ -24,6 +25,13 @@ export default function MainScreen() {
   const [clickCount, setClickCount] = useState(0);
   const [lastClickTime, setLastClickTime] = useState(0);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [randomAnalysis, setRandomAnalysis] = useState<JapaneseAnalysisOutput | null>(null);
+
+  useEffect(() => {
+    // This runs only on the client, after hydration
+    setRandomAnalysis(mainScreenAnalyses[Math.floor(Math.random() * mainScreenAnalyses.length)]);
+  }, []);
+
 
   const handleTitleClick = () => {
     const currentTime = new Date().getTime();
@@ -84,7 +92,7 @@ export default function MainScreen() {
         )}
       </div>
       <div className="mb-12">
-        <InteractiveText analysis={mainScreenAnalysis} />
+        <InteractiveText analysis={randomAnalysis} />
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <Link href="/kana">

@@ -16,17 +16,41 @@ export interface JapaneseAnalysisOutput {
     fullTranslation: string;
 }
 
-export const mainScreenAnalysis: JapaneseAnalysisOutput = {
-    sentence: [
-        { word: '今日', furigana: 'きょう', translation: 'сегодня', partOfSpeech: 'существительное' },
-        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
-        { word: 'いい', furigana: 'いい', translation: 'хорошая', partOfSpeech: 'прилагательное' },
-        { word: '天気', furigana: 'てんき', translation: 'погода', partOfSpeech: 'существительное' },
-        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
-        { word: 'ね', furigana: 'ね', translation: 'частица (не так ли?)', partOfSpeech: 'частица' },
-    ],
-    fullTranslation: 'Сегодня хорошая погода, не так ли?',
-};
+export const mainScreenAnalyses: JapaneseAnalysisOutput[] = [
+    {
+        sentence: [
+            { word: '今日', furigana: 'きょう', translation: 'сегодня', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+            { word: 'いい', furigana: 'いい', translation: 'хорошая', partOfSpeech: 'прилагательное' },
+            { word: '天気', furigana: 'てんき', translation: 'погода', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'ね', furigana: 'ね', translation: 'частица (не так ли?)', partOfSpeech: 'частица' },
+        ],
+        fullTranslation: 'Сегодня хорошая погода, не так ли?',
+    },
+    {
+        sentence: [
+            { word: 'それ', furigana: 'それ', translation: 'это', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+            { word: '猫', furigana: 'ねこ', translation: 'кошка', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'частица (вопрос)', partOfSpeech: 'частица' },
+        ],
+        fullTranslation: 'Это кошка?',
+    },
+    {
+        sentence: [
+            { word: '日本語', furigana: 'にほんご', translation: 'японский язык', partOfSpeech: 'существительное' },
+            { word: 'の', furigana: 'の', translation: 'частица (принадлежность)', partOfSpeech: 'частица' },
+            { word: '勉強', furigana: 'べんきょう', translation: 'учеба', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+            { word: '楽しい', furigana: 'たのしい', translation: 'веселый/приятный', partOfSpeech: 'прилагательное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Изучение японского языка - это весело.',
+    }
+];
+
 
 const watashiwagakuseidesu: JapaneseAnalysisOutput = {
     sentence: [
