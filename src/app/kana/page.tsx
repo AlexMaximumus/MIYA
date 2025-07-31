@@ -8,13 +8,20 @@ import { hiraganaData, katakanaData } from '@/lib/kana-data';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function KanaPage() {
   const [isQuizActive, setQuizActive] = useState(false);
-  const [quizType, setQuizType] = useState<'hiragana' | 'katakana'>('hiragana');
+  const [activeKana, setActiveKana] = useState<'hiragana' | 'katakana'>('hiragana');
+  const [quizQuestionType, setQuizQuestionType] = useState<'kana-to-romaji' | 'romaji-to-kana'>('kana-to-romaji');
 
-  const startQuiz = (type: 'hiragana' | 'katakana') => {
-    setQuizType(type);
+  const startQuiz = () => {
     setQuizActive(true);
   };
 
@@ -23,8 +30,8 @@ export default function KanaPage() {
   };
 
   if (isQuizActive) {
-    const quizData = quizType === 'hiragana' ? hiraganaData : katakanaData;
-    return <KanaQuiz data={quizData} onQuizEnd={endQuiz} quizType={quizType} />;
+    const quizData = activeKana === 'hiragana' ? hiraganaData : katakanaData;
+    return <KanaQuiz data={quizData} onQuizEnd={endQuiz} quizType={activeKana} questionType={quizQuestionType} />;
   }
 
   return (
@@ -41,30 +48,41 @@ export default function KanaPage() {
         Хирагана и Катакана
       </h1>
 
-      <Tabs defaultValue="hiragana" className="w-full max-w-5xl">
+      <Tabs defaultValue="hiragana" className="w-full max-w-5xl" onValueChange={(value) => setActiveKana(value as 'hiragana' | 'katakana')}>
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="hiragana">Хирагана</TabsTrigger>
           <TabsTrigger value="katakana">Катакана</TabsTrigger>
         </TabsList>
         <TabsContent value="hiragana">
           <KanaTable data={hiraganaData} />
-          <div className="mt-8 text-center">
-            <Button size="lg" onClick={() => startQuiz('hiragana')}>
-              Проверить себя
-            </Button>
-          </div>
         </TabsContent>
         <TabsContent value="katakana">
           <KanaTable data={katakanaData} />
-           <div className="mt-8 text-center">
-            <Button size="lg" onClick={() => startQuiz('katakana')}>
-              Проверить себя
-            </Button>
-          </div>
         </TabsContent>
       </Tabs>
+      
+      <Card className="w-full max-w-5xl mt-8 p-6 bg-card/70 shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Проверьте свои знания</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Select value={quizQuestionType} onValueChange={(value) => setQuizQuestionType(value as 'kana-to-romaji' | 'romaji-to-kana')}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Тип теста" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="kana-to-romaji">Символ → Ромадзи</SelectItem>
+                    <SelectItem value="romaji-to-kana">Ромадзи → Символ</SelectItem>
+                </SelectContent>
+            </Select>
+            <Button size="lg" onClick={startQuiz} className="w-full sm:w-auto btn-gradient">
+              Начать тест
+            </Button>
+        </CardContent>
+      </Card>
+
       <div className="mt-8 text-center">
-        <Button size="lg">Продолжить к Лексике</Button>
+        <Button size="lg" className="btn-gradient">Продолжить к Лексике</Button>
       </div>
     </div>
   );

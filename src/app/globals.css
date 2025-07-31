@@ -86,3 +86,15 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+    .btn-gradient {
+      @apply bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg transition-all duration-300;
+    }
+    .btn-gradient:hover {
+      @apply shadow-xl scale-105;
+    }
+    .btn-gradient:active {
+      @apply scale-95;
+    }
+}

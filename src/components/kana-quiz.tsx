@@ -5,20 +5,20 @@ import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { hiraganaData, katakanaData } from '@/lib/kana-data';
 import type { KanaCharacter } from '@/lib/kana-data';
 
 interface KanaQuizProps {
   data: (KanaCharacter | null)[][];
   onQuizEnd: () => void;
   quizType: 'hiragana' | 'katakana';
+  questionType: 'kana-to-romaji' | 'romaji-to-kana';
 }
 
 const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
-export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
+export default function KanaQuiz({ data, onQuizEnd, quizType, questionType }: KanaQuizProps) {
   const allChars = useMemo(() => data.flat().filter((c): c is KanaCharacter => c !== null), [data]);
   const [questions, setQuestions] = useState<KanaCharacter[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -35,20 +35,23 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
     setScore(0);
     setIncorrectAnswers([]);
     setIsFinished(false);
+    setFeedback(null);
   };
   
   useEffect(() => {
     generateQuestions();
-  }, [allChars]);
-
+  }, [allChars, questionType]);
 
   const generateOptions = (correctAnswer: KanaCharacter) => {
+    const isKanaToRomaji = questionType === 'kana-to-romaji';
+    const correctOption = isKanaToRomaji ? correctAnswer.romaji : correctAnswer.kana;
+    
     let wrongOptions = allChars
       .filter((char) => char.romaji !== correctAnswer.romaji)
-      .map((char) => char.romaji);
+      .map((char) => isKanaToRomaji ? char.romaji : char.kana);
     
     wrongOptions = shuffleArray(wrongOptions).slice(0, 3);
-    const allOptions = shuffleArray([...wrongOptions, correctAnswer.romaji]);
+    const allOptions = shuffleArray([...wrongOptions, correctOption]);
     setOptions(allOptions);
   };
 
@@ -61,11 +64,15 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
   }, [currentQuestionIndex, questions]);
 
 
-  const handleAnswer = (selectedRomaji: string) => {
-    if (feedback) return; // Prevent multiple clicks
+  const handleAnswer = (selectedOption: string) => {
+    if (feedback) return;
 
     const correctAnswer = questions[currentQuestionIndex];
-    if (selectedRomaji === correctAnswer.romaji) {
+    const isCorrect = questionType === 'kana-to-romaji' 
+        ? selectedOption === correctAnswer.romaji 
+        : selectedOption === correctAnswer.kana;
+
+    if (isCorrect) {
       setScore(score + 1);
       setFeedback('correct');
     } else {
@@ -76,12 +83,10 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
     setTimeout(() => {
       setFeedback(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }, 1000);
+    }, 1200);
   };
   
-  const currentQuestion = questions[currentQuestionIndex];
-
-  if (isFinished || !currentQuestion) {
+  if (isFinished) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
         <Card className="w-full max-w-md text-center">
@@ -102,11 +107,11 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
                 </div>
               </div>
             )}
-            <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <div className="flex flex-col sm:flex-row gap-2 mt-4 justify-center">
               {incorrectAnswers.length > 0 && (
-                 <Button onClick={() => generateQuestions(true)}>Повторить ошибки</Button>
+                 <Button onClick={() => generateQuestions(true)} className="btn-gradient">Повторить ошибки</Button>
               )}
-              <Button onClick={() => generateQuestions()}>Начать заново</Button>
+              <Button onClick={() => generateQuestions()} className="btn-gradient">Начать заново</Button>
               <Button variant="outline" onClick={onQuizEnd}>
                 Вернуться к таблицам
               </Button>
@@ -117,7 +122,19 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
     );
   }
 
+  const currentQuestion = questions[currentQuestionIndex];
+  if (!currentQuestion) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <p>Загрузка вопросов...</p>
+        </div>
+      );
+  }
+
   const progress = ((currentQuestionIndex) / questions.length) * 100;
+  
+  const questionText = questionType === 'kana-to-romaji' ? currentQuestion.kana : currentQuestion.romaji;
+  const optionIsKana = questionType === 'romaji-to-kana';
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
@@ -129,29 +146,30 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
            <Progress value={progress} className="mt-2" />
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8">
-          <div className="text-8xl font-japanese rounded-lg bg-card-foreground/5 p-8">
-            {currentQuestion.kana}
+          <div className={`rounded-lg bg-card-foreground/5 p-8 ${optionIsKana ? "text-6xl" : "text-8xl font-japanese"}`}>
+            {questionText}
           </div>
           <div className="grid grid-cols-2 gap-4 w-full">
-            {options.map((romaji) => (
+            {options.map((option) => {
+              const isCorrectOption = questionType === 'kana-to-romaji' 
+                ? option === currentQuestion.romaji 
+                : option === currentQuestion.kana;
+
+              return (
               <Button
-                key={romaji}
-                onClick={() => handleAnswer(romaji)}
-                variant={
-                    feedback && romaji === currentQuestion.romaji ? 'default' :
-                    feedback === 'incorrect' && romaji !== currentQuestion.romaji ? 'destructive' :
-                    'outline'
-                }
-                className={`h-16 text-2xl transition-all duration-300 ${
-                  feedback && romaji === currentQuestion.romaji ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse' : ''
-                } ${
-                  feedback === 'incorrect' && romaji !== currentQuestion.romaji ? '' : ''
-                }`}
+                key={option}
+                onClick={() => handleAnswer(option)}
+                className={`h-16 text-2xl transition-all duration-300 transform 
+                ${optionIsKana ? 'font-japanese text-4xl' : ''}
+                ${feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : ''}
+                ${feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : ''}
+                ${feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''}
+                `}
                 disabled={!!feedback}
               >
-                {romaji}
+                {option}
               </Button>
-            ))}
+            )})}
           </div>
         </CardContent>
       </Card>
