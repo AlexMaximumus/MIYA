@@ -25,10 +25,11 @@ const partsOfSpeech = [
 ];
 
 const pronouns = [
-    { pronoun: '私', romaji: 'watashi', politeness: 'Нейтрально-вежливое', translation: 'Я', role: '1-е лицо, ед.ч.' },
-    { pronoun: 'あなた', romaji: 'anata', politeness: 'Вежливое, но может быть слишком прямым', translation: 'Ты, вы', role: '2-е лицо, ед.ч.' },
-    { pronoun: 'あの人', romaji: 'ano hito', politeness: 'Нейтральное', translation: 'Он, она, то лицо', role: '3-е лицо, ед.ч.' },
-    { pronoun: 'あの方', romaji: 'ano kata', politeness: 'Очень вежливое', translation: 'Он, она (уважительно)', role: '3-е лицо, ед.ч.' },
+    { pronoun: '私', romaji: 'watashi', politeness: 'Нейтрально-вежливое "Я"', translation: 'Я (употребляется и мужчинами и женщинами в официальной обстановке)', role: '1-е лицо, ед.ч.' },
+    { pronoun: 'わたくし', romaji: 'watakushi', politeness: 'Очень формальное и вежливое "Я"', translation: 'Я (более формальный вариант)', role: '1-е лицо, ед.ч.' },
+    { pronoun: 'あなた', romaji: 'anata', politeness: 'Вежливое "ты/вы", но стоит использовать с осторожностью', translation: 'Ты, вы (в разговоре с незнакомыми или вышестоящими лучше избегать, обращаясь по фамилии)', role: '2-е лицо, ед.ч.' },
+    { pronoun: 'あの人', romaji: 'ano hito', politeness: 'Нейтральное "он/она"', translation: 'Он, она, то лицо (буквально: "тот человек")', role: '3-е лицо, ед.ч.' },
+    { pronoun: 'あの方', romaji: 'ano kata', politeness: 'Очень вежливое "он/она"', translation: 'Он, она (уважительный, вежливый вариант)', role: '3-е лицо, ед.ч.' },
 ]
 
 const cases = [
@@ -40,7 +41,7 @@ const cases = [
 
 export default function GrammarPage() {
     const [useJaArimasen, setUseJaArimasen] = useState(false);
-    const [progress, setProgress] = useState(10);
+    const [progress, setProgress] = useState(30); // Updated progress
     const [answers, setAnswers] = useState<Record<string, string | null>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
 
@@ -48,6 +49,9 @@ export default function GrammarPage() {
         q1: { question: "К какой части речи относится слово わたし?", options: ['существительное', 'местоимение', 'частица'], correct: 'местоимение' },
         q2: { question: '"Он — студент."', options: ['あのひと', 'わたし', 'あなた'], correct: 'あのひと' },
         q3: { question: 'やまだ（　）がくせいです。', options: ['さん', 'は', 'を'], correct: 'さん' },
+        q4: { question: 'Соберите предложение: "Я - студент"', parts: ['わたし', 'は', 'がくせい', 'です'], correct: 'わたしはがくせいです' },
+        q5: { question: 'Какая отрицательная форма у связки です в разговорной речи?', options: ['ではありません', 'じゃないです', 'じゃありません'], correct: 'じゃありません'},
+        q6: { question: 'Как вежливо спросить "Что это?"', options: ['これはなんですか', 'これはなにですか'], correct: 'これはなんですか'},
     };
 
     const handleAnswer = (question: string, answer: string) => {
@@ -141,57 +145,70 @@ export default function GrammarPage() {
             <AccordionItem value="item-4">
                 <AccordionTrigger className="text-xl font-semibold">§4. Личные местоимения (代名詞)</AccordionTrigger>
                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Выбор местоимения сильно зависит от уровня вежливости и контекста.</p>
+                    <p>Выбор местоимения сильно зависит от уровня вежливости и социального контекста. Склоняются по падежам так же, как и существительные.</p>
                      <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Местоимение</TableHead>
-                                <TableHead>Вежливость</TableHead>
-                                <TableHead>Перевод</TableHead>
+                                <TableHead>Ромадзи</TableHead>
+                                <TableHead>Степень вежливости</TableHead>
+                                <TableHead>Пояснение</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {pronouns.map(p => (
                             <TableRow key={p.pronoun}>
                                 <TableCell className="font-medium font-japanese text-xl">{p.pronoun}</TableCell>
+                                <TableCell>{p.romaji}</TableCell>
                                 <TableCell>{p.politeness}</TableCell>
-                                <TableCell>{p.translation}</TableCell>
+                                <TableCell className="text-sm">{p.translation}</TableCell>
                             </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-5">
+             <AccordionItem value="item-5">
+                <AccordionTrigger className="text-xl font-semibold">§5. Вопросительное местоимение 何 (なに)</AccordionTrigger>
+                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                    <p>Местоимение <span className="font-japanese">何</span> означает "что?" и используется в вопросах о предметах. Его произношение меняется в зависимости от следующего за ним звука.</p>
+                    <ul className="list-disc list-inside space-y-2">
+                         <li>Произносится как <strong className="font-japanese">なに</strong>, когда за ним следует самостоятельное слово: <InteractiveText text="これは何ですか。" /></li>
+                         <li>Произносится как <strong className="font-japanese">なん</strong> перед звуками [н], [т], [д], а также перед счетными суффиксами: <InteractiveText text="それは何ですか。" /> <span className="text-muted-foreground text-sm">(нан-дес ка)</span></li>
+                    </ul>
+                     <p className="text-sm text-muted-foreground">Местоимение 何 склоняется по падежам как обычное существительное.</p>
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-6">
                 <AccordionTrigger className="text-xl font-semibold">§6. Формы связки です</AccordionTrigger>
                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Связка です используется в конце предложения, чтобы сделать его вежливым. У нее есть несколько форм.</p>
+                    <p>Связка です используется в конце предложения, чтобы сделать его вежливым (нейтрально-вежливый стиль). В японском языке два основных времени: настоящее-будущее и прошедшее. Связка имеет формы для обоих.</p>
                     <div className="flex items-center space-x-4 p-4 rounded-lg bg-card/70">
-                        <span className="font-bold">Форма:</span>
-                        <Label htmlFor="tense-switch">Утвердительная</Label>
-                        <Switch id="tense-switch" checked={!useJaArimasen} onCheckedChange={(checked) => setUseJaArimasen(!checked)} />
-                        <Label htmlFor="tense-switch">Отрицательная</Label>
+                        <Label htmlFor="tense-switch" className={cn(useJaArimasen && "text-muted-foreground")}>Утвердительная</Label>
+                        <Switch id="tense-switch" checked={useJaArimasen} onCheckedChange={(checked) => setUseJaArimasen(checked)} aria-readonly />
+                        <Label htmlFor="tense-switch" className={cn(!useJaArimasen && "text-muted-foreground")}>Отрицательная</Label>
                     </div>
                     <div className="p-4 bg-muted rounded-lg text-center">
                         <p className="text-2xl font-japanese">
                         {useJaArimasen ? '〜ではありません / 〜じゃありません' : '〜です'}
                         </p>
                         <p className="text-sm text-muted-foreground mt-2">
-                        {useJaArimasen ? 'Отрицательная форма (нейтральная / разговорная)' : 'Настоящее-будущее время, утверждение'}
+                        {useJaArimasen ? 'Отрицательная форма (ではありません — нейтрально-вежливая, じゃありません — разговорный вариант)' : 'Настоящее-будущее время, утверждение'}
                         </p>
                     </div>
                 </AccordionContent>
             </AccordionItem>
              <AccordionItem value="item-7">
-                <AccordionTrigger className="text-xl font-semibold">§7. Простое предложение</AccordionTrigger>
+                <AccordionTrigger className="text-xl font-semibold">§7. Простое предложение с именным сказуемым</AccordionTrigger>
                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                    <p>Базовая структура простого вежливого предложения с именным сказуемым выглядит так:</p>
+                    <p>Простое нераспространенное предложение состоит из подлежащего и сказуемого. Наиболее частый способ выражения подлежащего — существительное или местоимение с частицей は (wa), которая выделяет тему высказывания.</p>
                     <Card className="bg-card/70">
                         <CardContent className="p-6">
                             <p className="text-center text-muted-foreground text-sm">Подлежащее + Частица は + Сказуемое + Связка です</p>
                             <div className="mt-4">
-                               <InteractiveText text="田中さんは学生です" />
+                               <InteractiveText text="私 は 学生 です" />
                             </div>
+                             <p className="mt-4 text-center">В таком предложении новым и главным является то, что передаётся сказуемым. (В примере: то, что я являюсь именно "студентом").</p>
                         </CardContent>
                     </Card>
                 </AccordionContent>
