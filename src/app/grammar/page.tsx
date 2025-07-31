@@ -35,25 +35,25 @@ const exercises: Exercise[] = [
         id: 'q1',
         type: 'multiple-choice',
         title: 'Упражнение 1. Выберите правильный вопрос',
-        description: 'Как спросить "Кто тот человек?"',
-        options: ['あのかたはだれですか', 'あのかたはなんですか', 'あのかたはどなたですか'],
-        correctAnswer: 'あのかたはどなたですか',
+        description: 'Как спросить "Тот человек г-н Ямада или г-н Танака?"',
+        options: ['あのかたはなにですか', 'あのかたはやまださんですか、たなかさんですか', 'やまださんとたなかさんです'],
+        correctAnswer: 'あのかたはやまださんですか、たなかさんですか',
     },
     {
         id: 'q2',
         type: 'multiple-choice',
         title: 'Упражнение 2. Выберите правильный ответ',
-        description: 'На вопрос "やまださんはがくせいですか。" дан ответ "Нет, он учитель." Выберите правильный вариант на японском.',
-        options: ['はい、そうです', 'いいえ、やまださんはせんせいです', 'いいえ、がくせいではありません'],
-        correctAnswer: 'いいえ、やまださんはせんせいです',
+        description: 'На вопрос "やまださんはせんせいですか、がくせいですか。" дан ответ "Г-н Ямада — учитель." Выберите правильный вариант на японском.',
+        options: ['はい、そうです', 'いいえ、がくせいではありません', 'やまださんはせんせいです'],
+        correctAnswer: 'やまださんはせんせいです',
     },
     {
         id: 'q3',
         type: 'select-options',
         title: 'Упражнение 3. Заполни пропуски',
-        description: 'これは（　）ですか。',
-        options: ['なん', 'だれ', 'です'],
-        correctAnswer: 'なん',
+        description: 'たなかさんはぎしです（　）、せんせいですか。',
+        options: ['か', 'は', 'です'],
+        correctAnswer: 'か',
     },
 ];
 
@@ -131,7 +131,7 @@ export default function GrammarPage() {
                             {options.map(option => (
                                 <div key={option} className="flex items-center space-x-2">
                                     <RadioGroupItem value={option} id={`${id}-${option}`} />
-                                    <Label htmlFor={`${id}-${option}`} className={cn(option.includes('〜') || option.includes('。') ? 'font-japanese text-lg' : '')}>{option}</Label>
+                                    <Label htmlFor={`${id}-${option}`} className={cn(option.includes('〜') || option.includes('。') || option.includes('、') ? 'font-japanese text-lg' : '')}>{option}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
@@ -193,7 +193,7 @@ export default function GrammarPage() {
             </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
-            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-8">
+            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-9">
                 <AccordionItem value="item-1">
                     <AccordionTrigger className="text-xl font-semibold">§1. Части речи в японском</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
@@ -319,6 +319,20 @@ export default function GrammarPage() {
                         </Card>
                     </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="item-9">
+                    <AccordionTrigger className="text-xl font-semibold">§7. Альтернативный вопрос</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Альтернативный вопрос, ставящий собеседника перед выбором из нескольких предметов или действий, передаётся повторением сказуемостной части предложения с вопросительной частицей <span className="font-japanese font-bold">か</span>.</p>
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Пример</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <InteractiveText analysis={grammarAnalyses.alternative.anokatahasenseidesukagakuseidesuka} />
+                            </CardContent>
+                        </Card>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
             
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">ぶんれい (Примеры)</h2>
@@ -346,5 +360,3 @@ export default function GrammarPage() {
     </div>
   );
 }
-
-    

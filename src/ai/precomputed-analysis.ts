@@ -246,6 +246,127 @@ const iie_anohitowasenseidehaarimasen_gakuseidesu: JapaneseAnalysisOutput = {
     fullTranslation: 'Нет, тот человек не учитель. Он студент.'
 };
 
+// §9 Alternative Questions
+const anokatahasenseidesukagakuseidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+        { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+        { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+        { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+    ],
+    "fullTranslation": "Он преподаватель или студент?"
+};
+
+const anokatawayamadasanndesuka_tanakasanndesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+        { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "やまだ", "furigana": "やまだ", "translation": "Ямада", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+        { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+        { "word": "たなか", "furigana": "たなか", "translation": "Танака", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+    ],
+    "fullTranslation": "Тот человек г-н Ямада или г-н Танака?"
+};
+const yamadasanndesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "やまだ", "furigana": "やまだ", "translation": "Ямада", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+    ],
+    "fullTranslation": "Это г-н Ямада."
+};
+
+const tanakasanwagishidesuka_senseidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "たなか", "furigana": "たなか", "translation": "Танака", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "ぎし", "furigana": "ぎし", "translation": "инженер", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+        { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+        { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+    ],
+    "fullTranslation": "Г-н Танака инженер или учитель?"
+};
+
+const gishidesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "ぎし", "furigana": "ぎし", "translation": "инженер", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+    ],
+    "fullTranslation": "Он инженер."
+};
+
+const yamadasanwasenseidesuka_gakuseidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "やまだ", "furigana": "やまだ", "translation": "Ямада", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+        { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+        { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+    ],
+    "fullTranslation": "Г-н Ямада учитель или студент?"
+};
+const yamadasanwasenseidesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "やまだ", "furigana": "やまだ", "translation": "Ямада", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+    ],
+    "fullTranslation": "Г-н Ямада — учитель."
+};
+
+const anohitowayamamotodesuka_nishidasanndesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+        { "word": "ひと", "furigana": "ひと", "translation": "человек", "partOfSpeech": "существительное" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "やまもと", "furigana": "やまもと", "translation": "Ямамото", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+        { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+        { "word": "にしだ", "furigana": "にしだ", "translation": "Нисида", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+    ],
+    "fullTranslation": "Тот человек г-н Ямамото или г-н Нисида?"
+};
+const anohitowayamamotodesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+        { "word": "ひと", "furigana": "ひと", "translation": "человек", "partOfSpeech": "существительное" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+        { "word": "やまもと", "furigana": "やまもと", "translation": "Ямамото", "partOfSpeech": "имя собственное" },
+        { "word": "さん", "furigana": "さん", "translation": "господин/госпожа", "partOfSpeech": "суффикс вежливости" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+    ],
+    "fullTranslation": "Тот человек — г-н Ямамото."
+};
 
 
 
@@ -309,6 +430,9 @@ export const grammarAnalyses = {
         ],
         "fullTranslation": "(Я/он/она) — учитель."
     },
+    alternative: {
+        anokatahasenseidesukagakuseidesuka,
+    },
     bunrei: {
         anokatawadonadesuka_anokatawayamadasandesu: {
             sentence: [
@@ -353,6 +477,22 @@ export const grammarAnalyses = {
             fullTranslation: "Господин Ямада студент? — Нет, господин Ямада учитель."
         },
         iie_anohitowasenseidehaarimasen_gakuseidesu,
+        anokatawayamadasanndesuka_tanakasanndesuka: {
+            sentence: [ ...anokatawayamadasanndesuka_tanakasanndesuka.sentence, { word: '—', furigana: '', translation: '', partOfSpeech: '' }, ...yamadasanndesu.sentence ],
+            fullTranslation: "Тот человек г-н Ямада или г-н Танака? — Это г-н Ямада."
+        },
+        tanakasanwagishidesuka_senseidesuka: {
+            sentence: [ ...tanakasanwagishidesuka_senseidesuka.sentence, { word: '—', furigana: '', translation: '', partOfSpeech: '' }, ...gishidesu.sentence ],
+            fullTranslation: "Г-н Танака инженер или учитель? — Он инженер."
+        },
+        yamadasanwasenseidesuka_gakuseidesuka: {
+            sentence: [ ...yamadasanwasenseidesuka_gakuseidesuka.sentence, { word: '—', furigana: '', translation: '', partOfSpeech: '' }, ...yamadasanwasenseidesu.sentence ],
+            fullTranslation: "Г-н Ямада учитель или студент? — Г-н Ямада — учитель."
+        },
+        anohitowayamamotodesuka_nishidasanndesuka: {
+            sentence: [ ...anohitowayamamotodesuka_nishidasanndesuka.sentence, { word: '—', furigana: '', translation: '', partOfSpeech: '' }, ...anohitowayamamotodesu.sentence ],
+            fullTranslation: "Тот человек г-н Ямамото или г-н Нисида? — Тот человек — г-н Ямамото."
+        }
     },
     questions: {
         anokatawadonadesuka,
