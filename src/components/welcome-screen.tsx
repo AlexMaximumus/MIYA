@@ -3,29 +3,53 @@
 import { useState } from 'react';
 import { Cherry } from 'lucide-react';
 
+const floatingWords = ['美しい', '空', '猫', '夢'];
+
 export default function WelcomeScreen() {
   const [isVibrating, setIsVibrating] = useState(false);
+  const [animatedWords, setAnimatedWords] = useState<string[]>([]);
 
   const handleTitleClick = () => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(100);
     }
     setIsVibrating(true);
+    setAnimatedWords(floatingWords);
+
     setTimeout(() => setIsVibrating(false), 500); // Duration of the animation
+    setTimeout(() => setAnimatedWords([]), 1500); // Duration for words to fade out
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-background text-foreground animate-fade-in p-4">
-      <Cherry className="w-24 h-24 mb-6 text-primary animate-pulse" />
-      <h1 className="text-3xl font-bold font-headline text-center">
-        <span 
-          onClick={handleTitleClick} 
-          className={`cursor-pointer select-none inline-block ${isVibrating ? 'animate-shake' : ''}`}
-        >
-          MIYA
-        </span> LINGO
-      </h1>
-      <p className="mt-4 text-center text-lg max-w-md">
+    <div className="flex flex-col items-center justify-center h-screen bg-background text-foreground animate-fade-in p-4 overflow-hidden">
+       <div className="relative">
+        <h1 className="text-3xl font-bold font-headline text-center relative z-10">
+          <span
+            onClick={handleTitleClick}
+            className={`cursor-pointer select-none inline-block ${isVibrating ? 'animate-shake' : ''}`}
+          >
+            MIYA
+          </span> LINGO
+        </h1>
+        {animatedWords.map((word, index) => (
+          <span
+            key={index}
+            className="absolute text-primary text-lg animate-float-up"
+            style={{
+              top: `${Math.random() * 80 - 40}%`,
+              left: `${Math.random() * 80 + 10}%`,
+              animationDelay: `${index * 0.1}s`,
+            }}
+          >
+            {word}
+          </span>
+        ))}
+      </div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <Cherry className="w-24 h-24 mb-6 text-primary animate-pulse" />
+      </div>
+
+      <p className="mt-20 text-center text-lg max-w-md relative z-10">
         Добро пожаловать в MIYA LINGO — ваш спутник в изучении японского языка
       </p>
     </div>

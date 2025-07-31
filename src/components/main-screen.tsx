@@ -6,27 +6,47 @@ import InteractiveText from '@/components/interactive-text';
 import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
 import Link from 'next/link';
 
+const floatingWords = ['こんにちは', 'ありがとう', 'すごい', '日本語'];
+
 export default function MainScreen() {
   const [isVibrating, setIsVibrating] = useState(false);
+  const [animatedWords, setAnimatedWords] = useState<string[]>([]);
 
   const handleTitleClick = () => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(100);
     }
     setIsVibrating(true);
+    setAnimatedWords(floatingWords);
     setTimeout(() => setIsVibrating(false), 500); // Duration of the animation
+    setTimeout(() => setAnimatedWords([]), 1500); // Words fade out
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
-      <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 font-headline text-center">
-        <span 
-          onClick={handleTitleClick} 
-          className={`cursor-pointer select-none inline-block ${isVibrating ? 'animate-shake' : ''}`}
-        >
-          MIYA
-        </span> LINGO
-      </h1>
+      <div className="relative">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 font-headline text-center relative z-10">
+          <span 
+            onClick={handleTitleClick} 
+            className={`cursor-pointer select-none inline-block ${isVibrating ? 'animate-shake' : ''}`}
+          >
+            MIYA
+          </span> LINGO
+        </h1>
+        {animatedWords.map((word, index) => (
+          <span
+            key={index}
+            className="absolute text-primary text-xl animate-float-up"
+            style={{
+                top: `${Math.random() * 80 - 40}%`,
+                left: `${Math.random() * 80 + 10}%`,
+                animationDelay: `${index * 0.1}s`,
+            }}
+          >
+            {word}
+          </span>
+        ))}
+      </div>
       <div className="mb-12">
         <InteractiveText text="今日はいい天気ですね" />
       </div>
