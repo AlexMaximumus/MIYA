@@ -5,23 +5,52 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, CheckCircle, Info, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import { cn } from '@/lib/utils';
 
+type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'select-options';
 
-const partsOfSpeech = [
-    { name: 'Существительные', example: '猫 (ねこ)', translation: 'Кошка', role: 'Обозначает предмет или явление.' },
-    { name: 'Глаголы', example: '食べる (たべる)', translation: 'Есть, кушать', role: 'Обозначает действие или состояние.' },
-    { name: 'Прилагательные', example: '美しい (うつくしい)', translation: 'Красивый', role: 'Обозначает признак предмета.' },
-    { name: 'Местоимения', example: '私 (わたし)', translation: 'Я', role: 'Указывает на предмет, но не называет его.' },
+interface Exercise {
+    id: string;
+    type: ExerciseType;
+    title: string;
+    description: string;
+    options: string[];
+    correctAnswer: string | string[];
+}
+
+const exercises: Exercise[] = [
+    {
+        id: 'q1',
+        type: 'multiple-choice',
+        title: 'Упражнение 1. Определи часть речи',
+        description: 'К какой части речи относится слово わたし?',
+        options: ['существительное', 'местоимение', 'частица'],
+        correctAnswer: 'местоимение',
+    },
+    {
+        id: 'q2',
+        type: 'multiple-choice',
+        title: 'Упражнение 2. Выбери правильный перевод',
+        description: 'Выберите правильный перевод: "Он не преподаватель."',
+        options: ['あのかたはせんせいです', 'あのかたはせんせいではありません'],
+        correctAnswer: 'あのかたはせんせいではありません',
+    },
+    {
+        id: 'q3',
+        type: 'select-options',
+        title: 'Упражнение 3. Заполни пропуски',
+        description: 'わたし（　）やまだ（　）。',
+        options: ['は / です', 'が / です', 'を / ではありません'],
+        correctAnswer: 'は / です',
+    },
 ];
 
 const pronouns = [
@@ -43,27 +72,88 @@ const bunreiSentences = [
 
 export default function GrammarPage() {
     const [useJaArimasen, setUseJaArimasen] = useState(false);
-    const [progress, setProgress] = useState(60); // Updated progress
+    const [progress, setProgress] = useState(60); 
     const [answers, setAnswers] = useState<Record<string, string | null>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
 
-    const exercises = {
-        q1: { question: "К какой части речи относится слово わたし?", options: ['существительное', 'местоимение', 'частица'], correct: 'местоимение' },
-        q2: { question: 'Выберите правильный перевод: "Он не преподаватель."', options: ['あのかたはせんせいです', 'あのかたはせんせいではありません'], correct: 'あのかたはせんせいではありません' },
-        q3: { question: 'Вставьте правильную частицу и связку: "Я — Ямада."', text: 'わたし（　）やまだ（　）。', options: ['は / です', 'が / です', 'を / ではありません'], correct: 'は / です' },
-    };
-
-    const handleAnswer = (question: string, answer: string) => {
-        setAnswers(prev => ({ ...prev, [question]: answer }));
+    const handleAnswer = (questionId: string, answer: string) => {
+        setAnswers(prev => ({ ...prev, [questionId]: answer }));
+        // Reset result when a new answer is selected
+        if (results[questionId] !== null) {
+            setResults(prev => ({ ...prev, [questionId]: null }));
+        }
     };
     
-    const checkAnswer = (question: string) => {
-        const isCorrect = answers[question] === (exercises as any)[question].correct;
-        setResults(prev => ({ ...prev, [question]: isCorrect }));
+    const checkAnswer = (questionId: string) => {
+        const exercise = exercises.find(ex => ex.id === questionId);
+        if (!exercise || !answers[questionId]) return;
+
+        const isCorrect = answers[questionId] === exercise.correctAnswer;
+        setResults(prev => ({ ...prev, [questionId]: isCorrect }));
+
         if (isCorrect) {
-            setProgress(p => Math.min(p + 15, 100));
+            const answeredCorrectly = Object.values({ ...results, [questionId]: true }).filter(r => r === true).length;
+            const totalQuestions = exercises.length;
+            const newProgress = 60 + Math.floor((answeredCorrectly / totalQuestions) * 40);
+            setProgress(Math.min(newProgress, 100));
         }
     }
+    
+    const renderExercise = (exercise: Exercise) => {
+        const { id, type, title, description, options, correctAnswer } = exercise;
+        const userAnswer = answers[id];
+        const result = results[id];
+
+        return (
+            <Card key={id}>
+                <CardHeader>
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription className={cn(type === 'select-options' && 'font-japanese text-xl')}>
+                        {description}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {type === 'multiple-choice' && (
+                        <RadioGroup value={userAnswer || ''} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
+                            {options.map(option => (
+                                <div key={option} className="flex items-center space-x-2">
+                                    <RadioGroupItem value={option} id={`${id}-${option}`} />
+                                    <Label htmlFor={`${id}-${option}`} className={cn(option.includes('〜') && 'font-japanese text-lg')}>{option}</Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
+                    )}
+                    {type === 'select-options' && (
+                         <div className="flex flex-wrap gap-2">
+                            {options.map(option => (
+                                <Button 
+                                    key={option}
+                                    variant={userAnswer === option ? 'default' : 'outline'}
+                                    onClick={() => handleAnswer(id, option)}
+                                    className={cn("text-lg",
+                                        result === true && userAnswer === option && 'bg-green-500 hover:bg-green-600',
+                                        result === false && userAnswer === option && 'bg-destructive hover:bg-destructive/90',
+                                    )}
+                                >
+                                    {option}
+                                </Button>
+                            ))}
+                        </div>
+                    )}
+                </CardContent>
+                <CardFooter>
+                    <Button onClick={() => checkAnswer(id)} disabled={!userAnswer}>Проверить</Button>
+                    {result === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Верно!</span>}
+                    {result === false && (
+                        <span className="flex items-center gap-2 text-destructive ml-4">
+                            <XCircle/> Ошибка. Правильный ответ: {correctAnswer}
+                        </span>
+                    )}
+                </CardFooter>
+            </Card>
+        );
+    }
+
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
@@ -156,10 +246,8 @@ export default function GrammarPage() {
                             </CardHeader>
                             <CardContent>
                                 <InteractiveText text="あのかたはせんせいです" />
-                                <p className="text-muted-foreground text-sm mt-2">Он — преподаватель.</p>
                                 <hr className="my-4"/>
                                 <InteractiveText text="がくせいはあのひとです" />
-                                <p className="text-muted-foreground text-sm mt-2">Студент — он.</p>
                             </CardContent>
                         </Card>
 
@@ -167,13 +255,11 @@ export default function GrammarPage() {
                             <CardHeader>
                                 <CardTitle className="text-lg">Отрицательные предложения</CardTitle>
                                 <CardDescription>Схема: N1 は N2 ではありません</CardDescription>
-                            </CardHeader>
+                            </Header>
                             <CardContent>
                                  <InteractiveText text="あのかたはせんせいではありません" />
-                                <p className="text-muted-foreground text-sm mt-2">Он — не преподаватель.</p>
                                  <hr className="my-4"/>
                                 <InteractiveText text="がくせいはあのひとじゃありません" />
-                                <p className="text-muted-foreground text-sm mt-2">Студент — не он. (разговорная форма)</p>
                             </CardContent>
                         </Card>
                         <div className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText text="せんせいです"/>, и это будет означать "(Он/Она/Я) — преподаватель."</div>
@@ -194,81 +280,7 @@ export default function GrammarPage() {
 
             <h2 className="text-3xl font-bold text-foreground mb-8 text-center">📝 Закрепление</h2>
             <div className="w-full max-w-4xl space-y-8">
-                {/* Exercise 1 */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Упражнение 1. Определи часть речи</CardTitle>
-                        <CardDescription>{exercises.q1.question}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <RadioGroup value={answers.q1} onValueChange={(val) => handleAnswer('q1', val)} className="flex flex-col sm:flex-row gap-4">
-                             {exercises.q1.options.map(option => (
-                                <div key={option} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={option} id={`q1-${option}`} />
-                                    <Label htmlFor={`q1-${option}`}>{option}</Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
-                    </CardContent>
-                    <CardFooter>
-                         <Button onClick={() => checkAnswer('q1')} disabled={!answers.q1}>Проверить</Button>
-                         {results.q1 === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Верно!</span>}
-                         {results.q1 === false && <span className="flex items-center gap-2 text-destructive ml-4"><XCircle/> Ошибка. Правильный ответ: местоимение.</span>}
-                    </CardFooter>
-                </Card>
-
-                 {/* Exercise 2 */}
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Упражнение 2. Выбери правильный перевод</CardTitle>
-                        <CardDescription>{exercises.q2.question}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <RadioGroup value={answers.q2} onValueChange={(val) => handleAnswer('q2', val)} className="flex flex-col gap-4">
-                             {exercises.q2.options.map(option => (
-                                <div key={option} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={option} id={`q2-${option}`} />
-                                    <Label htmlFor={`q2-${option}`} className="font-japanese text-lg">{option}</Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
-                    </CardContent>
-                    <CardFooter>
-                         <Button onClick={() => checkAnswer('q2')} disabled={!answers.q2}>Проверить</Button>
-                         {results.q2 === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Отлично!</span>}
-                         {results.q2 === false && <span className="flex items-center gap-2 text-destructive ml-4"><XCircle/> Неверно.</span>}
-                    </CardFooter>
-                </Card>
-
-                 {/* Exercise 3 */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Упражнение 3. Заполни пропуски</CardTitle>
-                        <CardDescription className="font-japanese text-xl">{exercises.q3.text}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex flex-wrap gap-2">
-                            {exercises.q3.options.map(option => (
-                                <Button 
-                                    key={option}
-                                    variant={answers.q3 === option ? 'default' : 'outline'}
-                                    onClick={() => handleAnswer('q3', option)}
-                                    className={cn("text-lg",
-                                        results.q3 === true && answers.q3 === option && 'bg-green-500 hover:bg-green-600',
-                                        results.q3 === false && answers.q3 === option && 'bg-destructive hover:bg-destructive/90',
-                                    )}
-                                >
-                                    {option}
-                                </Button>
-                            ))}
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                         <Button onClick={() => checkAnswer('q3')} disabled={!answers.q3}>Проверить</Button>
-                         {results.q3 === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Правильно!</span>}
-                         {results.q3 === false && <span className="flex items-center gap-2 text-destructive ml-4"><XCircle/> Попробуйте еще раз.</span>}
-                    </CardFooter>
-                </Card>
+                {exercises.map(renderExercise)}
             </div>
              <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                 <Button size="lg" variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Повторить теорию</Button>
@@ -280,8 +292,3 @@ export default function GrammarPage() {
     </div>
   );
 }
-
-
-    
-
-    
