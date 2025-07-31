@@ -34,26 +34,26 @@ const exercises: Exercise[] = [
     {
         id: 'q1',
         type: 'multiple-choice',
-        title: 'Упражнение 1. Определи часть речи',
-        description: 'К какой части речи относится слово わたし?',
-        options: ['существительное', 'местоимение', 'частица'],
-        correctAnswer: 'местоимение',
+        title: 'Упражнение 1. Выберите правильный вопрос',
+        description: 'Как спросить "Кто тот человек?"',
+        options: ['あのかたはだれですか', 'あのかたはなんですか', 'あのかたはどなたですか'],
+        correctAnswer: 'あのかたはどなたですか',
     },
     {
         id: 'q2',
         type: 'multiple-choice',
-        title: 'Упражнение 2. Выбери правильный перевод',
-        description: 'Выберите правильный перевод: "Тот человек не учитель."',
-        options: ['あのかたはせんせいです', 'あのかたはせんせいではありません'],
-        correctAnswer: 'あのかたはせんせいではありません',
+        title: 'Упражнение 2. Выберите правильный ответ',
+        description: 'На вопрос "やまださんはがくせいですか。" дан ответ "Нет, он учитель." Выберите правильный вариант на японском.',
+        options: ['はい、そうです', 'いいえ、やまださんはせんせいです', 'いいえ、がくせいではありません'],
+        correctAnswer: 'いいえ、やまださんはせんせいです',
     },
     {
         id: 'q3',
         type: 'select-options',
         title: 'Упражнение 3. Заполни пропуски',
-        description: 'わたし（　）やまだ（　）。',
-        options: ['は / です', 'が / です', 'を / ではありません'],
-        correctAnswer: 'は / です',
+        description: 'これは（　）ですか。',
+        options: ['なん', 'だれ', 'です'],
+        correctAnswer: 'なん',
     },
 ];
 
@@ -67,7 +67,7 @@ const pronouns = [
 
 export default function GrammarPage() {
     const [useJaArimasen, setUseJaArimasen] = useState(false);
-    const [progress, setProgress] = useState(60); 
+    const [progress, setProgress] = useState(80); 
     const [answers, setAnswers] = useState<Record<string, string | null>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
     const [_, copy] = useCopyToClipboard();
@@ -107,7 +107,7 @@ export default function GrammarPage() {
         if (isCorrect) {
             const answeredCorrectly = Object.values({ ...results, [questionId]: true }).filter(r => r === true).length;
             const totalQuestions = exercises.length;
-            const newProgress = 60 + Math.floor((answeredCorrectly / totalQuestions) * 40);
+            const newProgress = 80 + Math.floor((answeredCorrectly / totalQuestions) * 20);
             setProgress(Math.min(newProgress, 100));
         }
     };
@@ -131,7 +131,7 @@ export default function GrammarPage() {
                             {options.map(option => (
                                 <div key={option} className="flex items-center space-x-2">
                                     <RadioGroupItem value={option} id={`${id}-${option}`} />
-                                    <Label htmlFor={`${id}-${option}`} className={cn(option.includes('〜') && 'font-japanese text-lg')}>{option}</Label>
+                                    <Label htmlFor={`${id}-${option}`} className={cn(option.includes('〜') || option.includes('。') ? 'font-japanese text-lg' : '')}>{option}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
@@ -186,14 +186,14 @@ export default function GrammarPage() {
             <Card className="w-full mb-8">
                 <CardHeader>
                     <p className="text-sm text-primary font-semibold">Урок 1 — Грамматика</p>
-                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи, связки, простые предложения</CardTitle>
+                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи, связки, простые и вопросительные предложения</CardTitle>
                     <CardDescription>Прогресс по теме:</CardDescription>
                     <Progress value={progress} className="mt-2" />
                 </CardHeader>
             </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
-            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-7">
+            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-8">
                 <AccordionItem value="item-1">
                     <AccordionTrigger className="text-xl font-semibold">§1. Части речи в японском</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
@@ -284,6 +284,41 @@ export default function GrammarPage() {
                         <div className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText analysis={grammarAnalyses.senseidesu}/>, и это будет означать "(Он/Она/Я) — преподаватель."</div>
                     </AccordionContent>
                 </AccordionItem>
+                 <AccordionItem value="item-8">
+                    <AccordionTrigger className="text-xl font-semibold">§6. Вопросительное предложение</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Признаки вопросительного предложения — это интонация и частица <span className="font-japanese font-bold">か</span> в конце. Порядок слов остается таким же, как и в повествовательном предложении.</p>
+                        
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader>
+                                <CardTitle className="text-lg">1. Вопросы с вопросительным словом</CardTitle>
+                                <CardDescription>Схема: N は N1 (вопр. слово) ですか</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <InteractiveText analysis={grammarAnalyses.questions.anokatawadonadesuka} />
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader>
+                                <CardTitle className="text-lg">2. Вопросы без вопросительного слова</CardTitle>
+                                <CardDescription>Схема: N1 は N2 ですか</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                 <p className="font-bold">Вопрос:</p>
+                                 <InteractiveText analysis={grammarAnalyses.questions.anokatawagakuseidesuka} />
+                                 <hr className="my-4"/>
+                                 <p className="font-bold">а) Утвердительные ответы:</p>
+                                 <InteractiveText analysis={grammarAnalyses.questions.hai_anokatawagakuseidesu} />
+                                 <InteractiveText analysis={grammarAnalyses.questions.hai_soudesu} />
+                                 <hr className="my-4"/>
+                                 <p className="font-bold">б) Отрицательные ответы:</p>
+                                 <InteractiveText analysis={grammarAnalyses.questions.iie_anokatawagakuseidehaarimasen} />
+                                 <InteractiveText analysis={grammarAnalyses.questions.iie_senseidesu} />
+                            </CardContent>
+                        </Card>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
             
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">ぶんれい (Примеры)</h2>
@@ -311,3 +346,5 @@ export default function GrammarPage() {
     </div>
   );
 }
+
+    

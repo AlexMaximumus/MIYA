@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview This file contains pre-computed analysis for Japanese sentences
  * to avoid making live AI calls for static content, improving performance and
@@ -74,34 +75,59 @@ const anokatawagakuseidehaarimasen: JapaneseAnalysisOutput = {
     fullTranslation: 'Тот человек не является студентом.'
 };
 
-const watashiwayamadadesu: JapaneseAnalysisOutput = {
-    sentence: [
-        { word: 'わたし', furigana: 'わたし', translation: 'я', partOfSpeech: 'местоимение' },
-        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
-        { word: 'やまだ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
-        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
-    ],
-    fullTranslation: 'Я — Ямада.'
-};
-
 const watashiwasenseidehaarimasengakuseidesu: JapaneseAnalysisOutput = {
     sentence: [
-        { word: 'わたし', furigana: 'わたし', translation: 'я', partOfSpeech: 'местоимение' },
-        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
-        { word: 'せんせい', furigana: 'せんせい', translation: 'учитель', partOfSpeech: 'существительное' },
-        { word: 'では', furigana: 'では', translation: 'отрицательная частица', partOfSpeech: 'частица' },
-        { word: 'ありません', furigana: 'ありません', translation: 'не является', partOfSpeech: 'вспомогательный глагол' },
-        { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
-        { word: 'がくせい', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
-        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { "word": "わたし", "furigana": "わたし", "translation": "я", "partOfSpeech": "местоимение" },
+        { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица" },
+        { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+        { "word": "では", "furigana": "では", "translation": "отрицательная частица", "partOfSpeech": "частица" },
+        { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" },
+        { "word": "。", "furigana": "", "translation": "точка", "partOfSpeech": "знак препинания" },
+        { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+        { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
     ],
-    fullTranslation: 'Я не учитель. Я студент.'
+    "fullTranslation": "Я не учитель. Я студент."
 };
 
-const anokatawatanakasandesu: JapaneseAnalysisOutput = {
+
+const anokatawadonadesuka: JapaneseAnalysisOutput = {
     sentence: [
         { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
         { word: 'かた', furigana: 'かた', translation: 'человек (вежл.)', partOfSpeech: 'существительное' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'どなた', furigana: 'どなた', translation: 'кто (вежл.)', partOfSpeech: 'вопросительное местоимение' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'частица' },
+    ],
+    fullTranslation: 'Кто тот человек?'
+};
+const anokatawayamadasandesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
+        { word: 'かた', furigana: 'かた', translation: 'человек (вежл.)', partOfSpeech: 'существительное' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'やまだ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
+        { word: 'さん', furigana: 'さん', translation: 'господин/госпожа', partOfSpeech: 'суффикс вежливости' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+    ],
+    fullTranslation: 'Тот человек — господин Ямада.'
+};
+
+const anohitowadaredesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
+        { word: 'ひと', furigana: 'ひと', translation: 'человек', partOfSpeech: 'существительное' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'だれ', furigana: 'だれ', translation: 'кто', partOfSpeech: 'вопросительное местоимение' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'частица' },
+    ],
+    fullTranslation: 'Кто тот человек?'
+};
+const anohitowatanakasandesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
+        { word: 'ひと', furigana: 'ひと', translation: 'человек', partOfSpeech: 'существительное' },
         { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
         { word: 'たなか', furigana: 'たなか', translation: 'Танака', partOfSpeech: 'имя собственное' },
         { word: 'さん', furigana: 'さん', translation: 'господин/госпожа', partOfSpeech: 'суффикс вежливости' },
@@ -110,16 +136,94 @@ const anokatawatanakasandesu: JapaneseAnalysisOutput = {
     fullTranslation: 'Тот человек — господин Танака.'
 };
 
-const anokatahasenseidesu: JapaneseAnalysisOutput = {
+const satousanwagishidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'さとう', furigana: 'さとう', translation: 'Сато', partOfSpeech: 'имя собственное' },
+        { word: 'さん', furigana: 'さん', translation: 'господин/госпожа', partOfSpeech: 'суффикс вежливости' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'ぎし', furigana: 'ぎし', translation: 'инженер', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'частица' },
+    ],
+    fullTranslation: 'Господин Сато — инженер?'
+};
+const hai_soudesu_gishidesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'はい', furigana: 'はい', translation: 'да', partOfSpeech: 'междометие' },
+        { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+        { word: 'そうです', furigana: 'そうです', translation: 'это так', partOfSpeech: 'выражение' },
+        { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+        { word: 'ぎし', furigana: 'ぎし', translation: 'инженер', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+    ],
+    fullTranslation: 'Да, это так. Он инженер.'
+};
+
+const anokatawagishidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
+        { word: 'かた', furigana: 'かた', translation: 'человек (вежл.)', partOfSpeech: 'существительное' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'ぎし', furigana: 'ぎし', translation: 'инженер', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'частица' },
+    ],
+    fullTranslation: 'Тот человек — инженер?'
+};
+
+const yamadasanwagakuseidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'やまだ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
+        { word: 'さん', furigana: 'さん', translation: 'господин/госпожа', partOfSpeech: 'суффикс вежливости' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'がくせい', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'частица' },
+    ],
+    fullTranslation: 'Господин Ямада — студент?'
+};
+const iie_yamadasanwasenseidesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'いいえ', furigana: 'いいえ', translation: 'нет', partOfSpeech: 'междометие' },
+        { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+        { word: 'やまだ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
+        { word: 'さん', furigana: 'さん', translation: 'господин/госпожа', partOfSpeech: 'суффикс вежливости' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'せんせい', furigana: 'せんせい', translation: 'учитель', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+    ],
+    fullTranslation: 'Нет, господин Ямада — учитель.'
+};
+const anokatawasenseidesuka: JapaneseAnalysisOutput = {
     sentence: [
         { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
         { word: 'かた', furigana: 'かた', translation: 'человек (вежл.)', partOfSpeech: 'существительное' },
         { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
         { word: 'せんせい', furigana: 'せんせい', translation: 'учитель', partOfSpeech: 'существительное' },
         { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'частица' },
     ],
-    fullTranslation: 'Тот человек — учитель.'
+    fullTranslation: 'Тот человек — учитель?'
 };
+
+const iie_anohitowasenseidehaarimasen_gakuseidesu: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'いいえ', furigana: 'いいえ', translation: 'нет', partOfSpeech: 'междометие' },
+        { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+        { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
+        { word: 'ひと', furigana: 'ひと', translation: 'человек', partOfSpeech: 'существительное' },
+        { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+        { word: 'せんせい', furigana: 'せんせい', translation: 'учитель', partOfSpeech: 'существительное' },
+        { word: 'ではありません', furigana: 'ではありません', translation: 'не является', partOfSpeech: 'вспомогательный глагол' },
+        { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+        { word: 'がくせい', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+    ],
+    fullTranslation: 'Нет, тот человек не учитель. Он студент.'
+};
+
+
+
 
 export const grammarAnalyses = {
     sorewanandesuka: {
@@ -182,11 +286,107 @@ export const grammarAnalyses = {
         "fullTranslation": "(Я/он/она) — учитель."
     },
     bunrei: {
-        watashiwagakuseidesu,
-        anokatawagakuseidehaarimasen,
-        watashiwayamadadesu,
-        watashiwasenseidehaarimasengakuseidesu,
-        anokatawatanakasandesu,
-        anokatahasenseidesu
+        anokatawadonadesuka_anokatawayamadasandesu: {
+            sentence: [
+                ...anokatawadonadesuka.sentence,
+                { word: '—', furigana: '', translation: '', partOfSpeech: '' },
+                ...anokatawayamadasandesu.sentence
+            ],
+            fullTranslation: "Кто тот человек? — Тот человек господин Ямада."
+        },
+        anohitowadaredesuka_anohitowatanakasandesu: {
+            sentence: [
+                ...anohitowadaredesuka.sentence,
+                { word: '—', furigana: '', translation: '', partOfSpeech: '' },
+                ...anohitowatanakasandesu.sentence
+            ],
+            fullTranslation: "Кто тот человек? — Тот человек господин Танака."
+        },
+        satousanwagishidesuka_haisoudesugishidesu: {
+            sentence: [
+                ...satousanwagishidesuka.sentence,
+                { word: '—', furigana: '', translation: '', partOfSpeech: '' },
+                ...hai_soudesu_gishidesu.sentence
+            ],
+            fullTranslation: "Господин Сато инженер? — Да, он инженер."
+        },
+        anokatawagishidesuka_haisoudesu: {
+            sentence: [
+                ...anokatawagishidesuka.sentence,
+                { word: '—', furigana: '', translation: '', partOfSpeech: '' },
+                { word: 'はい', furigana: 'はい', translation: 'да', partOfSpeech: 'междометие' },
+                { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+                { word: 'そうです', furigana: 'そうです', translation: 'это так', partOfSpeech: 'выражение' },
+            ],
+            fullTranslation: "Тот человек инженер? — Да, это так."
+        },
+        yamadasanwagakuseidesuka_iieyamadasanwasenseidesu: {
+            sentence: [
+                ...yamadasanwagakuseidesuka.sentence,
+                { word: '—', furigana: '', translation: '', partOfSpeech: '' },
+                ...iie_yamadasanwasenseidesu.sentence
+            ],
+            fullTranslation: "Господин Ямада студент? — Нет, господин Ямада учитель."
+        },
+        anokatawasenseidesuka_iieanohitowasenseidehaarimasengakuseidesu: {
+            sentence: [
+                ...anokatawasenseidesuka.sentence,
+                { word: '—', furigana: '', translation: '', partOfSpeech: '' },
+                ...iie_anohitowasenseidehaarimasen_gakuseidesu.sentence
+            ],
+            fullTranslation: "Тот человек учитель? — Нет, тот человек не учитель. Он студент."
+        }
+    },
+    questions: {
+        anokatawadonadesuka,
+        anokatawagakuseidesuka: {
+            sentence: [
+                { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+                { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное" },
+                { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица" },
+                { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+                { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+                { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "частица" },
+            ],
+            fullTranslation: 'Он студент?'
+        },
+        hai_anokatawagakuseidesu: {
+            sentence: [
+                { word: 'はい', furigana: 'はい', translation: 'да', partOfSpeech: 'междометие' },
+                { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+                { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
+                { word: 'かた', furigana: 'かた', translation: 'человек (вежл.)', partOfSpeech: 'существительное' },
+                { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица' },
+                { word: 'がくせい', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+                { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            ],
+            fullTranslation: 'Да, он студент.'
+        },
+        hai_soudesu: {
+            sentence: [
+                { word: 'はい', furigana: 'はい', translation: 'да', partOfSpeech: 'междометие' },
+                { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+                { word: 'そうです', furigana: 'そうです', translation: 'это так', partOfSpeech: 'выражение' },
+            ],
+            fullTranslation: 'Да, это так.'
+        },
+        iie_anokatawagakuseidehaarimasen: {
+            sentence: [
+                { word: 'いいえ', furigana: 'いいえ', translation: 'нет', partOfSpeech: 'междометие' },
+                { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+                ...anokatawagakuseidehaarimasen.sentence
+            ],
+            fullTranslation: 'Нет, он не студент.'
+        },
+        iie_senseidesu: {
+            sentence: [
+                { word: 'いいえ', furigana: 'いいえ', translation: 'нет', partOfSpeech: 'междометие' },
+                { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+                { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+                { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+                { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' }
+            ],
+            fullTranslation: 'Нет, он преподаватель.'
+        }
     }
 }
