@@ -1,6 +1,7 @@
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
 import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
+import Link from 'next/link';
 
 export default function MainScreen() {
   return (
@@ -12,11 +13,13 @@ export default function MainScreen() {
         <InteractiveText text="今日はいい天気ですね" />
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-        <CategoryCard
-          icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
-          title="Хирагана и катакана"
-          description="Изучите японские слоги"
-        />
+        <Link href="/kana">
+          <CategoryCard
+            icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
+            title="Хирагана и катакана"
+            description="Изучите японские слоги"
+          />
+        </Link>
         <CategoryCard
           icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
           title="Лексика"
