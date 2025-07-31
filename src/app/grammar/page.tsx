@@ -10,11 +10,14 @@ import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import { cn } from '@/lib/utils';
 import { grammarAnalyses } from '@/ai/precomputed-analysis';
+import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
+import { useToast } from '@/hooks/use-toast';
+
 
 type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'select-options';
 
@@ -40,7 +43,7 @@ const exercises: Exercise[] = [
         id: 'q2',
         type: 'multiple-choice',
         title: 'Упражнение 2. Выбери правильный перевод',
-        description: 'Выберите правильный перевод: "Он не преподаватель."',
+        description: 'Выберите правильный перевод: "Тот человек не учитель."',
         options: ['あのかたはせんせいです', 'あのかたはせんせいではありません'],
         correctAnswer: 'あのかたはせんせいではありません',
     },
@@ -67,10 +70,28 @@ export default function GrammarPage() {
     const [progress, setProgress] = useState(60); 
     const [answers, setAnswers] = useState<Record<string, string | null>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
+    const [_, copy] = useCopyToClipboard();
+    const { toast } = useToast();
+
+    const handleShare = () => {
+        copy(window.location.href)
+            .then(() => {
+                toast({
+                    title: 'Ссылка скопирована!',
+                    description: 'Вы можете поделиться этим уроком с кем угодно.',
+                });
+            })
+            .catch(error => {
+                toast({
+                    title: 'Ошибка',
+                    description: 'Не удалось скопировать ссылку.',
+                    variant: 'destructive'
+                });
+            });
+    }
 
     const handleAnswer = (questionId: string, answer: string) => {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
-        // Reset result when a new answer is selected
         if (results[questionId] !== null) {
             setResults(prev => ({ ...prev, [questionId]: null }));
         }
@@ -150,12 +171,18 @@ export default function GrammarPage() {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
         <div className="w-full max-w-4xl">
-            <Button asChild variant="ghost" className="mb-4">
-                <Link href="/">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Назад на главную
-                </Link>
-            </Button>
+            <div className="flex justify-between items-center mb-4">
+                <Button asChild variant="ghost">
+                    <Link href="/">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Назад на главную
+                    </Link>
+                </Button>
+                <Button variant="outline" onClick={handleShare}>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    Поделиться уроком
+                </Button>
+            </div>
             <Card className="w-full mb-8">
                 <CardHeader>
                     <p className="text-sm text-primary font-semibold">Урок 1 — Грамматика</p>
