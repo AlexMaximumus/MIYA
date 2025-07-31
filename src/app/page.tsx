@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import WelcomeScreen from '@/components/welcome-screen';
-import MainScreen from '@/components/main-screen';
+import MainScreen from '@/app/main-screen';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {

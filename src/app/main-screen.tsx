@@ -8,6 +8,7 @@ import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const floatingWords = [
   { text: 'こんにちは', highlighted: false },
@@ -91,8 +92,15 @@ export default function MainScreen() {
             </div>
         )}
       </div>
-      <div className="mb-12">
-        <InteractiveText analysis={randomAnalysis} />
+      <div className="mb-12 min-h-[60px]">
+        {randomAnalysis ? (
+          <InteractiveText analysis={randomAnalysis} />
+        ) : (
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-[300px]" />
+            <Skeleton className="h-4 w-[250px]" />
+          </div>
+        )}
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <Link href="/kana">
