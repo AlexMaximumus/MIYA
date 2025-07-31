@@ -14,8 +14,27 @@ const floatingWords = [
 export default function WelcomeScreen() {
   const [isVibrating, setIsVibrating] = useState(false);
   const [animatedWords, setAnimatedWords] = useState<typeof floatingWords>([]);
+  const [clickCount, setClickCount] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
 
   const handleTitleClick = () => {
+    const currentTime = new Date().getTime();
+
+    if (currentTime - lastClickTime < 1500) {
+      setClickCount(clickCount + 1);
+    } else {
+      setClickCount(1);
+    }
+    setLastClickTime(currentTime);
+
+    if (clickCount >= 3) {
+        setShowEasterEgg(true);
+        setTimeout(() => setShowEasterEgg(false), 3000);
+        setClickCount(0);
+    }
+
+
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(100);
     }
@@ -50,6 +69,13 @@ export default function WelcomeScreen() {
             {word.text}
           </span>
         ))}
+        {showEasterEgg && (
+            <div className="absolute inset-0 flex items-center justify-center z-20 animate-fade-in">
+                <span className="text-6xl text-destructive font-bold animate-pulse">
+                ✨さねちか✨
+                </span>
+            </div>
+        )}
       </div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <Cherry className="w-24 h-24 mb-6 text-primary animate-pulse" />
