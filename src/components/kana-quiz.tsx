@@ -79,11 +79,9 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
     }, 1000);
   };
   
-  if (questions.length === 0) {
-      return <div>Loading quiz...</div>
-  }
+  const currentQuestion = questions[currentQuestionIndex];
 
-  if (isFinished) {
+  if (isFinished || !currentQuestion) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
         <Card className="w-full max-w-md text-center">
@@ -119,7 +117,6 @@ export default function KanaQuiz({ data, onQuizEnd, quizType }: KanaQuizProps) {
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex) / questions.length) * 100;
 
   return (
