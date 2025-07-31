@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -99,11 +100,13 @@ export default function MainScreen() {
             description="Пополняйте словарный запас"
           />
         </Link>
-        <CategoryCard
-          icon={<Puzzle className="w-10 h-10 md:w-12 md:h-12" />}
-          title="Грамматика"
-          description="Освойте правила и структуры"
-        />
+        <Link href="/grammar">
+            <CategoryCard
+              icon={<Puzzle className="w-10 h-10 md:w-12 md:h-12" />}
+              title="Грамматика"
+              description="Освойте правила и структуры"
+            />
+        </Link>
         <CategoryCard
           icon={<Workflow className="w-10 h-10 md:w-12 md:h-12" />}
           title="Синтаксис и построение предложений"
@@ -113,3 +116,5 @@ export default function MainScreen() {
     </div>
   );
 }
+
+    
