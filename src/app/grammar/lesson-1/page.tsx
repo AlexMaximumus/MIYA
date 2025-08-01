@@ -105,6 +105,38 @@ const exercises: Exercise[] = [
         description: 'Соберите вопрос "Что это?"',
         options: ["です", "か", "なん", "これ", "は"],
         correctAnswer: "これ は なん です か"
+    },
+    {
+        id: 'q10',
+        type: 'construct',
+        title: 'Упражнение 10: Построй утверждение',
+        description: 'Подлежащее: わたし, Сказуемое: がくせい',
+        options: ["わたし", "は", "がくせい", "です"],
+        correctAnswer: "わたし は がくせい です"
+    },
+    {
+        id: 'q11',
+        type: 'construct',
+        title: 'Упражнение 11: Сделай отрицание',
+        description: 'Основа: あのひと は せんせい',
+        options: ["あのひと", "は", "せんせい", "では", "ありません"],
+        correctAnswer: "あのひと は せんせい では ありません"
+    },
+    {
+        id: 'q12',
+        type: 'fill-in-the-blank',
+        title: 'Упражнение 12: Определи пропущенное подлежащее',
+        description: '(　) は せんせい です。',
+        options: ["たなかさん", "がくせい", "わたし"],
+        correctAnswer: "たなかさん"
+    },
+    {
+        id: 'q13',
+        type: 'construct',
+        title: 'Упражнение 13: Расставь по порядку',
+        description: 'Пример: "Я не студент"',
+        options: ["わたし", "は", "がくせい", "ではありません"],
+        correctAnswer: "わたし は がくせい ではありません"
     }
 ];
 
@@ -132,18 +164,22 @@ const pronouns = [
 
 const LESSON_ID = 'lesson-1';
 
-const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer, result }: {
+const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer }: {
     exercise: Exercise,
     answers: Record<string, any>,
     handleConstructAnswer: (questionId: string, word: string) => void,
-    resetConstructAnswer: (questionId: string) => void,
-    result: boolean | null
+    resetConstructAnswer: (questionId: string) => void
 }) => {
     const { id, options } = exercise;
     const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
 
     useEffect(() => {
-        setShuffledOptions((options as string[]).sort(() => Math.random() - 0.5));
+        // Ensure options is an array of strings before sorting
+        if (Array.isArray(options) && options.every(o => typeof o === 'string')) {
+            setShuffledOptions([...(options as string[])].sort(() => Math.random() - 0.5));
+        } else {
+            setShuffledOptions(options as string[]);
+        }
     }, [options]);
 
     return (
@@ -165,13 +201,22 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
 
 export default function GrammarLesson1Page() {
     const [progress, setProgress] = useState(0);
-    const [answers, setAnswers] = useState<Record<string, any>>({ q1: {}, q8: [], q9: [] });
+    const [answers, setAnswers] = useState<Record<string, any>>(() => {
+        const initialAnswers: Record<string, any> = { q1: {} };
+        exercises.forEach(ex => {
+            if (ex.type === 'construct') {
+                initialAnswers[ex.id] = [];
+            }
+        });
+        return initialAnswers;
+    });
     const [results, setResults] = useState<Record<string, boolean | null>>({});
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
     const [desuForm, setDesuForm] = useState<'da' | 'desu' | 'dewa arimasen'>('desu');
     const [showPlural, setShowPlural] = useState(false);
     const [desuAssertion, setDesuAssertion] = useState<'affirmative' | 'negative'>('affirmative');
+    const [dewaJa, setDewaJa] = useState<'dewa' | 'ja'>('dewa');
     
     useEffect(() => {
         const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
@@ -317,7 +362,6 @@ export default function GrammarLesson1Page() {
                         answers={answers}
                         handleConstructAnswer={handleConstructAnswer}
                         resetConstructAnswer={resetConstructAnswer}
-                        result={result}
                    />
                 );
             default:
@@ -532,16 +576,65 @@ export default function GrammarLesson1Page() {
                         </Table>
                     </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="item-7">
+                    <AccordionTrigger className="text-xl font-semibold">§7. Простое нераспространённое предложение</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Предложение состоит из подлежащего (часто с частицей は) и сказуемого (существительное + связка).</p>
+                        
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader><CardTitle>Структура утверждения: <code className="font-mono bg-muted p-1 rounded">N は N です。</code></CardTitle></CardHeader>
+                            <CardContent className="space-y-4">
+                                <InteractiveText analysis={grammarAnalyses.anokatahasenseidesu} />
+                                <InteractiveText analysis={grammarAnalyses.gakuseihaanohitodesu} />
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader><CardTitle>Структура отрицания: <code className="font-mono bg-muted p-1 rounded">N は N では(じゃ)ありません。</code></CardTitle></CardHeader>
+                            <CardContent>
+                                <div className="flex items-center space-x-2 my-4">
+                                    <Label>Форма:</Label>
+                                    <Button variant={dewaJa === 'dewa' ? 'default' : 'outline'} size="sm" onClick={() => setDewaJa('dewa')}>Формальная (では)</Button>
+                                    <Button variant={dewaJa === 'ja' ? 'default' : 'outline'} size="sm" onClick={() => setDewaJa('ja')}>Разговорная (じゃ)</Button>
+                                </div>
+                                {dewaJa === 'dewa' ? (
+                                    <InteractiveText analysis={grammarAnalyses.anokatahasenseidehaarimasen} />
+                                ) : (
+                                    <InteractiveText analysis={grammarAnalyses.gakuseihaanohitojaarimasen} />
+                                )}
+                            </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader><CardTitle>Особенность: опускаемое подлежащее</CardTitle></CardHeader>
+                            <CardContent>
+                                <p>Подлежащее часто опускается, если оно понятно из контекста. Сказуемое же обязательно.</p>
+                                <InteractiveText analysis={grammarAnalyses.senseidesu} />
+                            </CardContent>
+                        </Card>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
             
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
-            <div className="w-full max-w-4xl space-y-8">
+            <div className="space-y-4">
+                <Card><CardHeader><CardTitle className="text-center">Примеры (文例)</CardTitle></CardHeader>
+                <CardContent className="space-y-6">
+                    <InteractiveText analysis={grammarAnalyses.watashiwagakuseidesu} />
+                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidehaarimasen} />
+                    <InteractiveText analysis={grammarAnalyses.watashiwasenseidehaarimasengakuseidesu} />
+                    <InteractiveText analysis={grammarAnalyses.anokatawadonadesuka} />
+                    <InteractiveText analysis={grammarAnalyses.anokatawayamadasandesu} />
+                </CardContent>
+                </Card>
+            </div>
+            <div className="w-full max-w-4xl space-y-8 mt-8">
                 {exercises.map(renderExercise)}
             </div>
              <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                 <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
                 <Button size="lg" asChild className="btn-gradient">
-                    <Link href="#">Следующий урок → Местоимения</Link>
+                    <Link href="#">Перейти к проверочному тесту →</Link>
                 </Button>
              </div>
         </div>
