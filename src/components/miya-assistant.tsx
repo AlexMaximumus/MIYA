@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageSquare, Send, X, CornerDownLeft, MessageCircle, Heart, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Send, X, CornerDownLeft, Heart, Loader2 } from 'lucide-react';
 import { askMiya, MiyaOutput } from '@/ai/flows/miya-assistant-flow';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -99,10 +99,22 @@ export default function MiyaAssistant() {
     <>
       <div className="fixed bottom-6 right-6 z-50">
         <Button onClick={toggleChat} size="icon" className={cn(
-            "rounded-full w-16 h-16 btn-gradient shadow-lg transition-all duration-500",
+            "rounded-full w-16 h-16 btn-gradient shadow-lg transition-all duration-500 p-0 overflow-hidden",
             affectionMode && 'bg-gradient-to-br from-pink-400 to-rose-400'
             )}>
-          {isOpen ? <X /> : affectionMode ? <Heart className="w-8 h-8"/> : <MessageCircle className="w-8 h-8"/>}
+          {isOpen ? <X /> : 
+            <div className="relative w-full h-full group">
+                <Image 
+                    src="https://firebasestorage.googleapis.com/v0/b/miya-lingo.appspot.com/o/miya-pixel-art.png?alt=media&token=8d234a41-11c9-4806-b52b-2a299f187311"
+                    alt="Miya Assistant"
+                    fill
+                    className={cn(
+                        "object-cover scale-150 group-hover:scale-125 transition-transform duration-300",
+                        affectionMode && 'animate-pulse'
+                    )}
+                />
+            </div>
+          }
         </Button>
       </div>
 
