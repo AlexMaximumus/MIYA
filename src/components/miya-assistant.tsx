@@ -16,6 +16,7 @@ type Message = {
   text: string;
   sender: 'user' | 'miya';
   status?: 'read';
+  stickerUrl?: string;
 };
 
 const FloatingHeart = () => {
@@ -76,7 +77,11 @@ export default function MiyaAssistant() {
       }
       
       if (response.reply && response.reply.trim() !== '[IGNORE]') {
-        const miyaMessage: Message = { text: response.reply, sender: 'miya' };
+        const miyaMessage: Message = { 
+          text: response.reply, 
+          sender: 'miya',
+          stickerUrl: response.stickerUrl,
+        };
         setMessages((prev) => [...prev, miyaMessage]);
       } else {
         // If response is [IGNORE]
@@ -144,11 +149,11 @@ export default function MiyaAssistant() {
                 {messages.map((msg, index) => (
                   <div key={index} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {msg.sender === 'miya' && (
-                        <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden">
+                        <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden self-start">
                             <Image src="/miya-pixel-art.png" alt="Miya Avatar" fill className="object-cover"/>
                         </div>
                     )}
-                    <div className="flex flex-col gap-1 w-full">
+                    <div className="flex flex-col gap-1 w-full items-start">
                       <div className={cn('rounded-lg px-3 py-2 max-w-[85%]',
                           msg.sender === 'user'
                             ? 'bg-primary text-primary-foreground self-end'
@@ -159,8 +164,13 @@ export default function MiyaAssistant() {
                       >
                         {msg.text}
                       </div>
+                      {msg.stickerUrl && msg.sender === 'miya' && (
+                        <div className="relative w-32 h-32 mt-2 rounded-lg overflow-hidden">
+                            <Image src={msg.stickerUrl} alt="Miya sticker" fill className="object-contain" />
+                        </div>
+                      )}
                       {msg.sender === 'user' && msg.status === 'read' && (
-                         <p className="text-xs text-muted-foreground/70 text-right">Прочитано</p>
+                         <p className="text-xs text-muted-foreground/70 text-right w-full">Прочитано</p>
                       )}
                     </div>
                   </div>
