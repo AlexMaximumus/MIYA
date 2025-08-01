@@ -104,20 +104,22 @@ export default function MiyaAssistant() {
           onClick={toggleChat} 
           size="icon" 
           className={cn(
-            "rounded-full w-14 h-14 shadow-lg transition-all duration-300 p-0 overflow-hidden group bg-card",
+            "rounded-full w-16 h-16 shadow-lg transition-all duration-300 p-0 overflow-hidden group bg-card",
             affectionMode && 'bg-gradient-to-br from-pink-400 to-rose-400'
             )}
         >
-          {isOpen ? <X /> : 
-            <Image 
-                src="/miya-pixel-art.png"
-                alt="Miya Assistant"
-                fill
-                className={cn(
-                    "object-cover transition-transform duration-300 group-hover:scale-110",
-                    affectionMode && 'animate-pulse'
-                )}
-            />
+          {isOpen ? <X className="w-8 h-8"/> : 
+            <div className="relative w-full h-full">
+                <Image 
+                    src="/miya-pixel-art.png"
+                    alt="Miya Assistant"
+                    fill
+                    className={cn(
+                        "object-cover transition-transform duration-300 group-hover:scale-110",
+                        affectionMode && 'animate-pulse'
+                    )}
+                />
+            </div>
           }
         </Button>
       </div>
@@ -193,3 +195,5 @@ export default function MiyaAssistant() {
     </>
   );
 }
+
+    
