@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -65,13 +65,38 @@ const pronouns = [
     { pronoun: 'あの方', romaji: 'ano kata', politeness: 'Очень вежливое "он/она"', translation: 'Он, она (уважительный, вежливый вариант)', role: '3-е лицо, ед.ч.' },
 ]
 
+const LESSON_ID = 'lesson-1';
+const BASE_PROGRESS = 80;
+
 export default function GrammarLesson1Page() {
     const [useJaArimasen, setUseJaArimasen] = useState(false);
-    const [progress, setProgress] = useState(80); 
+    const [progress, setProgress] = useState(BASE_PROGRESS);
     const [answers, setAnswers] = useState<Record<string, string | null>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
+
+    useEffect(() => {
+        const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
+        const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
+        if (storedProgress) {
+            setProgress(JSON.parse(storedProgress));
+        } else {
+             // If no progress, set base progress and store it
+             setProgress(BASE_PROGRESS);
+             localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(BASE_PROGRESS));
+        }
+        if (storedResults) {
+            setResults(JSON.parse(storedResults));
+        }
+    }, []);
+
+    const updateProgress = (newProgress: number, newResults: Record<string, boolean | null>) => {
+        setProgress(newProgress);
+        setResults(newResults);
+        localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
+        localStorage.setItem(`${LESSON_ID}-results`, JSON.stringify(newResults));
+    };
 
     const handleShare = () => {
         copy(window.location.href)
@@ -93,7 +118,9 @@ export default function GrammarLesson1Page() {
     const handleAnswer = (questionId: string, answer: string) => {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
         if (results[questionId] !== null) {
-            setResults(prev => ({ ...prev, [questionId]: null }));
+             const newResults = { ...results, [questionId]: null };
+             setResults(newResults);
+             // We don't update local storage here until check, to avoid saving "null" result state
         }
     };
     
@@ -102,13 +129,15 @@ export default function GrammarLesson1Page() {
         if (!exercise || !answers[questionId]) return;
 
         const isCorrect = answers[questionId] === exercise.correctAnswer;
-        setResults(prev => ({ ...prev, [questionId]: isCorrect }));
+        const newResults = { ...results, [questionId]: isCorrect };
 
         if (isCorrect) {
-            const answeredCorrectly = Object.values({ ...results, [questionId]: true }).filter(r => r === true).length;
+            const answeredCorrectly = Object.values(newResults).filter(r => r === true).length;
             const totalQuestions = exercises.length;
-            const newProgress = 80 + Math.floor((answeredCorrectly / totalQuestions) * 20);
-            setProgress(Math.min(newProgress, 100));
+            const newProgress = BASE_PROGRESS + Math.floor((answeredCorrectly / totalQuestions) * (100 - BASE_PROGRESS));
+            updateProgress(Math.min(newProgress, 100), newResults);
+        } else {
+            updateProgress(progress, newResults); // Save wrong answer result
         }
     };
     
@@ -360,3 +389,5 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
+
+    

@@ -1,8 +1,20 @@
 
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, BookCheck } from 'lucide-react';
+import LessonCard from '@/components/lesson-card';
+
+const lessons = [
+    {
+        id: 'lesson-1',
+        title: 'Основы: Связки и предложения',
+        description: 'Части речи, связка です, простые утвердительные, отрицательные и вопросительные предложения.',
+        href: '/grammar/lesson-1'
+    }
+];
 
 export default function GrammarHubPage() {
   return (
@@ -24,24 +36,17 @@ export default function GrammarHubPage() {
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link href="/grammar/lesson-1">
-                 <Card className="bg-card/60 backdrop-blur-sm border-primary/20 shadow-lg hover:shadow-primary/20 transition-all duration-300 cursor-pointer transform hover:-translate-y-2 group h-full">
-                    <CardHeader className="flex flex-row items-center gap-4">
-                        <div className="text-primary bg-primary/20 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                           <BookCheck className="w-8 h-8" />
-                        </div>
-                        <div>
-                            <p className="text-sm font-semibold text-primary">Урок 1</p>
-                            <CardTitle className="text-xl">Основы: Связки и предложения</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <CardDescription>
-                            Части речи, связка です, простые утвердительные, отрицательные и вопросительные предложения.
-                        </CardDescription>
-                    </CardContent>
-                </Card>
-            </Link>
+            {lessons.map(lesson => (
+                <LessonCard 
+                    key={lesson.id}
+                    lessonId={lesson.id}
+                    title={lesson.title}
+                    description={lesson.description}
+                    href={lesson.href}
+                    icon={<BookCheck className="w-8 h-8" />}
+                    lessonNumber={1}
+                />
+            ))}
             {/* Future lessons will be added here */}
             <Card className="bg-card/60 border-dashed border-2 flex items-center justify-center text-muted-foreground min-h-[180px]">
                 <p>Скоро здесь появятся новые уроки!</p>
@@ -51,3 +56,5 @@ export default function GrammarHubPage() {
     </div>
   );
 }
+
+    
