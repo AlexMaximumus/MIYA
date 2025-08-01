@@ -52,6 +52,7 @@ export default function MiyaAssistant() {
   const [isLoading, setIsLoading] = useState(false);
   const [affectionMode, setAffectionMode] = useState(false);
   const [activeTaunt, setActiveTaunt] = useState<string | null>(null);
+  const [isFlipping, setIsFlipping] = useState(false);
   const pathname = usePathname();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tauntTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -111,6 +112,11 @@ export default function MiyaAssistant() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
+
+    if (inputValue.toLowerCase().includes('сальтуха')) {
+        setIsFlipping(true);
+        setTimeout(() => setIsFlipping(false), 1000); // Animation duration
+    }
 
     const userMessage: Message = { text: inputValue, sender: 'user' };
     setMessages((prev) => [...prev, userMessage]);
@@ -187,7 +193,7 @@ export default function MiyaAssistant() {
       </div>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-[calc(100%-3rem)] max-w-sm animate-fade-in">
+        <div className={cn("fixed bottom-24 right-6 z-50 w-[calc(100%-3rem)] max-w-sm animate-fade-in", isFlipping && 'animate-flip')}>
           <Card className={cn("shadow-2xl bg-card/80 backdrop-blur-lg border-primary/30 transition-all duration-500", affectionMode && 'border-pink-300/50')}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className={cn("transition-colors duration-500", affectionMode && 'text-rose-500')}>
@@ -209,8 +215,8 @@ export default function MiyaAssistant() {
                             <Image src="/miya-pixel-art.png" alt="Miya Avatar" fill className="object-cover"/>
                         </div>
                     )}
-                    <div className="flex flex-col gap-1 w-full items-start">
-                      <div className={cn('rounded-lg px-3 py-2 max-w-[85%]',
+                    <div className="flex flex-col gap-1 w-full max-w-[85%]">
+                      <div className={cn('rounded-lg px-3 py-2 ',
                           msg.sender === 'user'
                             ? 'bg-primary text-primary-foreground self-end'
                             : 'bg-muted text-muted-foreground self-start',
@@ -233,7 +239,7 @@ export default function MiyaAssistant() {
                 ))}
                  {isLoading && (
                     <div className="flex items-end gap-2">
-                        <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden">
+                        <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden self-start">
                              <Image src="/miya-pixel-art.png" alt="Miya Avatar" fill className="object-cover"/>
                         </div>
                         <div className={cn("rounded-lg px-3 py-2 bg-muted text-muted-foreground flex items-center gap-2", affectionMode && 'bg-pink-100 text-rose-800')}>

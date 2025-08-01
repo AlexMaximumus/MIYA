@@ -108,6 +108,10 @@ export default {
             '80%': { opacity: '1', transform: 'translateY(0)' },
             '100%': { opacity: '0', transform: 'translateY(-10px)' },
         },
+        'flip': {
+          'from': { transform: 'rotateY(0deg)' },
+          'to': { transform: 'rotateY(360deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -116,6 +120,7 @@ export default {
         'shake': 'shake 0.5s ease-in-out',
         'float-up': 'float-up 1.5s ease-out forwards',
         'float-and-fade': 'float-and-fade 5s ease-in-out forwards',
+        'flip': 'flip 1s ease-in-out',
       },
     },
   },
