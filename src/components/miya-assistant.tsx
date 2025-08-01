@@ -141,25 +141,35 @@ export default function MiyaAssistant() {
              )}
               <div className="h-80 overflow-y-auto pr-2 space-y-4 mb-4 relative z-10">
                 {messages.map((msg, index) => (
-                  <div key={index} className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                    <div className={cn(`rounded-lg px-3 py-2 max-w-[80%]`,
-                        msg.sender === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground',
-                        affectionMode && msg.sender === 'user' && 'bg-rose-500',
-                        affectionMode && msg.sender === 'miya' && 'bg-pink-100 text-rose-800'
-                      )}
-                    >
-                      {msg.text}
-                    </div>
-                    {msg.sender === 'user' && msg.status === 'read' && (
-                       <p className="text-xs text-muted-foreground/70 mt-1">Прочитано</p>
+                  <div key={index} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {msg.sender === 'miya' && (
+                        <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden">
+                            <Image src="/miya-pixel-art.png" alt="Miya Avatar" fill className="object-cover"/>
+                        </div>
                     )}
+                    <div className="flex flex-col gap-1 w-full">
+                      <div className={cn('rounded-lg px-3 py-2 max-w-[85%]',
+                          msg.sender === 'user'
+                            ? 'bg-primary text-primary-foreground self-end'
+                            : 'bg-muted text-muted-foreground self-start',
+                          affectionMode && msg.sender === 'user' && 'bg-rose-500',
+                          affectionMode && msg.sender === 'miya' && 'bg-pink-100 text-rose-800'
+                        )}
+                      >
+                        {msg.text}
+                      </div>
+                      {msg.sender === 'user' && msg.status === 'read' && (
+                         <p className="text-xs text-muted-foreground/70 text-right">Прочитано</p>
+                      )}
+                    </div>
                   </div>
                 ))}
                  {isLoading && (
-                    <div className="flex items-start">
-                        <div className={cn("rounded-lg px-3 py-2 max-w-[80%] bg-muted text-muted-foreground flex items-center gap-2", affectionMode && 'bg-pink-100 text-rose-800')}>
+                    <div className="flex items-end gap-2">
+                        <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden">
+                             <Image src="/miya-pixel-art.png" alt="Miya Avatar" fill className="object-cover"/>
+                        </div>
+                        <div className={cn("rounded-lg px-3 py-2 bg-muted text-muted-foreground flex items-center gap-2", affectionMode && 'bg-pink-100 text-rose-800')}>
                             <Loader2 className="w-4 h-4 animate-spin"/>
                             <span>...</span>
                         </div>
@@ -195,5 +205,3 @@ export default function MiyaAssistant() {
     </>
   );
 }
-
-    
