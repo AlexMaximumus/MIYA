@@ -112,6 +112,10 @@ export default {
           'from': { transform: 'rotate(0deg)' },
           'to': { transform: 'rotate(360deg)' },
         },
+        'grayscale-in': {
+          'from': { filter: 'grayscale(0%)' },
+          'to': { filter: 'grayscale(100%)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -121,6 +125,7 @@ export default {
         'float-up': 'float-up 1.5s ease-out forwards',
         'float-and-fade': 'float-and-fade 5s ease-in-out forwards',
         'flip': 'flip 1s ease-in-out',
+        'grayscale-in': 'grayscale-in 1s ease-out forwards',
       },
     },
   },

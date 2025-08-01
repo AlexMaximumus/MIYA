@@ -51,6 +51,7 @@ export default function MiyaAssistant() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [affectionMode, setAffectionMode] = useState(false);
+  const [isKoseiMode, setIsKoseiMode] = useState(false);
   const [activeTaunt, setActiveTaunt] = useState<string | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
   const pathname = usePathname();
@@ -105,6 +106,7 @@ export default function MiyaAssistant() {
     setIsOpen(!isOpen)
     if (isOpen) {
         setAffectionMode(false); // Reset on close
+        setIsKoseiMode(false);
     } else {
         // When opening chat, clear any active taunt
         setActiveTaunt(null);
@@ -144,6 +146,9 @@ export default function MiyaAssistant() {
 
       if (response.affectionMode) {
         setAffectionMode(true);
+      }
+      if (response.koseiMode) {
+        setIsKoseiMode(true);
       }
       
       if (response.reply && response.reply.trim() !== '[IGNORE]') {
@@ -206,13 +211,13 @@ export default function MiyaAssistant() {
       </div>
 
       {isOpen && (
-        <div className={cn("fixed bottom-24 right-6 z-50 w-[calc(100%-3rem)] max-w-sm animate-fade-in", isFlipping && 'animate-flip')}>
+        <div className={cn("fixed bottom-24 right-6 z-50 w-[calc(100%-3rem)] max-w-sm animate-fade-in", isFlipping && 'animate-flip', isKoseiMode && 'animate-grayscale-in pointer-events-none')}>
           <Card className={cn("shadow-2xl bg-card/80 backdrop-blur-lg border-primary/30 transition-all duration-500", affectionMode && 'border-pink-300/50')}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className={cn("transition-colors duration-500", affectionMode && 'text-rose-500')}>
                 {affectionMode ? 'Мия-тян ♡' : 'Мия-сенсей'}
               </CardTitle>
-              <p className="text-xs text-muted-foreground">На связи</p>
+              <p className="text-xs text-muted-foreground">{isKoseiMode ? "5 минут назад..." : "На связи"}</p>
             </CardHeader>
             <CardContent className="relative overflow-hidden">
              {affectionMode && (
