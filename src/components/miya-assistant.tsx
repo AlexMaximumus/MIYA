@@ -100,22 +100,24 @@ export default function MiyaAssistant() {
   return (
     <>
       <div className="fixed bottom-6 right-6 z-50">
-        <Button onClick={toggleChat} size="icon" className={cn(
-            "rounded-full w-14 h-14 btn-gradient shadow-lg transition-all duration-500 p-0 overflow-hidden",
+        <Button 
+          onClick={toggleChat} 
+          size="icon" 
+          className={cn(
+            "rounded-full w-14 h-14 shadow-lg transition-all duration-300 p-0 overflow-hidden group bg-card",
             affectionMode && 'bg-gradient-to-br from-pink-400 to-rose-400'
-            )}>
+            )}
+        >
           {isOpen ? <X /> : 
-            <div className="relative w-full h-full group">
-                <Image 
-                    src="/miya-pixel-art.png"
-                    alt="Miya Assistant"
-                    fill
-                    className={cn(
-                        "object-cover scale-100 group-hover:scale-110 transition-transform duration-300",
-                        affectionMode && 'animate-pulse'
-                    )}
-                />
-            </div>
+            <Image 
+                src="/miya-pixel-art.png"
+                alt="Miya Assistant"
+                fill
+                className={cn(
+                    "object-cover transition-transform duration-300 group-hover:scale-110",
+                    affectionMode && 'animate-pulse'
+                )}
+            />
           }
         </Button>
       </div>
