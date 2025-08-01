@@ -51,6 +51,7 @@ export default function MiyaAssistant() {
   const getContextFromPath = () => {
     if (pathname.includes('/kana')) return 'Kana tables/quiz';
     if (pathname.includes('/vocabulary')) return 'Vocabulary section';
+    if (pathname.includes('/grammar')) return 'Grammar lesson';
     return 'Main screen';
   };
 
