@@ -443,6 +443,16 @@ export const grammarAnalyses = {
         fullTranslation: '(Кто-то) студент.'
     },
     tanakasan_wa_gakuseidesu: watashiwagakuseidesu, // Re-using, it has the same structure.
+    watashi_wa_gakusei_dewa_arimasen: {
+        sentence: [
+            { "word": "わたし", "furigana": "わたし", "translation": "я", "partOfSpeech": "местоимение" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "では", "furigana": "では", "translation": "отрицательная частица", "partOfSpeech": "отрицательная частица" },
+            { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" },
+        ],
+        "fullTranslation": "Я не студент."
+    },
     alternative: {
         anokatahasenseidesukagakuseidesuka,
     },
@@ -560,5 +570,3 @@ export const grammarAnalyses = {
         }
     }
 }
-
-    

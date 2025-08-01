@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, CheckCircle, XCircle, Share2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Share2, Volume2 } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import { cn } from '@/lib/utils';
@@ -25,15 +25,15 @@ import {
   } from '@/components/ui/tooltip';
 
 
-type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'select-options' | 'sort' | 'construct';
+type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'sort' | 'construct' | 'select-correct';
 
 interface Exercise {
     id: string;
     type: ExerciseType;
     title: string;
     description: string;
-    options: string[] | { word: string, category: string }[];
-    correctAnswer: string | string[];
+    options: any[] | { word: string, category: string }[];
+    correctAnswer: any;
 }
 
 const exercises: Exercise[] = [
@@ -66,6 +66,46 @@ const exercises: Exercise[] = [
         options: ['основной', 'именительный', 'винительный'],
         correctAnswer: 'основной',
     },
+    {
+        id: 'q5',
+        type: 'multiple-choice',
+        title: 'Упражнение 5: Укажи правильное местоимение',
+        description: '"Он — студент."',
+        options: ['あのかた', 'わたし', 'あなた'],
+        correctAnswer: 'あのかた'
+    },
+    {
+        id: 'q6',
+        type: 'multiple-choice',
+        title: 'Упражнение 6: Выбери правильную форму "что"',
+        description: '(　)ですか？',
+        options: ['なに', 'なん'],
+        correctAnswer: 'なん'
+    },
+    {
+        id: 'q7',
+        type: 'select-correct',
+        title: 'Упражнение 7: Отметь вежливую форму',
+        description: 'Какое из этих местоимений более вежливое?',
+        options: ['あのひと', 'あのかた'],
+        correctAnswer: 'あのかた'
+    },
+    {
+        id: 'q8',
+        type: 'construct',
+        title: 'Упражнение 8: Преобразуй в отрицательное',
+        description: 'Преобразуйте предложение "わたし は がくせい です。" в отрицательную форму.',
+        options: ["わたし", "は", "がくせい", "では", "ありません"],
+        correctAnswer: "わたし は がくせい では ありません"
+    },
+    {
+        id: 'q9',
+        type: 'construct',
+        title: 'Упражнение 9: Собери по частям',
+        description: 'Соберите вопрос "Что это?"',
+        options: ["です", "か", "なん", "これ", "は"],
+        correctAnswer: "これ は なん です か"
+    }
 ];
 
 const cases = [
@@ -82,30 +122,35 @@ const cases = [
     { name: 'Направительный', suffix: 'へ', description: 'Направление движения' },
 ];
 
+const pronouns = [
+    { face: '1-е лицо', jp: 'わたくし', romaji: 'watakushi', translation: 'я (очень вежливо)', plural: 'わたくしたち' },
+    { face: '1-е лицо', jp: 'わたし', romaji: 'watashi', translation: 'я (нейтрально)', plural: 'わたしたち' },
+    { face: '2-е лицо', jp: 'あなた', romaji: 'anata', translation: 'ты, вы', plural: 'あなたがた' },
+    { face: '3-е лицо', jp: 'あのかた', romaji: 'ano kata', translation: 'он, она (вежливо)', plural: 'あのかたがた' },
+    { face: '3-е лицо', jp: 'あのひと', romaji: 'ano hito', translation: 'он, она (нейтрально)', plural: 'あのひとたち' },
+];
 
 const LESSON_ID = 'lesson-1';
-const BASE_PROGRESS = 0; // Start from 0, progress is earned
 
 export default function GrammarLesson1Page() {
-    const [progress, setProgress] = useState(BASE_PROGRESS);
-    const [answers, setAnswers] = useState<Record<string, any>>({ q1: {} });
+    const [progress, setProgress] = useState(0);
+    const [answers, setAnswers] = useState<Record<string, any>>({ q1: {}, q8: [], q9: [] });
     const [results, setResults] = useState<Record<string, boolean | null>>({});
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
     const [desuForm, setDesuForm] = useState<'da' | 'desu' | 'dewa arimasen'>('desu');
-
+    const [showPlural, setShowPlural] = useState(false);
+    const [desuAssertion, setDesuAssertion] = useState<'affirmative' | 'negative'>('affirmative');
+    
     useEffect(() => {
         const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
         const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
-        if (storedProgress) {
-            setProgress(JSON.parse(storedProgress));
-        } else {
-             setProgress(BASE_PROGRESS);
-             localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(BASE_PROGRESS));
-        }
-        if (storedResults) {
-            setResults(JSON.parse(storedResults));
-        }
+        const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
+
+        if (storedProgress) setProgress(JSON.parse(storedProgress));
+        if (storedResults) setResults(JSON.parse(storedResults));
+        if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
+        
     }, []);
 
     const updateProgress = (newResults: Record<string, boolean | null>) => {
@@ -117,44 +162,50 @@ export default function GrammarLesson1Page() {
         setResults(newResults);
         localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
         localStorage.setItem(`${LESSON_ID}-results`, JSON.stringify(newResults));
+        localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
     };
 
     const handleShare = () => {
         copy(window.location.href)
-            .then(() => {
-                toast({
-                    title: 'Ссылка скопирована!',
-                    description: 'Вы можете поделиться этим уроком с кем угодно.',
-                });
-            })
-            .catch(error => {
-                toast({
-                    title: 'Ошибка',
-                    description: 'Не удалось скопировать ссылку.',
-                    variant: 'destructive'
-                });
-            });
+            .then(() => toast({ title: 'Ссылка скопирована!', description: 'Вы можете поделиться этим уроком с кем угодно.' }))
+            .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
     }
 
     const handleAnswer = (questionId: string, answer: any) => {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
     };
+
+    const handleConstructAnswer = (questionId: string, word: string) => {
+        setAnswers(prev => {
+            const currentAnswer = prev[questionId] || [];
+            return { ...prev, [questionId]: [...currentAnswer, word] };
+        });
+    }
+
+    const resetConstructAnswer = (questionId: string) => {
+        setAnswers(prev => ({ ...prev, [questionId]: [] }));
+    }
     
     const checkAnswers = () => {
         const newResults: Record<string, boolean | null> = {};
         
-        // Exercise 1: Sort
-        const q1Answer = answers['q1'] || {};
-        const q1Correct = (exercises[0].options as {word:string, category:string}[]).every(opt => q1Answer[opt.word] === opt.category);
-        newResults['q1'] = q1Correct;
-
-        // Other exercises
-        exercises.slice(1).forEach(ex => {
-            const isCorrect = answers[ex.id] === ex.correctAnswer;
+        exercises.forEach(ex => {
+            let isCorrect = false;
+            if (ex.type === 'sort') {
+                const q1Answer = answers[ex.id] || {};
+                isCorrect = (ex.options as {word:string, category:string}[]).every(opt => q1Answer[opt.word] === opt.category);
+            } else if (ex.type === 'construct') {
+                const userAnswer = (answers[ex.id] || []).join(' ');
+                isCorrect = userAnswer === ex.correctAnswer;
+            } else {
+                isCorrect = answers[ex.id] === ex.correctAnswer;
+            }
             newResults[ex.id] = isCorrect;
         });
         
         updateProgress(newResults);
+        localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+
     };
 
     const renderDesuExample = () => {
@@ -167,72 +218,86 @@ export default function GrammarLesson1Page() {
         }
     }
     
-    const renderExercise = (exercise: Exercise, index: number) => {
+    const renderExercise = (exercise: Exercise) => {
         const { id, type, title, description, options, correctAnswer } = exercise;
         const result = results[id];
 
-        return (
+        const baseCard = (content: React.ReactNode) => (
             <Card key={id} className="w-full">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    {type === 'sort' && (
-                        <div className="flex flex-col gap-4">
-                            {(options as {word: string, category: string}[]).map(opt => (
-                                <div key={opt.word} className="flex items-center gap-4">
-                                    <span className="font-japanese text-xl w-24">{opt.word}</span>
-                                    <RadioGroup
-                                        value={answers[id]?.[opt.word]}
-                                        onValueChange={(val) => handleAnswer(id, {...answers[id], [opt.word]: val})}
-                                        className="flex flex-wrap gap-2"
-                                    >
-                                        {['существительное', 'местоимение', 'прилагательное', 'частица'].map(cat => (
-                                            <div key={cat} className="flex items-center space-x-2">
-                                                <RadioGroupItem value={cat} id={`${id}-${opt.word}-${cat}`} />
-                                                <Label htmlFor={`${id}-${opt.word}-${cat}`}>{cat}</Label>
-                                            </div>
-                                        ))}
-                                    </RadioGroup>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                     {type === 'fill-in-the-blank' && (
-                         <div className="flex flex-wrap gap-2 items-center">
-                            <span className="font-japanese text-xl">{description.split('(')[0]}</span>
-                            <div className="inline-flex gap-2">
-                                {(options as string[]).map(option => (
-                                    <Button 
-                                        key={option}
-                                        variant={answers[id] === option ? 'default' : 'outline'}
-                                        onClick={() => handleAnswer(id, option)}
-                                    >
-                                        {option}
-                                    </Button>
-                                ))}
-                            </div>
-                            <span className="font-japanese text-xl">{description.split(')')[1]}</span>
-                        </div>
-                    )}
-                    {type === 'multiple-choice' && (
-                        <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
-                            {(options as string[]).map(option => (
-                                <div key={option} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={option} id={`${id}-${option}`} />
-                                    <Label htmlFor={`${id}-${option}`}>{option}</Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
-                    )}
-                </CardContent>
+                <CardContent>{content}</CardContent>
                 <CardFooter>
                      {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
                      {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
                 </CardFooter>
             </Card>
         );
+
+        switch (type) {
+            case 'sort':
+                return baseCard(
+                    <div className="flex flex-col gap-4">
+                        {(options as {word: string, category: string}[]).map(opt => (
+                            <div key={opt.word} className="flex items-center gap-4">
+                                <span className="font-japanese text-xl w-24">{opt.word}</span>
+                                <RadioGroup value={answers[id]?.[opt.word]} onValueChange={(val) => handleAnswer(id, {...answers[id], [opt.word]: val})} className="flex flex-wrap gap-2">
+                                    {['существительное', 'местоимение', 'прилагательное', 'частица'].map(cat => (
+                                        <div key={cat} className="flex items-center space-x-2">
+                                            <RadioGroupItem value={cat} id={`${id}-${opt.word}-${cat}`} />
+                                            <Label htmlFor={`${id}-${opt.word}-${cat}`}>{cat}</Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </div>
+                        ))}
+                    </div>
+                );
+            case 'fill-in-the-blank':
+            case 'select-correct':
+                return baseCard(
+                    <div className="flex flex-wrap gap-2 items-center">
+                        {type === 'fill-in-the-blank' && <span className="font-japanese text-xl">{description.split('(')[0]}</span>}
+                        <div className="inline-flex gap-2">
+                            {(options as string[]).map(option => (
+                                <Button key={option} variant={answers[id] === option ? 'default' : 'outline'} onClick={() => handleAnswer(id, option)}>{option}</Button>
+                            ))}
+                        </div>
+                        {type === 'fill-in-the-blank' && <span className="font-japanese text-xl">{description.split(')')[1]}</span>}
+                    </div>
+                );
+            case 'multiple-choice':
+                return baseCard(
+                    <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
+                        {(options as string[]).map(option => (
+                            <div key={option} className="flex items-center space-x-2">
+                                <RadioGroupItem value={option} id={`${id}-${option}`} />
+                                <Label htmlFor={`${id}-${option}`}>{option}</Label>
+                            </div>
+                        ))}
+                    </RadioGroup>
+                );
+            case 'construct':
+                return baseCard(
+                    <div className="space-y-4">
+                        <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
+                           {(answers[id] || []).join(' ')}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {([...options] as string[]).sort(() => Math.random() - 0.5).map((word, index) => (
+                                <Button key={index} variant="outline" onClick={() => handleConstructAnswer(id, word)}>
+                                    {word}
+                                </Button>
+                            ))}
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => resetConstructAnswer(id)}>Сбросить</Button>
+                    </div>
+                );
+            default:
+                return null;
+        }
     };
 
 
@@ -254,7 +319,7 @@ export default function GrammarLesson1Page() {
             <Card className="w-full mb-8">
                 <CardHeader>
                     <p className="text-sm text-primary font-semibold">Урок 1 — Грамматика</p>
-                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи и существительные</CardTitle>
+                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Основы японского предложения</CardTitle>
                     <CardDescription>Прогресс по теме:</CardDescription>
                     <Progress value={progress} className="mt-2" />
                 </CardHeader>
@@ -346,6 +411,102 @@ export default function GrammarLesson1Page() {
                         </Card>
                     </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="item-4">
+                    <AccordionTrigger className="text-xl font-semibold">§4. Личные местоимения</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Местоимения в японском языке зависят от контекста и уровня вежливости. Часто их и вовсе опускают, если понятно, о ком речь.</p>
+                        <div className="flex items-center space-x-2 my-4">
+                            <Switch id="plural-switch" checked={showPlural} onCheckedChange={setShowPlural} />
+                            <Label htmlFor="plural-switch">Показать множественное число</Label>
+                        </div>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Лицо</TableHead>
+                                    <TableHead>Местоимение</TableHead>
+                                    <TableHead>Перевод</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {pronouns.map(p => (
+                                    <TableRow key={p.jp}>
+                                        <TableCell>{p.face}</TableCell>
+                                        <TableCell className="font-japanese text-lg">
+                                            {showPlural ? p.plural : p.jp}
+                                        </TableCell>
+                                        <TableCell>{p.translation}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                         <p className="text-sm text-muted-foreground mt-2"><b>Важно:</b> местоимение <b>あなた</b> (ты/вы) используется редко. Японцы предпочитают обращаться к человеку по имени или должности (например, やまださん или せんせい).</p>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-5">
+                    <AccordionTrigger className="text-xl font-semibold">§5. Вопросительное местоимение 何 (что)</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Местоимение <span className="font-japanese">何</span> (что) имеет два чтения: <b className="text-primary">なん (nan)</b> и <b className="text-primary">なに (nani)</b>. Выбор зависит от следующего за ним звука.</p>
+                        <ul className="list-disc list-inside space-y-1">
+                            <li>Читается <b className="font-japanese">なん</b> перед частицами <span className="font-japanese">です</span>, <span className="font-japanese">の</span>, а также перед слогами на <b>т, д, н</b>.</li>
+                            <li>В остальных случаях чаще читается <b className="font-japanese">なに</b>.</li>
+                        </ul>
+                        <Card className="bg-card/70 mt-4">
+                            <CardHeader><CardTitle>Пример</CardTitle></CardHeader>
+                            <CardContent>
+                                <InteractiveText analysis={grammarAnalyses.sorewanandesuka} />
+                            </CardContent>
+                        </Card>
+                    </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-6">
+                    <AccordionTrigger className="text-xl font-semibold">§6. Формы связки です</AccordionTrigger>
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                        <p>Связка <span className="font-japanese">です</span> используется для вежливого завершения предложений с именным сказуемым в настоящем-будущем времени.</p>
+                        <div className="flex items-center space-x-2 my-4">
+                             <Label>Форма:</Label>
+                             <Button variant={desuAssertion === 'affirmative' ? 'default' : 'outline'} size="sm" onClick={() => setDesuAssertion('affirmative')}>Утверждение</Button>
+                             <Button variant={desuAssertion === 'negative' ? 'default' : 'outline'} size="sm" onClick={() => setDesuAssertion('negative')}>Отрицание</Button>
+                        </div>
+                        <Table>
+                             <TableHeader>
+                                <TableRow>
+                                    <TableHead>Форма</TableHead>
+                                    <TableHead>Степень вежливости</TableHead>
+                                    <TableHead>Пример</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                            {desuAssertion === 'affirmative' ? (
+                                <>
+                                    <TableRow>
+                                        <TableCell className="font-japanese">です</TableCell>
+                                        <TableCell>Вежливая</TableCell>
+                                        <TableCell><InteractiveText analysis={grammarAnalyses.gakuseidesu} /></TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell className="font-japanese">だ</TableCell>
+                                        <TableCell>Простая (разговорная)</TableCell>
+                                        <TableCell><span className="font-japanese text-2xl">がくせい だ</span></TableCell>
+                                    </TableRow>
+                                </>
+                            ) : (
+                                <>
+                                    <TableRow>
+                                        <TableCell className="font-japanese">ではありません</TableCell>
+                                        <TableCell>Вежливая</TableCell>
+                                        <TableCell><InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></TableCell>
+                                    </TableRow>
+                                     <TableRow>
+                                        <TableCell className="font-japanese">じゃない</TableCell>
+                                        <TableCell>Простая (разговорная)</TableCell>
+                                        <TableCell><span className="font-japanese text-2xl">がくせい じゃない</span></TableCell>
+                                    </TableRow>
+                                </>
+                            )}
+                            </TableBody>
+                        </Table>
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
             
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
@@ -355,12 +516,10 @@ export default function GrammarLesson1Page() {
              <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                 <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
                 <Button size="lg" asChild className="btn-gradient">
-                    <Link href="#">Следующий параграф → Местоимения</Link>
+                    <Link href="#">Следующий урок → Местоимения</Link>
                 </Button>
              </div>
         </div>
     </div>
   );
 }
-
-    
