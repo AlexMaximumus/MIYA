@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, CheckCircle, XCircle, Share2, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
+import InteractiveFormula from '@/components/interactive-formula';
 import { grammarAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
@@ -269,7 +270,7 @@ export default function GrammarLesson2Page() {
                                     <div>
                                         <h4 className="font-semibold text-lg">1. С вопросительным словом (специальный вопрос)</h4>
                                         <p className="text-muted-foreground text-base">Такие вопросы требуют конкретного ответа (кто, что, где и т.д.).</p>
-                                        <p className="mt-2">Схема: <code className="font-mono bg-muted p-1 rounded">N1 は QW です か。</code> (QW - Question Word)</p>
+                                        <p className="mt-2">Схема: <InteractiveFormula formula="N は QW です か 。" /></p>
                                         <div className="my-4">
                                             <InteractiveText analysis={grammarAnalyses.anokatawadonatadesuka} />
                                         </div>
@@ -277,7 +278,7 @@ export default function GrammarLesson2Page() {
                                     <div className="border-t pt-4">
                                         <h4 className="font-semibold text-lg">2. Без вопросительного слова (общий вопрос)</h4>
                                         <p className="text-muted-foreground text-base">На такие вопросы можно ответить "да" или "нет".</p>
-                                        <p className="mt-2">Схема: <code className="font-mono bg-muted p-1 rounded">N は N です か。</code></p>
+                                        <p className="mt-2">Схема: <InteractiveFormula formula="N は N です か 。" /></p>
                                         <div className="my-4">
                                             <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} />
                                         </div>

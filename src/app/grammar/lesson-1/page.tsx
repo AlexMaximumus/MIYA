@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, CheckCircle, XCircle, Share2, Volume2 } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
+import InteractiveFormula from '@/components/interactive-formula';
 import { cn } from '@/lib/utils';
 import { grammarAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
@@ -174,13 +175,8 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
     const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
 
     useEffect(() => {
-        // Ensure options is an array of strings before sorting
-        if (Array.isArray(options) && options.every(o => typeof o === 'string' || (typeof o === 'object' && o !== null && 'word' in o))) {
-            const stringOptions = options.map(o => typeof o === 'string' ? o : o.word);
-            setShuffledOptions([...stringOptions].sort(() => Math.random() - 0.5));
-        } else {
-            setShuffledOptions(options.map(o => typeof o === 'string' ? o : o.word));
-        }
+        const stringOptions = options.map(o => typeof o === 'string' ? o : o.word);
+        setShuffledOptions([...stringOptions].sort(() => Math.random() - 0.5));
     }, [options]);
 
     return (
@@ -592,7 +588,7 @@ export default function GrammarLesson1Page() {
                         <p>Предложение состоит из подлежащего (часто с частицей は) и сказуемого (существительное + связка).</p>
                         
                         <Card className="bg-card/70 mt-4">
-                            <CardHeader><CardTitle>Структура утверждения: <code className="font-mono bg-muted p-1 rounded">N は N です。</code></CardTitle></CardHeader>
+                            <CardHeader><CardTitle>Структура утверждения: <InteractiveFormula formula="N は N です 。" /></CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                 <InteractiveText analysis={grammarAnalyses.anokatahasenseidesu} />
                                 <InteractiveText analysis={grammarAnalyses.gakuseihaanohitodesu} />
@@ -600,7 +596,7 @@ export default function GrammarLesson1Page() {
                         </Card>
 
                         <Card className="bg-card/70 mt-4">
-                            <CardHeader><CardTitle>Структура отрицания: <code className="font-mono bg-muted p-1 rounded">N は N では(じゃ)ありません。</code></CardTitle></CardHeader>
+                            <CardHeader><CardTitle>Структура отрицания: <InteractiveFormula formula="N は N では (じゃ) ありません 。" /></CardTitle></CardHeader>
                             <CardContent>
                                 <div className="flex items-center space-x-2 my-4">
                                     <Label>Форма:</Label>
