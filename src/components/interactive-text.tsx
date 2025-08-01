@@ -7,7 +7,7 @@ import { termExplanations } from '@/ai/precomputed-analysis';
 import { Skeleton } from './ui/skeleton';
 
 interface InteractiveTextProps {
-  analysis: JapaneseAnalysisOutput | null;
+  analysis: JapaneseAnalysisOutput;
 }
 
 const TermTooltip = ({ term }: { term: string }) => {
@@ -28,12 +28,9 @@ const TermTooltip = ({ term }: { term: string }) => {
 export default function InteractiveText({ analysis }: InteractiveTextProps) {
 
   if (!analysis) {
-    return (
-      <div className="space-y-2">
-        <Skeleton className="h-8 w-full max-w-[350px]" />
-        <Skeleton className="h-4 w-full max-w-[300px]" />
-      </div>
-    );
+    // This case should ideally not happen if data is passed correctly,
+    // but it's a safeguard. Returning null to avoid rendering anything empty.
+    return null;
   }
 
   return (

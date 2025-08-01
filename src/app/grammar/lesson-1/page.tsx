@@ -175,10 +175,11 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
 
     useEffect(() => {
         // Ensure options is an array of strings before sorting
-        if (Array.isArray(options) && options.every(o => typeof o === 'string')) {
-            setShuffledOptions([...(options as string[])].sort(() => Math.random() - 0.5));
+        if (Array.isArray(options) && options.every(o => typeof o === 'string' || (typeof o === 'object' && o !== null && 'word' in o))) {
+            const stringOptions = options.map(o => typeof o === 'string' ? o : o.word);
+            setShuffledOptions([...stringOptions].sort(() => Math.random() - 0.5));
         } else {
-            setShuffledOptions(options as string[]);
+            setShuffledOptions(options.map(o => typeof o === 'string' ? o : o.word));
         }
     }, [options]);
 
@@ -219,14 +220,17 @@ export default function GrammarLesson1Page() {
     const [dewaJa, setDewaJa] = useState<'dewa' | 'ja'>('dewa');
     
     useEffect(() => {
-        const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
-        const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
-        const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
+        try {
+            const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
+            const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
+            const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
 
-        if (storedProgress) setProgress(JSON.parse(storedProgress));
-        if (storedResults) setResults(JSON.parse(storedResults));
-        if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
-        
+            if (storedProgress) setProgress(JSON.parse(storedProgress));
+            if (storedResults) setResults(JSON.parse(storedResults));
+            if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
+        } catch (error) {
+            console.error("Failed to parse from localStorage", error);
+        }
     }, []);
 
     const updateProgress = (newResults: Record<string, boolean | null>) => {
@@ -236,9 +240,13 @@ export default function GrammarLesson1Page() {
         
         setProgress(newProgress);
         setResults(newResults);
-        localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
-        localStorage.setItem(`${LESSON_ID}-results`, JSON.stringify(newResults));
-        localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        try {
+            localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
+            localStorage.setItem(`${LESSON_ID}-results`, JSON.stringify(newResults));
+            localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        } catch (error) {
+            console.error("Failed to save to localStorage", error);
+        }
     };
 
     const handleShare = () => {
@@ -272,7 +280,7 @@ export default function GrammarLesson1Page() {
                 isCorrect = (ex.options as {word:string, category:string}[]).every(opt => q1Answer[opt.word] === opt.category);
             } else if (ex.type === 'construct') {
                 const userAnswer = (answers[ex.id] || []).join(' ');
-                isCorrect = userAnswer === ex.correctAnswer;
+                isCorrect = userAnswer.trim() === (ex.correctAnswer as string).trim();
             } else {
                 isCorrect = answers[ex.id] === ex.correctAnswer;
             }
@@ -280,8 +288,11 @@ export default function GrammarLesson1Page() {
         });
         
         updateProgress(newResults);
-        localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
-
+        try {
+            localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        } catch (error) {
+             console.error("Failed to save answers to localStorage", error);
+        }
     };
 
     const renderDesuExample = () => {
@@ -334,15 +345,14 @@ export default function GrammarLesson1Page() {
             case 'fill-in-the-blank':
             case 'select-correct':
                 return baseCard(
-                    <div className="flex flex-wrap gap-2 items-center">
-                        {type === 'fill-in-the-blank' && <span className="font-japanese text-xl">{description.split('(')[0]}</span>}
-                        <div className="inline-flex gap-2">
-                            {(options as string[]).map(option => (
-                                <Button key={option} variant={answers[id] === option ? 'default' : 'outline'} onClick={() => handleAnswer(id, option)}>{option}</Button>
-                            ))}
-                        </div>
-                        {type === 'fill-in-the-blank' && <span className="font-japanese text-xl">{description.split(')')[1]}</span>}
-                    </div>
+                    <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-2">
+                        {(options as string[]).map(option => (
+                            <div key={option} className="flex items-center space-x-2">
+                                <RadioGroupItem value={option} id={`${id}-${option}`} />
+                                <Label htmlFor={`${id}-${option}`}>{option}</Label>
+                            </div>
+                        ))}
+                    </RadioGroup>
                 );
             case 'multiple-choice':
                 return baseCard(
@@ -634,10 +644,12 @@ export default function GrammarLesson1Page() {
              <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                 <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
                 <Button size="lg" asChild className="btn-gradient">
-                    <Link href="#">Перейти к проверочному тесту →</Link>
+                    <Link href="/grammar/lesson-2">Перейти к Уроку 2 →</Link>
                 </Button>
              </div>
         </div>
     </div>
   );
 }
+
+    
