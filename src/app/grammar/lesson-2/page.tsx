@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, CheckCircle, XCircle, Share2, HelpCircle } from 'lucide-react';
@@ -15,6 +16,7 @@ import InteractiveFormula from '@/components/interactive-formula';
 import { grammarAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 
 type ExerciseType = 'multiple-choice' | 'construct' | 'select-correct' | 'fill-in-the-blank';
@@ -42,8 +44,8 @@ const exercises: Exercise[] = [
         type: 'construct',
         title: 'Упражнение 2: Построй общий вопрос',
         description: 'Соберите предложение: "Ты студент?"',
-        options: ['あなた', 'は', 'がくせい', 'ですか'],
-        correctAnswer: 'あなた は がくせい ですか',
+        options: ['あなた', 'は', 'がくせい', 'です', 'か'],
+        correctAnswer: 'あなた は がくせい です か',
     },
     {
         id: 'q3',
@@ -61,6 +63,30 @@ const exercises: Exercise[] = [
         options: ['がくせい', 'はい', 'せんせい'],
         correctAnswer: 'がくせい',
     },
+    {
+        id: 'q5',
+        type: 'fill-in-the-blank',
+        title: 'Упражнение 5: Заверши альтернативный вопрос',
+        description: 'これは えんぴつ です か、(　) です か。',
+        options: ['ほん', 'つくえ', 'ペン'],
+        correctAnswer: 'ペン',
+    },
+    {
+        id: 'q6',
+        type: 'select-correct',
+        title: 'Упражнение 6: Выбери правильный ответ',
+        description: 'やまださん は がくせい です か、せんせい です か。',
+        options: ['せんせい です', 'がくせい です', 'はい、そうです'],
+        correctAnswer: 'せんせい です'
+    },
+    {
+        id: 'q7',
+        type: 'construct',
+        title: 'Упражнение 7: Построй альтернативный вопрос',
+        description: 'Вы — студент или преподаватель?',
+        options: ["あなた", "は", "がくせい", "です", "か", "、", "せんせい", "です", "か"],
+        correctAnswer: "あなた は がくせい です か 、 せんせい です か"
+    }
 ];
 
 const LESSON_ID = 'lesson-2';
@@ -76,6 +102,7 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
 
     useEffect(() => {
         if (Array.isArray(options) && options.every(o => typeof o === 'string')) {
+            // This logic runs only on the client, avoiding hydration mismatch.
             setShuffledOptions([...(options as string[])].sort(() => Math.random() - 0.5));
         } else {
             setShuffledOptions(options as string[]);
@@ -117,13 +144,17 @@ export default function GrammarLesson2Page() {
     const [answerType, setAnswerType] = useState<'affirmative' | 'negative'>('affirmative');
 
     useEffect(() => {
-        const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
-        const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
-        const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
-
-        if (storedProgress) setProgress(JSON.parse(storedProgress));
-        if (storedResults) setResults(JSON.parse(storedResults));
-        if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
+        try {
+            const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
+            const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
+            const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
+    
+            if (storedProgress) setProgress(JSON.parse(storedProgress));
+            if (storedResults) setResults(JSON.parse(storedResults));
+            if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
+        } catch (error) {
+            console.error("Failed to parse from localStorage", error);
+        }
     }, []);
 
     const updateProgress = (newResults: Record<string, boolean | null>) => {
@@ -133,9 +164,13 @@ export default function GrammarLesson2Page() {
         
         setProgress(newProgress);
         setResults(newResults);
-        localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
-        localStorage.setItem(`${LESSON_ID}-results`, JSON.stringify(newResults));
-        localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        try {
+            localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
+            localStorage.setItem(`${LESSON_ID}-results`, JSON.stringify(newResults));
+            localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        } catch (error) {
+            console.error("Failed to save to localStorage", error);
+        }
     };
     
     const handleShare = () => {
@@ -165,16 +200,29 @@ export default function GrammarLesson2Page() {
         exercises.forEach(ex => {
             let isCorrect = false;
             if (ex.type === 'construct') {
-                const userAnswer = (answers[ex.id] || []).join(' ');
-                isCorrect = userAnswer === ex.correctAnswer;
-            } else {
+                const userAnswer = (answers[ex.id] || []).join(' ').replace(/ , /g, ', ');
+                isCorrect = userAnswer.trim() === (ex.correctAnswer as string).trim();
+            } else if (ex.type === 'fill-in-the-blank') {
+                const userAnswer = answers[ex.id] || '';
+                const q5desc = "これは えんぴつ です か、(　) です か。";
+                if(ex.description === q5desc) {
+                    isCorrect = ex.options.includes(userAnswer); // for q5, any option is fine
+                } else {
+                    isCorrect = userAnswer === ex.correctAnswer;
+                }
+            }
+            else {
                 isCorrect = answers[ex.id] === ex.correctAnswer;
             }
             newResults[ex.id] = isCorrect;
         });
         
         updateProgress(newResults);
-        localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        try {
+             localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        } catch (error) {
+            console.error("Failed to save answers to localStorage", error);
+        }
     };
 
     const renderExercise = (exercise: Exercise) => {
@@ -185,7 +233,7 @@ export default function GrammarLesson2Page() {
             <Card key={id} className="w-full">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
-                    <CardDescription>{description}</CardDescription>
+                    <CardDescription className="font-japanese text-lg">{description}</CardDescription>
                 </CardHeader>
                 <CardContent>{content}</CardContent>
                 <CardFooter>
@@ -197,6 +245,29 @@ export default function GrammarLesson2Page() {
 
         switch (type) {
             case 'fill-in-the-blank':
+                const isQ5 = description.includes("えんぴつ");
+                if (isQ5) {
+                    return baseCard(
+                        <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
+                            {(options as string[]).map(option => (
+                                <div key={option} className="flex items-center space-x-2">
+                                    <RadioGroupItem value={option} id={`${id}-${option}`} />
+                                    <Label htmlFor={`${id}-${option}`} className="font-japanese text-lg">{option}</Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
+                    );
+                }
+                 return baseCard(
+                    <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
+                        {(options as string[]).map(option => (
+                            <div key={option} className="flex items-center space-x-2">
+                                <RadioGroupItem value={option} id={`${id}-${option}`} />
+                                <Label htmlFor={`${id}-${option}`} className="font-japanese text-lg">{option}</Label>
+                            </div>
+                        ))}
+                    </RadioGroup>
+                );
             case 'select-correct':
                  return baseCard(
                     <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
@@ -262,22 +333,24 @@ export default function GrammarLesson2Page() {
                     <AccordionItem value="item-1">
                         <AccordionTrigger className="text-xl font-semibold">§8. Вопросительное предложение</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                            <div>В японском языке вопрос формируется очень просто. Порядок слов не меняется, а в конце предложения ставится частица <b className="text-primary font-japanese">か</b>. Вопросительный знак (?) обычно не используется, так как частица か уже указывает на вопрос.</div>
+                            <div className="space-y-2">
+                                <div>В японском языке вопрос формируется очень просто. Порядок слов не меняется, а в конце предложения ставится частица <b className="text-primary font-japanese">か</b>. Вопросительный знак (?) обычно не используется, так как частица か уже указывает на вопрос.</div>
+                            </div>
                             
                             <Card className="mt-4">
                                 <CardHeader><CardTitle className="text-lg flex items-center gap-2"><HelpCircle className="text-primary"/>Типы вопросительных предложений</CardTitle></CardHeader>
                                 <CardContent className="space-y-4">
                                     <div>
                                         <h4 className="font-semibold text-lg">1. С вопросительным словом (специальный вопрос)</h4>
-                                        <p className="text-muted-foreground text-base">Такие вопросы требуют конкретного ответа (кто, что, где и т.д.).</p>
+                                        <div className="text-muted-foreground text-base">Такие вопросы требуют конкретного ответа (кто, что, где и т.д.).</div>
                                         <div className="mt-2">Схема: <InteractiveFormula formula="N は QW です か 。" /></div>
                                         <div className="my-4">
-                                            <InteractiveText analysis={grammarAnalyses.anokatawadonatadesuka} />
+                                            <InteractiveText analysis={grammarAnalyses.anokatawadonadesuka} />
                                         </div>
                                     </div>
                                     <div className="border-t pt-4">
                                         <h4 className="font-semibold text-lg">2. Без вопросительного слова (общий вопрос)</h4>
-                                        <p className="text-muted-foreground text-base">На такие вопросы можно ответить "да" или "нет".</p>
+                                        <div className="text-muted-foreground text-base">На такие вопросы можно ответить "да" или "нет".</div>
                                         <div className="mt-2">Схема: <InteractiveFormula formula="N は N です か 。" /></div>
                                         <div className="my-4">
                                             <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} />
@@ -312,6 +385,23 @@ export default function GrammarLesson2Page() {
                             </Card>
                         </AccordionContent>
                     </AccordionItem>
+                    <AccordionItem value="item-2">
+                        <AccordionTrigger className="text-xl font-semibold">§9. Альтернативный вопрос</AccordionTrigger>
+                        <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                            <div>
+                                <p>Альтернативный вопрос предлагает собеседнику выбор между двумя или более вариантами. Каждый вариант завершается частицей <b className="font-japanese text-primary">か</b>.</p>
+                            </div>
+                             <Card className="mt-4">
+                                <CardHeader><CardTitle className="text-lg">Структура</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="mt-2">Схема: <InteractiveFormula formula="N は A です か 、 B です か 。" /></div>
+                                    <div className="my-4">
+                                        <InteractiveText analysis={grammarAnalyses.anokata_wa_sensei_desuka_gakusei_desuka} />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </AccordionContent>
+                    </AccordionItem>
                 </Accordion>
 
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
@@ -322,6 +412,8 @@ export default function GrammarLesson2Page() {
                         <InteractiveText analysis={grammarAnalyses.soujisanhagishidesuka_haisoudesu} />
                         <InteractiveText analysis={grammarAnalyses.yamadasanhagakuseidesuka_iiesenseidesu} />
                         <InteractiveText analysis={grammarAnalyses.anohitohasenseidesuka_iiedewaarimasen} />
+                        <Card className="p-4 border-primary/20"><InteractiveText analysis={grammarAnalyses.yamadasan_wa_sensei_desuka_gakusei_desuka} /><p className="font-japanese text-lg ml-4 mt-2">- せんせい です。</p></Card>
+
                     </CardContent>
                     </Card>
                 </div>
@@ -331,13 +423,10 @@ export default function GrammarLesson2Page() {
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
                     <Button size="lg" asChild className="btn-gradient">
-                        <Link href="#">Перейти к проверочному тесту →</Link>
+                        <Link href="/grammar/test-1">Перейти к проверочному тесту →</Link>
                     </Button>
                 </div>
             </div>
         </div>
     );
 }
-
-
-    

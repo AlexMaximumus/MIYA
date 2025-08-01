@@ -357,5 +357,35 @@ export const grammarAnalyses = {
             { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" },
         ],
         "fullTranslation": "Тот человек учитель? — Нет, не учитель."
+    },
+    // Lesson 2, §9
+    anokata_wa_sensei_desuka_gakusei_desuka: {
+        sentence: [
+            { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+            { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+        ],
+        "fullTranslation": "Он преподаватель или студент?"
+    },
+    yamadasan_wa_sensei_desuka_gakusei_desuka: {
+        sentence: [
+            { "word": "やまださん", "furigana": "やまださん", "translation": "г-н Ямада", "partOfSpeech": "имя собственное" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" }
+        ],
+        "fullTranslation": "Ямада — преподаватель или студент?"
     }
 }
