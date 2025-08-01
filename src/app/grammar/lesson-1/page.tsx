@@ -17,64 +17,82 @@ import { cn } from '@/lib/utils';
 import { grammarAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from '@/components/ui/tooltip';
 
 
-type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'select-options';
+type ExerciseType = 'multiple-choice' | 'fill-in-the-blank' | 'select-options' | 'sort' | 'construct';
 
 interface Exercise {
     id: string;
     type: ExerciseType;
     title: string;
     description: string;
-    options: string[];
+    options: string[] | { word: string, category: string }[];
     correctAnswer: string | string[];
 }
 
 const exercises: Exercise[] = [
     {
         id: 'q1',
-        type: 'multiple-choice',
-        title: 'Упражнение 1. Выберите правильный вопрос',
-        description: 'Как спросить "Тот человек г-н Ямада или г-н Танака?"',
-        options: ['あのかたはなにですか', 'あのかたはやまださんですか、たなかさんですか', 'やまださんとたなかさんです'],
-        correctAnswer: 'あのかたはやまださんですか、たなかさんですか',
+        type: 'sort',
+        title: 'Упражнение 1: Распредели по частям речи',
+        description: 'Перетащи или выбери правильную категорию для каждого слова.',
+        options: [
+            { word: 'わたし', category: 'местоимение' },
+            { word: 'おいしい', category: 'прилагательное' },
+            { word: 'に', category: 'частица' },
+            { word: 'がくせい', category: 'существительное' },
+        ],
+        correctAnswer: 'placeholder', // Not used for this exercise type
     },
     {
         id: 'q2',
-        type: 'multiple-choice',
-        title: 'Упражнение 2. Выберите правильный ответ',
-        description: 'На вопрос "やまださんはせんせいですか、がくせいですか。" дан ответ "Г-н Ямада — учитель." Выберите правильный вариант на японском.',
-        options: ['はい、そうです', 'いいえ、がくせいではありません', 'やまださんはせんせいです'],
-        correctAnswer: 'やまださんはせんせいです',
+        type: 'fill-in-the-blank',
+        title: 'Упражнение 2: Вставь слово в обращение',
+        description: '( )さん！',
+        options: ['やまだ', 'です', 'は'],
+        correctAnswer: 'やまだ',
     },
     {
         id: 'q3',
-        type: 'select-options',
-        title: 'Упражнение 3. Заполни пропуски',
-        description: 'たなかさんはぎしです（　）、せんせいですか。',
-        options: ['か', 'は', 'です'],
-        correctAnswer: 'か',
+        type: 'multiple-choice',
+        title: 'Упражнение 3: Определи падеж',
+        description: 'В предложении "わたし は がくせい です。" слово "わたし" находится в падеже:',
+        options: ['основной', 'именительный', 'винительный'],
+        correctAnswer: 'основной',
     },
 ];
 
-const pronouns = [
-    { pronoun: '私', romaji: 'watashi', politeness: 'Нейтрально-вежливое "Я"', translation: 'Я (употребляется и мужчинами и женщинами в официальной обстановке)', role: '1-е лицо, ед.ч.' },
-    { pronoun: 'わたくし', romaji: 'watakushi', politeness: 'Очень формальное и вежливое "Я"', translation: 'Я (более формальный вариант)', role: '1-е лицо, ед.ч.' },
-    { pronoun: 'あなた', romaji: 'anata', politeness: 'Вежливое "ты/вы", но стоит использовать с осторожностью', translation: 'Ты, вы (в разговоре с незнакомыми или вышестоящими лучше избегать, обращаясь по фамилии)', role: '2-е лицо, ед.ч.' },
-    { pronoun: 'あの人', romaji: 'ano hito', politeness: 'Нейтральное "он/она"', translation: 'Он, она, то лицо (буквально: "тот человек")', role: '3-е лицо, ед.ч.' },
-    { pronoun: 'あの方', romaji: 'ano kata', politeness: 'Очень вежливое "он/она"', translation: 'Он, она (уважительный, вежливый вариант)', role: '3-е лицо, ед.ч.' },
-]
+const cases = [
+    { name: 'Основной', suffix: '—', description: 'Обращение, именная часть сказуемого' },
+    { name: 'Именительный', suffix: 'が', description: 'Подлежащее' },
+    { name: 'Родительный', suffix: 'の', description: 'Принадлежность, определение' },
+    { name: 'Дательный', suffix: 'に', description: 'Направление, время, место' },
+    { name: 'Винительный', suffix: 'を', description: 'Прямое дополнение' },
+    { name: 'Творительный', suffix: 'で', description: 'Инструмент, место действия' },
+    { name: 'Исходный', suffix: 'から', description: 'Начальная точка (время, место)' },
+    { name: 'Предельный', suffix: 'まで', description: 'Конечная точка (время, место)' },
+    { name: 'Совместный', suffix: 'と', description: 'Совместное действие ("с кем-то")' },
+    { name: 'Сравнительный', suffix: 'より', description: 'Сравнение ("чем...")' },
+    { name: 'Направительный', suffix: 'へ', description: 'Направление движения' },
+];
+
 
 const LESSON_ID = 'lesson-1';
-const BASE_PROGRESS = 80;
+const BASE_PROGRESS = 0; // Start from 0, progress is earned
 
 export default function GrammarLesson1Page() {
-    const [useJaArimasen, setUseJaArimasen] = useState(false);
     const [progress, setProgress] = useState(BASE_PROGRESS);
-    const [answers, setAnswers] = useState<Record<string, string | null>>({});
+    const [answers, setAnswers] = useState<Record<string, any>>({ q1: {} });
     const [results, setResults] = useState<Record<string, boolean | null>>({});
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
+    const [desuForm, setDesuForm] = useState<'da' | 'desu' | 'dewa arimasen'>('desu');
 
     useEffect(() => {
         const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
@@ -82,7 +100,6 @@ export default function GrammarLesson1Page() {
         if (storedProgress) {
             setProgress(JSON.parse(storedProgress));
         } else {
-             // If no progress, set base progress and store it
              setProgress(BASE_PROGRESS);
              localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(BASE_PROGRESS));
         }
@@ -91,7 +108,11 @@ export default function GrammarLesson1Page() {
         }
     }, []);
 
-    const updateProgress = (newProgress: number, newResults: Record<string, boolean | null>) => {
+    const updateProgress = (newResults: Record<string, boolean | null>) => {
+        const answeredCorrectly = Object.values(newResults).filter(r => r === true).length;
+        const totalQuestions = exercises.length;
+        const newProgress = Math.floor((answeredCorrectly / totalQuestions) * 100);
+        
         setProgress(newProgress);
         setResults(newResults);
         localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
@@ -115,82 +136,100 @@ export default function GrammarLesson1Page() {
             });
     }
 
-    const handleAnswer = (questionId: string, answer: string) => {
+    const handleAnswer = (questionId: string, answer: any) => {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
-        if (results[questionId] !== null) {
-             const newResults = { ...results, [questionId]: null };
-             setResults(newResults);
-             // We don't update local storage here until check, to avoid saving "null" result state
-        }
     };
     
-    const checkAnswer = (questionId: string) => {
-        const exercise = exercises.find(ex => ex.id === questionId);
-        if (!exercise || !answers[questionId]) return;
+    const checkAnswers = () => {
+        const newResults: Record<string, boolean | null> = {};
+        
+        // Exercise 1: Sort
+        const q1Answer = answers['q1'] || {};
+        const q1Correct = (exercises[0].options as {word:string, category:string}[]).every(opt => q1Answer[opt.word] === opt.category);
+        newResults['q1'] = q1Correct;
 
-        const isCorrect = answers[questionId] === exercise.correctAnswer;
-        const newResults = { ...results, [questionId]: isCorrect };
-
-        if (isCorrect) {
-            const answeredCorrectly = Object.values(newResults).filter(r => r === true).length;
-            const totalQuestions = exercises.length;
-            const newProgress = BASE_PROGRESS + Math.floor((answeredCorrectly / totalQuestions) * (100 - BASE_PROGRESS));
-            updateProgress(Math.min(newProgress, 100), newResults);
-        } else {
-            updateProgress(progress, newResults); // Save wrong answer result
-        }
+        // Other exercises
+        exercises.slice(1).forEach(ex => {
+            const isCorrect = answers[ex.id] === ex.correctAnswer;
+            newResults[ex.id] = isCorrect;
+        });
+        
+        updateProgress(newResults);
     };
+
+    const renderDesuExample = () => {
+        switch(desuForm) {
+            case 'da': return 'がくせい だ';
+            case 'dewa arimasen': return 'がくせい ではありません';
+            case 'desu': 
+            default:
+                return 'がくせい です';
+        }
+    }
     
-    const renderExercise = (exercise: Exercise) => {
+    const renderExercise = (exercise: Exercise, index: number) => {
         const { id, type, title, description, options, correctAnswer } = exercise;
-        const userAnswer = answers[id];
         const result = results[id];
 
         return (
-            <Card key={id}>
+            <Card key={id} className="w-full">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
-                    <CardDescription className={cn(type === 'select-options' && 'font-japanese text-xl')}>
-                        {description}
-                    </CardDescription>
+                    <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent>
+                    {type === 'sort' && (
+                        <div className="flex flex-col gap-4">
+                            {(options as {word: string, category: string}[]).map(opt => (
+                                <div key={opt.word} className="flex items-center gap-4">
+                                    <span className="font-japanese text-xl w-24">{opt.word}</span>
+                                    <RadioGroup
+                                        value={answers[id]?.[opt.word]}
+                                        onValueChange={(val) => handleAnswer(id, {...answers[id], [opt.word]: val})}
+                                        className="flex flex-wrap gap-2"
+                                    >
+                                        {['существительное', 'местоимение', 'прилагательное', 'частица'].map(cat => (
+                                            <div key={cat} className="flex items-center space-x-2">
+                                                <RadioGroupItem value={cat} id={`${id}-${opt.word}-${cat}`} />
+                                                <Label htmlFor={`${id}-${opt.word}-${cat}`}>{cat}</Label>
+                                            </div>
+                                        ))}
+                                    </RadioGroup>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                     {type === 'fill-in-the-blank' && (
+                         <div className="flex flex-wrap gap-2 items-center">
+                            <span className="font-japanese text-xl">{description.split('(')[0]}</span>
+                            <div className="inline-flex gap-2">
+                                {(options as string[]).map(option => (
+                                    <Button 
+                                        key={option}
+                                        variant={answers[id] === option ? 'default' : 'outline'}
+                                        onClick={() => handleAnswer(id, option)}
+                                    >
+                                        {option}
+                                    </Button>
+                                ))}
+                            </div>
+                            <span className="font-japanese text-xl">{description.split(')')[1]}</span>
+                        </div>
+                    )}
                     {type === 'multiple-choice' && (
-                        <RadioGroup value={userAnswer || ''} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
-                            {options.map(option => (
+                        <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
+                            {(options as string[]).map(option => (
                                 <div key={option} className="flex items-center space-x-2">
                                     <RadioGroupItem value={option} id={`${id}-${option}`} />
-                                    <Label htmlFor={`${id}-${option}`} className={cn(option.includes('〜') || option.includes('。') || option.includes('、') ? 'font-japanese text-lg' : '')}>{option}</Label>
+                                    <Label htmlFor={`${id}-${option}`}>{option}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
                     )}
-                    {type === 'select-options' && (
-                         <div className="flex flex-wrap gap-2">
-                            {options.map(option => (
-                                <Button 
-                                    key={option}
-                                    variant={userAnswer === option ? 'default' : 'outline'}
-                                    onClick={() => handleAnswer(id, option)}
-                                    className={cn("text-lg",
-                                        result === true && userAnswer === option && 'bg-green-500 hover:bg-green-600',
-                                        result === false && userAnswer === option && 'bg-destructive hover:bg-destructive/90',
-                                    )}
-                                >
-                                    {option}
-                                </Button>
-                            ))}
-                        </div>
-                    )}
                 </CardContent>
                 <CardFooter>
-                    <Button onClick={() => checkAnswer(id)} disabled={!userAnswer}>Проверить</Button>
-                    {result === true && <span className="flex items-center gap-2 text-green-600 ml-4"><CheckCircle/> Верно!</span>}
-                    {result === false && (
-                        <span className="flex items-center gap-2 text-destructive ml-4">
-                            <XCircle/> Ошибка. Правильный ответ: {Array.isArray(correctAnswer) ? correctAnswer.join(', ') : correctAnswer}
-                        </span>
-                    )}
+                     {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
+                     {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
                 </CardFooter>
             </Card>
         );
@@ -215,174 +254,108 @@ export default function GrammarLesson1Page() {
             <Card className="w-full mb-8">
                 <CardHeader>
                     <p className="text-sm text-primary font-semibold">Урок 1 — Грамматика</p>
-                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи, связки, простые и вопросительные предложения</CardTitle>
+                    <CardTitle className="text-2xl md:text-3xl">Тема 1: Части речи и существительные</CardTitle>
                     <CardDescription>Прогресс по теме:</CardDescription>
                     <Progress value={progress} className="mt-2" />
                 </CardHeader>
             </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
-            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-9">
+            <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-1">
                 <AccordionItem value="item-1">
-                    <AccordionTrigger className="text-xl font-semibold">§1. Части речи в японском</AccordionTrigger>
+                    <AccordionTrigger className="text-xl font-semibold">§1. Части речи</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Все слова в японском языке делятся на знаменательные (несущие основной смысл) и служебные (помогающие строить предложения).</p>
+                        <p>В японском языке слова делятся на знаменательные (несущие основной смысл) и служебные (помогающие строить предложения). Междометия стоят особняком.</p>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <Card>
+                                <CardHeader><CardTitle>Знаменательные</CardTitle></CardHeader>
+                                <CardContent>
+                                    <p>Несут смысловую нагрузку и имеют грамматические формы.</p>
+                                    <ul className="list-disc list-inside mt-2">
+                                        <li>существительные, глаголы, прилагательные, местоимения, числительные, наречия.</li>
+                                    </ul>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader><CardTitle>Служебные</CardTitle></CardHeader>
+                                <CardContent>
+                                    <p>Выполняют служебные функции.</p>
+                                    <ul className="list-disc list-inside mt-2">
+                                    <li>послелоги, союзы, частицы, связки.</li>
+                                    </ul>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </AccordionContent>
                 </AccordionItem>
-                 <AccordionItem value="item-4">
-                    <AccordionTrigger className="text-xl font-semibold">§2. Личные местоимения (代名詞)</AccordionTrigger>
+                 <AccordionItem value="item-2">
+                    <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Выбор местоимения сильно зависит от уровня вежливости и социального контекста. Склоняются по падежам так же, как и существительные.</p>
-                         <Table>
+                        <p>У существительных в японском нет рода и числа. Множественность выражается контекстом или специальными суффиксами (например, <span className="font-japanese">〜たち</span> для людей). Они склоняются по падежам (11 падежей).</p>
+                        <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Местоимение</TableHead>
-                                    <TableHead>Ромадзи</TableHead>
-                                    <TableHead>Пояснение</TableHead>
+                                    <TableHead>Падеж</TableHead>
+                                    <TableHead>Суффикс</TableHead>
+                                    <TableHead>Описание</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {pronouns.map(p => (
-                                <TableRow key={p.pronoun}>
-                                    <TableCell className="font-medium font-japanese text-xl">{p.pronoun}</TableCell>
-                                    <TableCell>{p.romaji}</TableCell>
-                                    <TableCell className="text-sm">{p.politeness}. {p.translation}</TableCell>
-                                </TableRow>
+                                {cases.map(c => (
+                                    <TableRow key={c.name}>
+                                        <TableCell>{c.name}</TableCell>
+                                        <TableCell className="font-japanese text-lg">{c.suffix}</TableCell>
+                                        <TableCell>{c.description}</TableCell>
+                                    </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </AccordionContent>
                 </AccordionItem>
-                 <AccordionItem value="item-5">
-                    <AccordionTrigger className="text-xl font-semibold">§3. Вопросительное местоимение 何 (なに/なん)</AccordionTrigger>
+                <AccordionItem value="item-3">
+                    <AccordionTrigger className="text-xl font-semibold">§3. Основной падеж (N)</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Местоимение <span className="font-japanese">何</span> означает "что?" и используется в вопросах о предметах. Его произношение меняется в зависимости от следующего за ним звука.</p>
-                        <ul className="list-disc list-inside space-y-2">
-                             <li>Произносится как <strong className="font-japanese">なに</strong>, когда за ним следует самостоятельное слово.</li>
-                             <li>Произносится как <strong className="font-japanese">なん</strong> перед звуками [н], [т], [д], а также перед счетными суффиксами: <InteractiveText analysis={grammarAnalyses.sorewanandesuka} /> <span className="text-muted-foreground text-sm">(нан-десу ка)</span></li>
-                        </ul>
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-6">
-                    <AccordionTrigger className="text-xl font-semibold">§4. Связка です и её формы</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Связка です используется в конце предложения, чтобы сделать его вежливым (нейтрально-вежливый стиль). У неё есть утвердительная и отрицательная формы.</p>
-                        <div className="flex items-center space-x-4 p-4 rounded-lg bg-card/70 my-4">
-                            <Label htmlFor="tense-switch" className={cn(useJaArimasen && "text-muted-foreground")}>Утвердительная</Label>
-                            <Switch id="tense-switch" checked={useJaArimasen} onCheckedChange={(checked) => setUseJaArimasen(checked)} aria-readonly />
-                            <Label htmlFor="tense-switch" className={cn(!useJaArimasen && "text-muted-foreground")}>Отрицательная</Label>
-                        </div>
-                        <div className="p-4 bg-muted rounded-lg text-center">
-                            <p className="text-2xl font-japanese">
-                            {useJaArimasen ? '〜ではありません / 〜じゃありません' : '〜です'}
-                            </p>
-                            <p className="text-sm text-muted-foreground mt-2">
-                            {useJaArimasen ? 'Отрицательная форма (ではありません — нейтрально-вежливая, じゃありません — разговорный вариант)' : 'Настоящее-будущее время, утверждение'}
-                            </p>
-                        </div>
-                    </AccordionContent>
-                </AccordionItem>
-                 <AccordionItem value="item-7">
-                    <AccordionTrigger className="text-xl font-semibold">§5. Составное именное сказуемое</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Это самый простой тип предложения. Оно состоит из подлежащего (существительное или местоимение), частицы и сказуемого, выраженного другим существительным/местоимением со связкой.</p>
-                        
+                        <p>Основной падеж совпадает с формой слова в словаре и не имеет специального показателя. Используется в нескольких случаях:</p>
                         <Card className="bg-card/70 mt-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Утвердительные предложения</CardTitle>
-                                <CardDescription>Схема: N1 は N2 です</CardDescription>
-                            </CardHeader>
+                            <CardHeader><CardTitle>1. Обращение</CardTitle></CardHeader>
                             <CardContent>
-                                <InteractiveText analysis={grammarAnalyses.anokatahasenseidesu} />
-                                <hr className="my-4"/>
-                                <InteractiveText analysis={grammarAnalyses.gakuseihaanohitodesu} />
+                                <p>При обращении к кому-либо. Часто используется с вежливыми суффиксами.</p>
+                                <p className="font-japanese text-2xl my-2">やまだ！ <span className="text-lg text-muted-foreground">— Ямада!</span></p>
+                                <p className="font-japanese text-2xl my-2">やまだ<TooltipProvider><Tooltip><TooltipTrigger><span className="text-primary underline decoration-dotted">さん</span></TooltipTrigger><TooltipContent>Суффиксы вежливости: さん (универсальный), 様 (さま, очень вежливый), 君 (くん, к младшим/равным мужчинам), ちゃん (к детям/близким подругам).</TooltipContent></Tooltip></TooltipProvider>！ <span className="text-lg text-muted-foreground">— г-н Ямада!</span></p>
                             </CardContent>
                         </Card>
-
                         <Card className="bg-card/70 mt-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Отрицательные предложения</CardTitle>
-                                <CardDescription>Схема: N1 は N2 ではありません</CardDescription>
-                            </CardHeader>
+                            <CardHeader><CardTitle>2. Сказуемое с です</CardTitle></CardHeader>
                             <CardContent>
-                                 <InteractiveText analysis={grammarAnalyses.anokatahasenseidehaarimasen} />
-                                 <hr className="my-4"/>
-                                <InteractiveText analysis={grammarAnalyses.gakuseihaanohitojaarimasen} />
+                                <p>Как именная часть сказуемого. Связка です делает предложение вежливым.</p>
+                                <InteractiveText analysis={grammarAnalyses.gakuseidesu} />
+                                <div className="flex items-center space-x-2 mt-4">
+                                    <Button variant={desuForm === 'da' ? 'default' : 'outline'} size="sm" onClick={() => setDesuForm('da')}>だ</Button>
+                                    <Button variant={desuForm === 'desu' ? 'default' : 'outline'} size="sm" onClick={() => setDesuForm('desu')}>です</Button>
+                                    <Button variant={desuForm === 'dewa arimasen' ? 'default' : 'outline'} size="sm" onClick={() => setDesuForm('dewa arimasen')}>ではありません</Button>
+                                </div>
+                                <p className="font-japanese text-2xl mt-2">{renderDesuExample()}</p>
                             </CardContent>
                         </Card>
-                        <div className="text-sm text-muted-foreground pt-4">В японском языке сказуемое — обязательный член предложения, тогда как подлежащее может быть опущено. Например, можно сказать просто <InteractiveText analysis={grammarAnalyses.senseidesu}/>, и это будет означать "(Он/Она/Я) — преподаватель."</div>
-                    </AccordionContent>
-                </AccordionItem>
-                 <AccordionItem value="item-8">
-                    <AccordionTrigger className="text-xl font-semibold">§6. Вопросительное предложение</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Признаки вопросительного предложения — это интонация и частица <span className="font-japanese font-bold">か</span> в конце. Порядок слов остается таким же, как и в повествовательном предложении.</p>
-                        
                         <Card className="bg-card/70 mt-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">1. Вопросы с вопросительным словом</CardTitle>
-                                <CardDescription>Схема: N は N1 (вопр. слово) ですか</CardDescription>
-                            </CardHeader>
+                            <CardHeader><CardTitle>3. С подлежащим через は</CardTitle></CardHeader>
                             <CardContent>
-                                <InteractiveText analysis={grammarAnalyses.questions.anokatawadonadesuka} />
-                            </CardContent>
-                        </Card>
-
-                        <Card className="bg-card/70 mt-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">2. Вопросы без вопросительного слова</CardTitle>
-                                <CardDescription>Схема: N1 は N2 ですか</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                 <p className="font-bold">Вопрос:</p>
-                                 <InteractiveText analysis={grammarAnalyses.questions.anokatawagakuseidesuka} />
-                                 <hr className="my-4"/>
-                                 <p className="font-bold">а) Утвердительные ответы:</p>
-                                 <InteractiveText analysis={grammarAnalyses.questions.hai_anokatawagakuseidesu} />
-                                 <InteractiveText analysis={grammarAnalyses.questions.hai_soudesu} />
-                                 <hr className="my-4"/>
-                                 <p className="font-bold">б) Отрицательные ответы:</p>
-                                 <InteractiveText analysis={grammarAnalyses.questions.iie_anokatawagakuseidehaarimasen} />
-                                 <InteractiveText analysis={grammarAnalyses.questions.iie_senseidesu} />
-                            </CardContent>
-                        </Card>
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-9">
-                    <AccordionTrigger className="text-xl font-semibold">§7. Альтернативный вопрос</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                        <p>Альтернативный вопрос, ставящий собеседника перед выбором из нескольких предметов или действий, передаётся повторением сказуемостной части предложения с вопросительной частицей <span className="font-japanese font-bold">か</span>.</p>
-                        <Card className="bg-card/70 mt-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Пример</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <InteractiveText analysis={grammarAnalyses.alternative.anokatahasenseidesukagakuseidesuka} />
+                                <p>Частица は (ва) выделяет тему предложения. Существительное при этом стоит в основном падеже.</p>
+                                <InteractiveText analysis={grammarAnalyses.tanakasan_wa_gakuseidesu} />
                             </CardContent>
                         </Card>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
             
-            <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">ぶんれい (Примеры)</h2>
-            <Card className="mb-12">
-                <CardContent className="p-6 space-y-4">
-                    {Object.values(grammarAnalyses.bunrei).map((analysis, index) => (
-                        <div key={index} className="border-b pb-2">
-                             <InteractiveText analysis={analysis} />
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
-
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">📝 Закрепление</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
             <div className="w-full max-w-4xl space-y-8">
                 {exercises.map(renderExercise)}
             </div>
              <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
-                <Button size="lg" variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Повторить теорию</Button>
+                <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
                 <Button size="lg" asChild className="btn-gradient">
-                    <Link href="/vocabulary">Следующий блок → Лексика</Link>
+                    <Link href="#">Следующий параграф → Местоимения</Link>
                 </Button>
              </div>
         </div>
