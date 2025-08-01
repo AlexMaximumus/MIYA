@@ -156,11 +156,11 @@ const cases = [
 ];
 
 const pronouns = [
-    { face: '1-е лицо', jp: 'わたくし', romaji: 'watakushi', translation: 'я (очень вежливо)', plural: 'わたくしたち' },
-    { face: '1-е лицо', jp: 'わたし', romaji: 'watashi', translation: 'я (нейтрально)', plural: 'わたしたち' },
-    { face: '2-е лицо', jp: 'あなた', romaji: 'anata', translation: 'ты, вы', plural: 'あなたがた' },
-    { face: '3-е лицо', jp: 'あのかた', romaji: 'ano kata', translation: 'он, она (вежливо)', plural: 'あのかたがた' },
-    { face: '3-е лицо', jp: 'あのひと', romaji: 'ano hito', translation: 'он, она (нейтрально)', plural: 'あのひとたち' },
+    { face: '1-е лицо', jp: 'わたくし', romaji: 'watakushi', translation: 'я (очень вежливо)', plural: 'わたくしたち', pluralRomaji: 'watakushitachi' },
+    { face: '1-е лицо', jp: 'わたし', romaji: 'watashi', translation: 'я (нейтрально)', plural: 'わたしたち', pluralRomaji: 'watashitachi' },
+    { face: '2-е лицо', jp: 'あなた', romaji: 'anata', translation: 'ты, вы', plural: 'あなたがた', pluralRomaji: 'anatagata' },
+    { face: '3-е лицо', jp: 'あのかた', romaji: 'ano kata', translation: 'он, она (вежливо)', plural: 'あのかたがた', pluralRomaji: 'ano katagata' },
+    { face: '3-е лицо', jp: 'あのひと', romaji: 'ano hito', translation: 'он, она (нейтрально)', plural: 'あのひとたち', pluralRomaji: 'ano hitotachi' },
 ];
 
 const LESSON_ID = 'lesson-1';
@@ -176,6 +176,7 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
 
     useEffect(() => {
         const stringOptions = options.map(o => typeof o === 'string' ? o : o.word);
+        // This logic runs only on the client, avoiding hydration mismatch.
         setShuffledOptions([...stringOptions].sort(() => Math.random() - 0.5));
     }, [options]);
 
@@ -195,6 +196,17 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
         </div>
     );
 }
+
+const PronounCell = ({ text, romaji }: { text: string; romaji: string }) => (
+    <Tooltip>
+        <TooltipTrigger>
+            <span className="underline decoration-dotted cursor-pointer">{text}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+            <p>{romaji}</p>
+        </TooltipContent>
+    </Tooltip>
+);
 
 export default function GrammarLesson1Page() {
     const [progress, setProgress] = useState(0);
@@ -494,6 +506,7 @@ export default function GrammarLesson1Page() {
                             <Switch id="plural-switch" checked={showPlural} onCheckedChange={setShowPlural} />
                             <Label htmlFor="plural-switch">Показать множественное число</Label>
                         </div>
+                        <TooltipProvider>
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -507,13 +520,17 @@ export default function GrammarLesson1Page() {
                                     <TableRow key={p.jp}>
                                         <TableCell>{p.face}</TableCell>
                                         <TableCell className="font-japanese text-lg">
-                                            {showPlural ? p.plural : p.jp}
+                                             <PronounCell 
+                                                text={showPlural ? p.plural : p.jp} 
+                                                romaji={showPlural ? p.pluralRomaji : p.romaji}
+                                             />
                                         </TableCell>
                                         <TableCell>{p.translation}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
+                        </TooltipProvider>
                          <p className="text-sm text-muted-foreground mt-2"><b>Важно:</b> местоимение <b>あなた</b> (ты/вы) используется редко. Японцы предпочитают обращаться к человеку по имени или должности (например, やまださん или せんせい).</p>
                     </AccordionContent>
                 </AccordionItem>

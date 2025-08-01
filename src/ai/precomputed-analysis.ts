@@ -308,12 +308,10 @@ export const grammarAnalyses = {
             { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
             { word: 'か', furigana: 'か', translation: 'частица (вопрос)', partOfSpeech: 'вопросительная частица' },
             { "word": "。", "furigana": "", "translation": "точка", "partOfSpeech": "знак препинания" },
-            { word: 'あのひと', furigana: 'あのひと', translation: 'тот человек', partOfSpeech: 'местоимение' },
-            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
             { word: 'たなかさん', furigana: 'たなかさん', translation: 'г-н Танака', partOfSpeech: 'имя собственное' },
             { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
         ],
-        fullTranslation: 'Кто тот человек? — Тот человек г-н Танака.',
+        fullTranslation: 'Кто тот человек? — Господин Танака.',
     },
     soujisanhagishidesuka_haisoudesu: {
         sentence: [
