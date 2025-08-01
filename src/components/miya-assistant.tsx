@@ -56,6 +56,16 @@ export default function MiyaAssistant() {
   const pathname = usePathname();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tauntTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // This is needed to correctly wire up the audioRef on the client
+    if (typeof Audio !== "undefined") {
+        const audio = new Audio('/sounds/salto-sound.mp3');
+        audio.preload = 'auto';
+        audioRef.current = audio;
+    }
+  }, []);
 
   useEffect(() => {
     const scheduleTaunt = () => {
@@ -115,6 +125,9 @@ export default function MiyaAssistant() {
 
     if (inputValue.toLowerCase().includes('сальтуха')) {
         setIsFlipping(true);
+        if (audioRef.current) {
+            audioRef.current.play();
+        }
         setTimeout(() => setIsFlipping(false), 1000); // Animation duration
     }
 
