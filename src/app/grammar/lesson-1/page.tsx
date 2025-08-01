@@ -132,6 +132,37 @@ const pronouns = [
 
 const LESSON_ID = 'lesson-1';
 
+const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer, result }: {
+    exercise: Exercise,
+    answers: Record<string, any>,
+    handleConstructAnswer: (questionId: string, word: string) => void,
+    resetConstructAnswer: (questionId: string) => void,
+    result: boolean | null
+}) => {
+    const { id, options } = exercise;
+    const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
+
+    useEffect(() => {
+        setShuffledOptions((options as string[]).sort(() => Math.random() - 0.5));
+    }, [options]);
+
+    return (
+        <div className="space-y-4">
+            <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
+                {(answers[id] || []).join(' ')}
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {shuffledOptions.map((word, index) => (
+                    <Button key={index} variant="outline" onClick={() => handleConstructAnswer(id, word)}>
+                        {word}
+                    </Button>
+                ))}
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => resetConstructAnswer(id)}>Сбросить</Button>
+        </div>
+    );
+}
+
 export default function GrammarLesson1Page() {
     const [progress, setProgress] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({ q1: {}, q8: [], q9: [] });
@@ -219,7 +250,7 @@ export default function GrammarLesson1Page() {
     }
     
     const renderExercise = (exercise: Exercise) => {
-        const { id, type, title, description, options, correctAnswer } = exercise;
+        const { id, type, title, description, options } = exercise;
         const result = results[id];
 
         const baseCard = (content: React.ReactNode) => (
@@ -281,19 +312,13 @@ export default function GrammarLesson1Page() {
                 );
             case 'construct':
                 return baseCard(
-                    <div className="space-y-4">
-                        <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
-                           {(answers[id] || []).join(' ')}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {([...options] as string[]).sort(() => Math.random() - 0.5).map((word, index) => (
-                                <Button key={index} variant="outline" onClick={() => handleConstructAnswer(id, word)}>
-                                    {word}
-                                </Button>
-                            ))}
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={() => resetConstructAnswer(id)}>Сбросить</Button>
-                    </div>
+                   <ExerciseConstruct
+                        exercise={exercise}
+                        answers={answers}
+                        handleConstructAnswer={handleConstructAnswer}
+                        resetConstructAnswer={resetConstructAnswer}
+                        result={result}
+                   />
                 );
             default:
                 return null;
