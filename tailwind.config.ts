@@ -109,8 +109,8 @@ export default {
             '100%': { opacity: '0', transform: 'translateY(-10px)' },
         },
         'flip': {
-          'from': { transform: 'rotateY(0deg)' },
-          'to': { transform: 'rotateY(360deg)' },
+          'from': { transform: 'rotate(0deg)' },
+          'to': { transform: 'rotate(360deg)' },
         },
       },
       animation: {
