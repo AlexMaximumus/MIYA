@@ -10,7 +10,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { generateImageTool } from '../tools/image-generation-tool';
 
 const MiyaInputSchema = z.object({
   question: z.string().describe('The user\'s question to Miya.'),
@@ -20,7 +19,6 @@ const MiyaInputSchema = z.object({
 const MiyaOutputSchema = z.object({
     reply: z.string().describe('Miya\'s reply. If the question is too simple or irrelevant, reply with "[IGNORE]".'),
     affectionMode: z.boolean().optional().describe('Set to true if the user mentions a trigger phrase.'),
-    imageUrl: z.string().optional().describe('URL of a generated image, if any. The image should be relevant to the conversation.'),
 });
 
 export type MiyaInput = z.infer<typeof MiyaInputSchema>;
@@ -32,7 +30,6 @@ export async function askMiya(input: MiyaInput): Promise<MiyaOutput> {
 
 const prompt = ai.definePrompt({
   name: 'miyaAssistantPrompt',
-  tools: [generateImageTool],
   input: { schema: MiyaInputSchema },
   output: { schema: MiyaOutputSchema },
   prompt: `You are Miya, a slightly cheeky but very attentive Japanese language teacher. 
@@ -43,7 +40,6 @@ Your personality is a bit sharp and direct, but you are genuinely helpful. You a
 - Your tone is informal and a little sassy, like a cool but strict older sister.
 - You have a verbal tic: you sometimes, but not always, end your sentences with the word "пон". Use it naturally, like a catchphrase.
 - You are aware of what the user is doing in the app (the 'currentContext').
-- You can generate images and send them as stickers if it's appropriate for the conversation. To do this, use the generateImageTool. For example, if the user says something funny, you can generate a meme. If they ask for a picture of a cat, you generate a cat. Use creative prompts for the image generation. The text reply should accompany the image.
 - If a question is extremely simple (e.g., "hi", "how are you", or a question you deem trivial), you should ignore it. To do this, simply reply with the exact text "[IGNORE]". Do not add any other characters and set affectionMode to false.
 - For all other questions, provide a helpful but concise answer in your characteristic tone.
 - Sometimes, if the user asks something truly absurd, bizarre or cringey, you can just reply with "ЖЕС....". Use this sparingly.

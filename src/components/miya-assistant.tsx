@@ -14,7 +14,6 @@ import Image from 'next/image';
 
 type Message = {
   text: string;
-  imageUrl?: string;
   sender: 'user' | 'miya';
   status?: 'read';
 };
@@ -76,15 +75,8 @@ export default function MiyaAssistant() {
         setAffectionMode(true);
       }
       
-      const hasTextReply = response.reply && response.reply.trim() !== '[IGNORE]';
-      const hasImageReply = !!response.imageUrl;
-
-      if (hasTextReply || hasImageReply) {
-        const miyaMessage: Message = { 
-            text: hasTextReply ? response.reply : '', 
-            imageUrl: response.imageUrl,
-            sender: 'miya' 
-        };
+      if (response.reply && response.reply.trim() !== '[IGNORE]') {
+        const miyaMessage: Message = { text: response.reply, sender: 'miya' };
         setMessages((prev) => [...prev, miyaMessage]);
       } else {
         // If response is [IGNORE]
@@ -166,15 +158,6 @@ export default function MiyaAssistant() {
                         )}
                       >
                         {msg.text}
-                        {msg.imageUrl && (
-                            <Image 
-                                src={msg.imageUrl}
-                                alt="Generated Sticker"
-                                width={200}
-                                height={200}
-                                className="mt-2 rounded-md"
-                            />
-                        )}
                       </div>
                       {msg.sender === 'user' && msg.status === 'read' && (
                          <p className="text-xs text-muted-foreground/70 text-right">Прочитано</p>
