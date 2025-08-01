@@ -4,6 +4,7 @@
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { termExplanations } from '@/ai/precomputed-analysis';
+import { Skeleton } from './ui/skeleton';
 
 interface InteractiveTextProps {
   analysis: JapaneseAnalysisOutput | null;
@@ -27,7 +28,12 @@ const TermTooltip = ({ term }: { term: string }) => {
 export default function InteractiveText({ analysis }: InteractiveTextProps) {
 
   if (!analysis) {
-    return <span className="text-destructive">Ошибка: нет данных для анализа.</span>;
+    return (
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-full max-w-[350px]" />
+        <Skeleton className="h-4 w-full max-w-[300px]" />
+      </div>
+    );
   }
 
   return (
