@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -100,7 +101,7 @@ export default function MiyaAssistant() {
     <>
       <div className="fixed bottom-6 right-6 z-50">
         <Button onClick={toggleChat} size="icon" className={cn(
-            "rounded-full w-16 h-16 btn-gradient shadow-lg transition-all duration-500 p-0 overflow-hidden",
+            "rounded-full w-14 h-14 btn-gradient shadow-lg transition-all duration-500 p-0 overflow-hidden",
             affectionMode && 'bg-gradient-to-br from-pink-400 to-rose-400'
             )}>
           {isOpen ? <X /> : 
@@ -110,7 +111,7 @@ export default function MiyaAssistant() {
                     alt="Miya Assistant"
                     fill
                     className={cn(
-                        "object-cover scale-150 group-hover:scale-125 transition-transform duration-300",
+                        "object-cover scale-100 group-hover:scale-110 transition-transform duration-300",
                         affectionMode && 'animate-pulse'
                     )}
                 />
