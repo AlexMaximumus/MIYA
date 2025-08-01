@@ -105,7 +105,7 @@ export default function MiyaAssistant() {
           {isOpen ? <X /> : 
             <div className="relative w-full h-full group">
                 <Image 
-                    src="https://firebasestorage.googleapis.com/v0/b/miya-lingo.appspot.com/o/miya-pixel-art.png?alt=media&token=8d234a41-11c9-4806-b52b-2a299f187311"
+                    src="/miya-pixel-art.png"
                     alt="Miya Assistant"
                     fill
                     className={cn(
