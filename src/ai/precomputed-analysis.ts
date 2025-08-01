@@ -233,5 +233,131 @@ export const grammarAnalyses = {
             { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" },
         ],
         "fullTranslation": "Я не студент."
+    },
+    // Lesson 2
+    anokatawagakuseidesuka: {
+        sentence: [
+            { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+            { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" }
+        ],
+        "fullTranslation": "Он студент?"
+    },
+    hai_anokatawagakuseidesu: {
+        sentence: [
+            { "word": "はい", "furigana": "はい", "translation": "да", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+            { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
+        ],
+        "fullTranslation": "Да, он студент."
+    },
+    hai_soudesu: {
+        sentence: [
+            { "word": "はい", "furigana": "はい", "translation": "да", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "そうです", "furigana": "そうです", "translation": "это так", "partOfSpeech": "выражение" }
+        ],
+        "fullTranslation": "Да, это так."
+    },
+    iie_anokatawagakuseidehaarimasen: {
+        sentence: [
+            { "word": "いいえ", "furigana": "いいえ", "translation": "нет", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+            { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "では", "furigana": "では", "translation": "отрицательная частица", "partOfSpeech": "отрицательная частица" },
+            { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" }
+        ],
+        "fullTranslation": "Нет, он не студент."
+    },
+    iie_anokatahasenseidesu: {
+        sentence: [
+            { "word": "いいえ", "furigana": "いいえ", "translation": "нет", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
+            { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
+        ],
+        "fullTranslation": "Нет, он учитель."
+    },
+    iie_senseidesu: {
+        sentence: [
+            { "word": "いいえ", "furigana": "いいえ", "translation": "нет", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
+        ],
+        "fullTranslation": "Нет, (он) учитель."
+    },
+    anohitohadaredesuka_tanakasandesu: {
+        sentence: [
+            { word: 'あのひと', furigana: 'あのひと', translation: 'тот человек', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'だれ', furigana: 'だれ', translation: 'кто', partOfSpeech: 'вопросительное местоимение' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'частица (вопрос)', partOfSpeech: 'вопросительная частица' },
+            { "word": "。", "furigana": "", "translation": "точка", "partOfSpeech": "знак препинания" },
+            { word: 'あのひと', furigana: 'あのひと', translation: 'тот человек', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'たなかさん', furigana: 'たなかさん', translation: 'г-н Танака', partOfSpeech: 'имя собственное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Кто тот человек? — Тот человек г-н Танака.',
+    },
+    soujisanhagishidesuka_haisoudesu: {
+        sentence: [
+            { "word": "そうじさん", "furigana": "そうじさん", "translation": "г-н Содзи", "partOfSpeech": "имя собственное" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "ぎし", "furigana": "ぎし", "translation": "инженер", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "частица (вопрос)", "partOfSpeech": "вопросительная частица" },
+            { "word": "。", "furigana": "", "translation": "точка", "partOfSpeech": "знак препинания" },
+            { "word": "はい", "furigana": "はい", "translation": "да", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "そうです", "furigana": "そうです", "translation": "это так", "partOfSpeech": "выражение" },
+        ],
+        "fullTranslation": "Господин Содзи инженер? — Да, это так."
+    },
+    yamadasanhagakuseidesuka_iiesenseidesu: {
+        sentence: [
+            { "word": "やまださん", "furigana": "やまださん", "translation": "г-н Ямада", "partOfSpeech": "имя собственное" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "частица (вопрос)", "partOfSpeech": "вопросительная частица" },
+            { "word": "。", "furigana": "", "translation": "точка", "partOfSpeech": "знак препинания" },
+            { "word": "いいえ", "furigana": "いいえ", "translation": "нет", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+        ],
+        "fullTranslation": "Господин Ямада студент? — Нет, он учитель."
+    },
+    anohitohasenseidesuka_iiedewaarimasen: {
+        sentence: [
+            { "word": "あのひと", "furigana": "あのひと", "translation": "тот человек", "partOfSpeech": "местоимение" },
+            { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
+            { "word": "か", "furigana": "か", "translation": "частица (вопрос)", "partOfSpeech": "вопросительная частица" },
+            { "word": "。", "furigana": "", "translation": "точка", "partOfSpeech": "знак препинания" },
+            { "word": "いいえ", "furigana": "いいえ", "translation": "нет", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "では", "furigana": "では", "translation": "отрицательная частица", "partOfSpeech": "отрицательная частица" },
+            { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" },
+        ],
+        "fullTranslation": "Тот человек учитель? — Нет, не учитель."
     }
 }

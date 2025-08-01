@@ -12,7 +12,15 @@ const lessons = [
         id: 'lesson-1',
         title: 'Основы: Связки и предложения',
         description: 'Части речи, связка です, простые утвердительные, отрицательные и вопросительные предложения.',
-        href: '/grammar/lesson-1'
+        href: '/grammar/lesson-1',
+        lessonNumber: 1,
+    },
+    {
+        id: 'lesson-2',
+        title: 'Вопросительные предложения',
+        description: 'Структура общих и специальных вопросов, вопросительные слова и правильные ответы на вопросы.',
+        href: '/grammar/lesson-2',
+        lessonNumber: 2,
     }
 ];
 
@@ -44,7 +52,7 @@ export default function GrammarHubPage() {
                     description={lesson.description}
                     href={lesson.href}
                     icon={<BookCheck className="w-8 h-8" />}
-                    lessonNumber={1}
+                    lessonNumber={lesson.lessonNumber}
                 />
             ))}
             {/* Future lessons will be added here */}
