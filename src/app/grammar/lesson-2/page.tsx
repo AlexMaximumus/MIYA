@@ -262,7 +262,7 @@ export default function GrammarLesson2Page() {
                     <AccordionItem value="item-1">
                         <AccordionTrigger className="text-xl font-semibold">§8. Вопросительное предложение</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                            <p>В японском языке вопрос формируется очень просто. Порядок слов не меняется, а в конце предложения ставится частица <b className="text-primary font-japanese">か</b>. Вопросительный знак (?) обычно не используется, так как частица か уже указывает на вопрос.</p>
+                            <div>В японском языке вопрос формируется очень просто. Порядок слов не меняется, а в конце предложения ставится частица <b className="text-primary font-japanese">か</b>. Вопросительный знак (?) обычно не используется, так как частица か уже указывает на вопрос.</div>
                             
                             <Card className="mt-4">
                                 <CardHeader><CardTitle className="text-lg flex items-center gap-2"><HelpCircle className="text-primary"/>Типы вопросительных предложений</CardTitle></CardHeader>
@@ -270,7 +270,7 @@ export default function GrammarLesson2Page() {
                                     <div>
                                         <h4 className="font-semibold text-lg">1. С вопросительным словом (специальный вопрос)</h4>
                                         <p className="text-muted-foreground text-base">Такие вопросы требуют конкретного ответа (кто, что, где и т.д.).</p>
-                                        <p className="mt-2">Схема: <InteractiveFormula formula="N は QW です か 。" /></p>
+                                        <div className="mt-2">Схема: <InteractiveFormula formula="N は QW です か 。" /></div>
                                         <div className="my-4">
                                             <InteractiveText analysis={grammarAnalyses.anokatawadonatadesuka} />
                                         </div>
@@ -278,7 +278,7 @@ export default function GrammarLesson2Page() {
                                     <div className="border-t pt-4">
                                         <h4 className="font-semibold text-lg">2. Без вопросительного слова (общий вопрос)</h4>
                                         <p className="text-muted-foreground text-base">На такие вопросы можно ответить "да" или "нет".</p>
-                                        <p className="mt-2">Схема: <InteractiveFormula formula="N は N です か 。" /></p>
+                                        <div className="mt-2">Схема: <InteractiveFormula formula="N は N です か 。" /></div>
                                         <div className="my-4">
                                             <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} />
                                         </div>
@@ -339,3 +339,5 @@ export default function GrammarLesson2Page() {
     );
 }
 
+
+    
