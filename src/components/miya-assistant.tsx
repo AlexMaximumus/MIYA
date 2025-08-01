@@ -61,7 +61,7 @@ export default function MiyaAssistant() {
   useEffect(() => {
     // This is needed to correctly wire up the audioRef on the client
     if (typeof Audio !== "undefined") {
-        const audio = new Audio('/sounds/salto-sound.mp3');
+        const audio = new Audio('/sounds/0801.MP3');
         audio.preload = 'auto';
         audioRef.current = audio;
     }
