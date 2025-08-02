@@ -87,9 +87,9 @@ const affixesData = [
     { word: 'りょうしん', correct: 'ご', type: 'chinese' }
 ];
 
-const LESSON_ID = 'lesson-3';
+const LESSON_ID = 'word-formation-lesson-1';
 
-export default function GrammarLesson3Page() {
+export default function WordFormationLesson1Page() {
     const [progress, setProgress] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({});
     const [results, setResults] = useState<Record<string, boolean | null>>({});
@@ -251,7 +251,7 @@ export default function GrammarLesson3Page() {
             <div className="w-full max-w-4xl">
                 <div className="flex justify-between items-center mb-4">
                     <Button asChild variant="ghost">
-                        <Link href="/grammar">
+                        <Link href="/word-formation">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             К списку уроков
                         </Link>
@@ -263,7 +263,7 @@ export default function GrammarLesson3Page() {
                 </div>
                 <Card className="w-full mb-8">
                     <CardHeader>
-                        <p className="text-sm text-primary font-semibold">Урок 3 — Грамматика</p>
+                        <p className="text-sm text-primary font-semibold">Урок 1 — Словообразование</p>
                         <CardTitle className="text-2xl md:text-3xl">Тема: Аффиксы вежливости</CardTitle>
                         <CardDescription>Прогресс по теме:</CardDescription>
                         <Progress value={progress} className="mt-2" />
@@ -273,7 +273,7 @@ export default function GrammarLesson3Page() {
                 <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
                 <Accordion type="single" collapsible className="w-full max-w-4xl mb-12" defaultValue="item-1">
                     <AccordionItem value="item-1">
-                        <AccordionTrigger className="text-xl font-semibold">§10. Суффикс вежливости さん</AccordionTrigger>
+                        <AccordionTrigger className="text-xl font-semibold">§1. Суффикс вежливости さん</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
                             <p>Категория вежливости — основа японской речевой культуры. Суффикс <b className="text-primary font-japanese">〜さん</b> является универсальным и самым распространенным способом выказать уважение к собеседнику. Его можно перевести как «господин/госпожа».</p>
                              <ul className="list-disc list-inside space-y-2">
@@ -291,7 +291,7 @@ export default function GrammarLesson3Page() {
                         </AccordionContent>
                     </AccordionItem>
                      <AccordionItem value="item-2">
-                        <AccordionTrigger className="text-xl font-semibold">§11. Префиксы вежливости お- и ご-</AccordionTrigger>
+                        <AccordionTrigger className="text-xl font-semibold">§2. Префиксы вежливости お- и ご-</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
                             <p>Префиксы <b className="text-primary font-japanese">お-</b> и <b className="text-primary font-japanese">ご-</b> ставятся перед существительными, чтобы придать им вежливый оттенок. Часто они используются, когда речь идет о чем-то, что принадлежит собеседнику, или для общей вежливости.</p>
                             <Table>
@@ -357,7 +357,7 @@ export default function GrammarLesson3Page() {
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
                     <Button size="lg" asChild className="btn-gradient" disabled>
-                        <Link href="#">Перейти к Уроку 4 →</Link>
+                        <Link href="#">Перейти к Уроку 2 →</Link>
                     </Button>
                 </div>
             </div>

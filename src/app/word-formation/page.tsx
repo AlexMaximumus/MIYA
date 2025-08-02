@@ -3,30 +3,22 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, BookCheck, CaseUpper } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { ArrowLeft, CaseUpper } from 'lucide-react';
 import LessonCard from '@/components/lesson-card';
 
 const lessons = [
     {
-        id: 'lesson-1',
-        title: 'Основы: Связки и предложения',
-        description: 'Части речи, связка です, простые утвердительные, отрицательные и вопросительные предложения.',
-        href: '/grammar/lesson-1',
+        id: 'word-formation-lesson-1',
+        title: 'Аффиксы вежливости',
+        description: 'Использование уважительных суффиксов (さん) и префиксов (お／ご) в японской речи.',
+        href: '/word-formation/lesson-1',
         lessonNumber: 1,
-        icon: <BookCheck className="w-8 h-8" />
-    },
-    {
-        id: 'lesson-2',
-        title: 'Вопросительные предложения',
-        description: 'Структура общих и специальных вопросов, вопросительные слова и правильные ответы на вопросы.',
-        href: '/grammar/lesson-2',
-        lessonNumber: 2,
-        icon: <BookCheck className="w-8 h-8" />
+        icon: <CaseUpper className="w-8 h-8" />
     }
 ];
 
-export default function GrammarHubPage() {
+export default function WordFormationHubPage() {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
       <div className="w-full max-w-4xl">
@@ -40,8 +32,8 @@ export default function GrammarHubPage() {
         </div>
         <Card className="w-full mb-8">
             <CardHeader>
-                <CardTitle className="text-2xl md:text-3xl">Раздел: Грамматика</CardTitle>
-                <CardDescription>Выберите урок, чтобы погрузиться в теорию и практику японской грамматики.</CardDescription>
+                <CardTitle className="text-2xl md:text-3xl">Раздел: Словообразование</CardTitle>
+                <CardDescription>Выберите урок, чтобы узнать о строении японских слов.</CardDescription>
             </CardHeader>
         </Card>
 
@@ -57,7 +49,6 @@ export default function GrammarHubPage() {
                     lessonNumber={lesson.lessonNumber}
                 />
             ))}
-            {/* Future lessons will be added here */}
             <Card className="bg-card/60 border-dashed border-2 flex items-center justify-center text-muted-foreground min-h-[180px]">
                 <p>Скоро здесь появятся новые уроки!</p>
             </Card>

@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, Workflow } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, Workflow, CaseUpper } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -124,11 +124,13 @@ export default function MainScreen() {
               description="Освойте правила и структуры"
             />
         </Link>
-        <CategoryCard
-          icon={<Workflow className="w-10 h-10 md:w-12 md:h-12" />}
-          title="Синтаксис и построение предложений"
-          description="Научитесь строить предложения"
-        />
+        <Link href="/word-formation">
+            <CategoryCard
+              icon={<CaseUpper className="w-10 h-10 md:w-12 md:h-12" />}
+              title="Словообразование"
+              description="Изучите аффиксы и строение слов"
+            />
+        </Link>
       </div>
     </div>
   );
