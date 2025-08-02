@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Send, X, CornerDownLeft, Loader2 } from 'lucide-react';
+import { Send, X, CornerDownLeft, Loader2, Heart } from 'lucide-react';
 import { askMiya, MiyaOutput } from '@/ai/flows/miya-assistant-flow';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -13,10 +13,12 @@ import Image from 'next/image';
 
 
 type Message = {
+  id: number;
   text: string;
   sender: 'user' | 'miya';
   status?: 'read';
   stickerUrl?: string;
+  isLiked?: boolean;
 };
 
 const miyaTaunts = [
@@ -58,6 +60,7 @@ export default function MiyaAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tauntTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const messageIdCounter = useRef(0);
 
   useEffect(() => {
     // This is needed to correctly wire up the audioRef on the client
@@ -133,7 +136,8 @@ export default function MiyaAssistant() {
         setTimeout(() => setIsFlipping(false), 1000); // Animation duration
     }
 
-    const userMessage: Message = { text: inputValue, sender: 'user' };
+    const newMessageId = messageIdCounter.current++;
+    const userMessage: Message = { id: newMessageId, text: inputValue, sender: 'user' };
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
@@ -151,8 +155,13 @@ export default function MiyaAssistant() {
         setIsKoseiMode(true);
       }
       
-      if (response.reply && response.reply.trim() !== '[IGNORE]') {
+      if (response.reply === '[LIKE]') {
+        setMessages(prev => prev.map(msg => 
+            msg.id === newMessageId ? { ...msg, isLiked: true } : msg
+        ));
+      } else if (response.reply && response.reply.trim() !== '[IGNORE]') {
         const miyaMessage: Message = { 
+          id: messageIdCounter.current++,
           text: response.reply, 
           sender: 'miya',
           stickerUrl: response.stickerUrl,
@@ -162,13 +171,14 @@ export default function MiyaAssistant() {
         // If response is [IGNORE]
         setMessages((prev) =>
           prev.map((msg) =>
-            msg === userMessage ? { ...msg, status: 'read' } : msg
+            msg.id === newMessageId ? { ...msg, status: 'read' } : msg
           )
         );
       }
     } catch (error) {
       console.error('Error asking Miya:', error);
       const errorMessage: Message = {
+        id: messageIdCounter.current++,
         text: 'Упс, что-то пошло не так. Попробуй еще раз.',
         sender: 'miya',
       };
@@ -227,14 +237,14 @@ export default function MiyaAssistant() {
              )}
               <div className="h-80 overflow-y-auto pr-2 space-y-4 mb-4 relative z-10">
                 {messages.map((msg, index) => (
-                  <div key={index} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div key={index} className={`flex items-end gap-2 group ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                     {msg.sender === 'miya' && (
                         <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden self-start">
                             <Image src="/miya-pixel-art.png" alt="Miya Avatar" fill className="object-cover"/>
                         </div>
                     )}
                     <div className="flex flex-col gap-1 w-full max-w-[85%]">
-                      <div className={cn('rounded-lg px-3 py-2 ',
+                      <div className={cn('rounded-lg px-3 py-2 relative',
                           msg.sender === 'user'
                             ? 'bg-primary text-primary-foreground self-end'
                             : 'bg-muted text-muted-foreground self-start',
@@ -243,13 +253,18 @@ export default function MiyaAssistant() {
                         )}
                       >
                         {msg.text}
+                         {msg.isLiked && (
+                           <div className="absolute -bottom-3 -left-3 bg-card p-1 rounded-full shadow-md">
+                                <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                           </div>
+                         )}
                       </div>
                       {msg.stickerUrl && msg.sender === 'miya' && (
                         <div className="relative w-32 h-32 mt-2 rounded-lg overflow-hidden self-start">
                             <Image src={msg.stickerUrl} alt="Miya sticker" fill className="object-contain" />
                         </div>
                       )}
-                      {msg.sender === 'user' && msg.status === 'read' && (
+                      {msg.sender === 'user' && msg.status === 'read' && !msg.isLiked && (
                          <p className="text-xs text-muted-foreground/70 text-right w-full">Прочитано</p>
                       )}
                     </div>
