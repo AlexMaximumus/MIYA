@@ -1,8 +1,15 @@
 
 'use client';
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useState } from 'react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface InteractiveFormulaProps {
   formula: string;
@@ -23,6 +30,13 @@ const termExplanations: Record<string, string> = {
 
 export default function InteractiveFormula({ formula, className }: InteractiveFormulaProps) {
   const parts = formula.split(/(\s+|(?=[^\w\s])|(?<=[^\w\s]))/).filter(Boolean);
+  const [openPopover, setOpenPopover] = useState<string | null>(null);
+
+  const handleTriggerClick = (part: string, explanation?: string) => {
+    if (explanation) {
+        setOpenPopover(openPopover === part ? null : part);
+    }
+  };
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -37,16 +51,19 @@ export default function InteractiveFormula({ formula, className }: InteractiveFo
 
                 if (explanation) {
                     return (
-                        <Tooltip key={index}>
-                            <TooltipTrigger asChild>
-                            <span className="underline decoration-dotted cursor-pointer transition-colors hover:bg-primary/20 rounded px-1">
+                        <Popover key={index} open={openPopover === part} onOpenChange={(isOpen) => setOpenPopover(isOpen ? part : null)}>
+                            <PopoverTrigger asChild>
+                            <span 
+                                className="underline decoration-dotted cursor-pointer transition-colors hover:bg-primary/20 rounded px-1"
+                                onClick={() => handleTriggerClick(part, explanation)}
+                            >
                                 {part}
                             </span>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom">
-                            <p>{explanation}</p>
-                            </TooltipContent>
-                        </Tooltip>
+                            </PopoverTrigger>
+                            <PopoverContent side="bottom" className="w-auto max-w-xs p-2">
+                                <p>{explanation}</p>
+                            </PopoverContent>
+                        </Popover>
                     );
                 }
 
