@@ -15,8 +15,6 @@ interface LessonCardProps {
     lessonNumber: number;
 }
 
-const BASE_PROGRESS = 80;
-
 export default function LessonCard({ lessonId, title, description, href, icon, lessonNumber }: LessonCardProps) {
     const [progress, setProgress] = useState<number | null>(null);
 
@@ -24,11 +22,13 @@ export default function LessonCard({ lessonId, title, description, href, icon, l
         // This effect runs on the client-side only
         const storedProgress = localStorage.getItem(`${lessonId}-progress`);
         if (storedProgress) {
-            setProgress(JSON.parse(storedProgress));
+            try {
+                setProgress(JSON.parse(storedProgress));
+            } catch {
+                setProgress(0);
+            }
         } else {
-            // If no progress is stored, we can assume it's not started beyond the base
-            // or you can set it to the base progress by default if viewing the theory counts.
-            setProgress(BASE_PROGRESS);
+            setProgress(0);
         }
     }, [lessonId]);
 
@@ -50,12 +50,10 @@ export default function LessonCard({ lessonId, title, description, href, icon, l
                     </CardDescription>
                     <div className="mt-4">
                         <p className="text-xs text-muted-foreground mb-1">Прогресс:</p>
-                        <Progress value={progress} />
+                        {progress !== null ? <Progress value={progress} /> : <div className="h-4 bg-muted rounded-full w-full" /> }
                     </div>
                 </CardContent>
             </Card>
         </Link>
     );
 }
-
-    

@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, BookCheck } from 'lucide-react';
+import { ArrowLeft, BookCheck, CaseUpper } from 'lucide-react';
 import LessonCard from '@/components/lesson-card';
 
 const lessons = [
@@ -14,6 +14,7 @@ const lessons = [
         description: 'Части речи, связка です, простые утвердительные, отрицательные и вопросительные предложения.',
         href: '/grammar/lesson-1',
         lessonNumber: 1,
+        icon: <BookCheck className="w-8 h-8" />
     },
     {
         id: 'lesson-2',
@@ -21,6 +22,15 @@ const lessons = [
         description: 'Структура общих и специальных вопросов, вопросительные слова и правильные ответы на вопросы.',
         href: '/grammar/lesson-2',
         lessonNumber: 2,
+        icon: <BookCheck className="w-8 h-8" />
+    },
+    {
+        id: 'lesson-3',
+        title: 'Аффиксы вежливости',
+        description: 'Использование уважительных суффиксов (さん) и префиксов (お／ご) в японской речи.',
+        href: '/grammar/lesson-3',
+        lessonNumber: 3,
+        icon: <CaseUpper className="w-8 h-8" />
     }
 ];
 
@@ -51,7 +61,7 @@ export default function GrammarHubPage() {
                     title={lesson.title}
                     description={lesson.description}
                     href={lesson.href}
-                    icon={<BookCheck className="w-8 h-8" />}
+                    icon={lesson.icon}
                     lessonNumber={lesson.lessonNumber}
                 />
             ))}

@@ -144,6 +144,20 @@ const anokatawayamadasandesu: JapaneseAnalysisOutput = {
 
 
 export const grammarAnalyses = {
+    yamadasan: {
+        sentence: [
+            { word: 'やまだ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
+            { word: 'さん', furigana: 'さん', translation: 'г-н/г-жа', partOfSpeech: 'суффикс вежливости' },
+        ],
+        fullTranslation: 'Господин/госпожа Ямада'
+    },
+    tanakasan: {
+        sentence: [
+            { word: 'たなか', furigana: 'たなか', translation: 'Танака', partOfSpeech: 'имя собственное' },
+            { word: 'さん', furigana: 'さん', translation: 'г-н/г-жа', partOfSpeech: 'суффикс вежливости' },
+        ],
+        fullTranslation: 'Господин/госпожа Танака'
+    },
     watashiwagakuseidesu: watashiwagakuseidesu,
     anokatawagakuseidehaarimasen: anokatawagakuseidehaarimasen,
     watashiwasenseidehaarimasengakuseidesu: watashiwasenseidehaarimasengakuseidesu,
