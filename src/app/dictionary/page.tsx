@@ -43,9 +43,10 @@ export default function DictionaryPage() {
 
             const lowerSearchTerm = searchTerm.toLowerCase();
 
-            // First, check for a match in the Russian translation.
-            if (word.translation.toLowerCase().includes(lowerSearchTerm)) {
-                return true;
+            // First, check for a whole-word match in the Russian translation.
+            const translationWords = word.translation.toLowerCase().split(/[\s,]+/);
+            if (translationWords.includes(lowerSearchTerm)) {
+              return true;
             }
 
             // If no Russian match, check for Japanese/Romaji match.
@@ -61,6 +62,14 @@ export default function DictionaryPage() {
             // Match Romaji against the reading
             const readingAsRomaji = wanakana.toRomaji(word.reading);
             const matchesRomaji = readingAsRomaji.includes(romajiSearchTerm);
+
+            // Fallback to partial translation search if nothing else matches
+            if (!matchesWord && !matchesReading && !matchesRomaji) {
+                if (word.translation.toLowerCase().includes(lowerSearchTerm)) {
+                    return true;
+                }
+            }
+
 
             return matchesWord || matchesReading || matchesRomaji;
         });
