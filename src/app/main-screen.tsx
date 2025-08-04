@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -103,6 +103,13 @@ export default function MainScreen() {
         )}
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <Link href="/training">
+            <CategoryCard
+              icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
+              title="Тренировка дня"
+              description="Изучайте слова по системе интервальных повторений"
+            />
+        </Link>
         <Link href="/kana">
           <CategoryCard
             icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
