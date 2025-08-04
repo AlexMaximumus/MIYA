@@ -106,7 +106,6 @@ export default function DictionaryPage() {
                         <TableHead className="w-[150px]">Чтение</TableHead>
                         <TableHead>Перевод</TableHead>
                         <TableHead className="w-[100px] text-center">Уровень</TableHead>
-                        <TableHead className="w-[50px] text-right"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -114,7 +113,7 @@ export default function DictionaryPage() {
                         filteredWords.map((word, index) => <DictionaryRow key={index} word={word} />)
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center h-24">
+                            <TableCell colSpan={4} className="text-center h-24">
                                 Ничего не найдено. Попробуйте изменить фильтры.
                             </TableCell>
                         </TableRow>
