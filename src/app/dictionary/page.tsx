@@ -18,7 +18,7 @@ import {
 import { vocabularyData, type Word } from '@/lib/dictionary-data';
 import DictionaryRow from '@/components/dictionary-row';
 
-const allWords = Object.values(vocabularyData).flat();
+const allWords = [...vocabularyData.n5, ...vocabularyData.n4];
 const partsOfSpeech = [...new Set(allWords.map(word => word.pos))];
 
 export default function DictionaryPage() {
@@ -81,7 +81,7 @@ export default function DictionaryPage() {
                     <SelectContent>
                         <SelectItem value="all">Все уровни JLPT</SelectItem>
                         <SelectItem value="N5">JLPT N5</SelectItem>
-                        <SelectItem value="N4">JLPT N4 (скоро)</SelectItem>
+                        <SelectItem value="N4">JLPT N4</SelectItem>
                     </SelectContent>
                 </Select>
                  <Select value={partOfSpeech} onValueChange={setPartOfSpeech}>
@@ -110,7 +110,7 @@ export default function DictionaryPage() {
                 </TableHeader>
                 <TableBody>
                     {filteredWords.length > 0 ? (
-                        filteredWords.map((word, index) => <DictionaryRow key={index} word={word} />)
+                        filteredWords.slice(0, 200).map((word, index) => <DictionaryRow key={`${word.word}-${index}`} word={word} />)
                     ) : (
                         <TableRow>
                             <TableCell colSpan={4} className="text-center h-24">
@@ -120,6 +120,11 @@ export default function DictionaryPage() {
                     )}
                 </TableBody>
             </Table>
+             {filteredWords.length > 200 && (
+                <div className="p-4 text-center text-muted-foreground">
+                    Показано 200 из {filteredWords.length} слов. Уточните поиск, чтобы увидеть больше.
+                </div>
+            )}
         </Card>
       </div>
     </div>
