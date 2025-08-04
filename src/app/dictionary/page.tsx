@@ -42,20 +42,22 @@ export default function DictionaryPage() {
             if (searchTerm.trim() === '') return true;
 
             const lowerSearchTerm = searchTerm.toLowerCase();
-            const romajiSearchTerm = wanakana.toRomaji(lowerSearchTerm);
-            const hiraganaSearchTerm = wanakana.toHiragana(lowerSearchTerm);
-            const katakanaSearchTerm = wanakana.toKatakana(lowerSearchTerm);
 
-
-            // Match Russian translation (case-insensitive)
+            // First, check for a match in the Russian translation.
             if (word.translation.toLowerCase().includes(lowerSearchTerm)) {
                 return true;
             }
 
-            // Match Japanese word or reading
+            // If no Russian match, check for Japanese/Romaji match.
+            // This prevents wanakana from incorrectly converting Russian text.
+            const romajiSearchTerm = wanakana.toRomaji(lowerSearchTerm);
+            const hiraganaSearchTerm = wanakana.toHiragana(lowerSearchTerm);
+            const katakanaSearchTerm = wanakana.toKatakana(lowerSearchTerm);
+
+            // Match Japanese word or reading (hiragana/katakana)
             const matchesWord = word.word.includes(hiraganaSearchTerm) || word.word.includes(katakanaSearchTerm);
             const matchesReading = word.reading.includes(hiraganaSearchTerm) || word.reading.includes(katakanaSearchTerm);
-
+            
             // Match Romaji against the reading
             const readingAsRomaji = wanakana.toRomaji(word.reading);
             const matchesRomaji = readingAsRomaji.includes(romajiSearchTerm);
