@@ -18,6 +18,7 @@ import {
 import { vocabularyData } from '@/lib/dictionary-data';
 import DictionaryRow from '@/components/dictionary-row';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import * as wanakana from 'wanakana';
 
 const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
 const partsOfSpeech = [...new Set(allWords.map(word => word.pos))].sort();
@@ -33,16 +34,33 @@ export default function DictionaryPage() {
 
     const filteredWords = useMemo(() => {
         return allWords.filter(word => {
-            const searchTermLower = searchTerm.toLowerCase();
-            const matchesSearch = 
-                word.word.includes(searchTerm) || 
-                word.reading.includes(searchTerm) || 
-                word.translation.toLowerCase().includes(searchTermLower);
-            
             const matchesJlpt = jlptLevel === 'all' || word.jlpt === jlptLevel;
             const matchesPos = partOfSpeech === 'all' || word.pos === partOfSpeech;
 
-            return matchesSearch && matchesJlpt && matchesPos;
+            if (!matchesJlpt || !matchesPos) return false;
+            
+            if (searchTerm.trim() === '') return true;
+
+            const lowerSearchTerm = searchTerm.toLowerCase();
+            const romajiSearchTerm = wanakana.toRomaji(lowerSearchTerm);
+            const hiraganaSearchTerm = wanakana.toHiragana(lowerSearchTerm);
+            const katakanaSearchTerm = wanakana.toKatakana(lowerSearchTerm);
+
+
+            // Match Russian translation (case-insensitive)
+            if (word.translation.toLowerCase().includes(lowerSearchTerm)) {
+                return true;
+            }
+
+            // Match Japanese word or reading
+            const matchesWord = word.word.includes(hiraganaSearchTerm) || word.word.includes(katakanaSearchTerm);
+            const matchesReading = word.reading.includes(hiraganaSearchTerm) || word.reading.includes(katakanaSearchTerm);
+
+            // Match Romaji against the reading
+            const readingAsRomaji = wanakana.toRomaji(word.reading);
+            const matchesRomaji = readingAsRomaji.includes(romajiSearchTerm);
+
+            return matchesWord || matchesReading || matchesRomaji;
         });
     }, [searchTerm, jlptLevel, partOfSpeech]);
 
@@ -83,7 +101,7 @@ export default function DictionaryPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
                  <Input
-                    placeholder="Поиск по слову, чтению или переводу..."
+                    placeholder="Поиск (рус, kana, romaji)..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="md:col-span-3"
