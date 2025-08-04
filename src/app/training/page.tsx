@@ -90,7 +90,7 @@ export default function TrainingPage() {
             setFeedback('incorrect');
         }
 
-        updateWordProgress(currentWord.word, isCorrect);
+        updateWordProgress(correctWord.word, isCorrect);
 
         setTimeout(() => {
             setFeedback(null);

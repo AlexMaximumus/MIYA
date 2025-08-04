@@ -4,6 +4,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { vocabularyData } from '@/lib/dictionary-data';
+import type { Word } from '@/lib/dictionary-data';
 
 const allWordsList = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
 
