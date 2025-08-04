@@ -62,8 +62,7 @@ const ttsFlow = ai.defineFlow(
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            // Using a Japanese-compatible voice
-            prebuiltVoiceConfig: { voiceName: 'Kama' },
+            prebuiltVoiceConfig: { voiceName: 'Achernar' },
           },
         },
       },
