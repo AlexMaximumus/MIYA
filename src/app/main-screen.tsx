@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, Workflow, CaseUpper } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -102,19 +102,19 @@ export default function MainScreen() {
           </div>
         )}
       </div>
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         <Link href="/kana">
           <CategoryCard
             icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
-            title="Хирагана и катакана"
+            title="Кана"
             description="Изучите японские слоги"
           />
         </Link>
-        <Link href="/vocabulary">
+        <Link href="/dictionary">
           <CategoryCard
-            icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
-            title="Лексика"
-            description="Пополняйте словарный запас"
+            icon={<BookText className="w-10 h-10 md:w-12 md:h-12" />}
+            title="Словарь"
+            description="Расширяйте словарный запас"
           />
         </Link>
         <Link href="/grammar">
@@ -128,8 +128,15 @@ export default function MainScreen() {
             <CategoryCard
               icon={<CaseUpper className="w-10 h-10 md:w-12 md:h-12" />}
               title="Словообразование"
-              description="Изучите аффиксы и строение слов"
+              description="Изучите строение слов"
             />
+        </Link>
+         <Link href="/vocabulary">
+          <CategoryCard
+            icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
+            title="Лексика по урокам"
+            description="Тематические подборки слов"
+          />
         </Link>
       </div>
     </div>
