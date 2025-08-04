@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookText, Filter } from 'lucide-react';
 import Link from 'next/link';
@@ -15,23 +15,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { vocabularyData, type Word } from '@/lib/dictionary-data';
+import { vocabularyData } from '@/lib/dictionary-data';
 import DictionaryRow from '@/components/dictionary-row';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
-const allWords = [...vocabularyData.n5, ...vocabularyData.n4];
-const partsOfSpeech = [...new Set(allWords.map(word => word.pos))];
+const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
+const partsOfSpeech = [...new Set(allWords.map(word => word.pos))].sort();
+const jlptLevels = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
 
 export default function DictionaryPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [jlptLevel, setJlptLevel] = useState('all');
     const [partOfSpeech, setPartOfSpeech] = useState('all');
+    
+    const parentRef = useRef<HTMLDivElement>(null);
 
     const filteredWords = useMemo(() => {
         return allWords.filter(word => {
+            const searchTermLower = searchTerm.toLowerCase();
             const matchesSearch = 
                 word.word.includes(searchTerm) || 
                 word.reading.includes(searchTerm) || 
-                word.translation.toLowerCase().includes(searchTerm.toLowerCase());
+                word.translation.toLowerCase().includes(searchTermLower);
             
             const matchesJlpt = jlptLevel === 'all' || word.jlpt === jlptLevel;
             const matchesPos = partOfSpeech === 'all' || word.pos === partOfSpeech;
@@ -39,6 +45,14 @@ export default function DictionaryPage() {
             return matchesSearch && matchesJlpt && matchesPos;
         });
     }, [searchTerm, jlptLevel, partOfSpeech]);
+
+    const rowVirtualizer = useVirtualizer({
+        count: filteredWords.length,
+        getScrollElement: () => parentRef.current,
+        estimateSize: () => 61, // Estimated height of a row in pixels
+        overscan: 5,
+    });
+
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
@@ -56,7 +70,7 @@ export default function DictionaryPage() {
                 <div className="flex items-center gap-4">
                     <BookText className="w-10 h-10 text-primary" />
                     <div>
-                        <CardTitle className="text-2xl md:text-3xl">Словарь</CardTitle>
+                        <CardTitle className="text-2xl md:text-3xl">Словарь ({allWords.length.toLocaleString('ru-RU')} слов)</CardTitle>
                         <CardDescription>Ищите, фильтруйте и изучайте японскую лексику.</CardDescription>
                     </div>
                 </div>
@@ -80,8 +94,9 @@ export default function DictionaryPage() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Все уровни JLPT</SelectItem>
-                        <SelectItem value="N5">JLPT N5</SelectItem>
-                        <SelectItem value="N4">JLPT N4</SelectItem>
+                        {jlptLevels.map(level => (
+                             <SelectItem key={level} value={level}>JLPT {level}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
                  <Select value={partOfSpeech} onValueChange={setPartOfSpeech}>
@@ -99,32 +114,46 @@ export default function DictionaryPage() {
         </Card>
 
         <Card>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[150px]">Слово</TableHead>
-                        <TableHead className="w-[150px]">Чтение</TableHead>
-                        <TableHead>Перевод</TableHead>
-                        <TableHead className="w-[100px] text-center">Уровень</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {filteredWords.length > 0 ? (
-                        filteredWords.slice(0, 200).map((word, index) => <DictionaryRow key={`${word.word}-${index}`} word={word} />)
-                    ) : (
+            <div ref={parentRef} className="h-[600px] overflow-auto">
+                <Table style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
+                    <TableHeader className="sticky top-0 bg-card z-10">
                         <TableRow>
-                            <TableCell colSpan={4} className="text-center h-24">
-                                Ничего не найдено. Попробуйте изменить фильтры.
-                            </TableCell>
+                            <TableHead className="w-[150px]">Слово</TableHead>
+                            <TableHead className="w-[150px]">Чтение</TableHead>
+                            <TableHead>Перевод</TableHead>
+                            <TableHead className="w-[100px] text-center">Уровень</TableHead>
                         </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-             {filteredWords.length > 200 && (
-                <div className="p-4 text-center text-muted-foreground">
-                    Показано 200 из {filteredWords.length} слов. Уточните поиск, чтобы увидеть больше.
-                </div>
-            )}
+                    </TableHeader>
+                    <TableBody>
+                        {rowVirtualizer.getVirtualItems().length > 0 ? (
+                             rowVirtualizer.getVirtualItems().map(virtualRow => {
+                                const word = filteredWords[virtualRow.index];
+                                return (
+                                    <TableRow
+                                        key={virtualRow.key}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: `${virtualRow.size}px`,
+                                            transform: `translateY(${virtualRow.start}px)`,
+                                        }}
+                                    >
+                                        <DictionaryRow word={word} />
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={4} className="text-center h-24">
+                                    Ничего не найдено. Попробуйте изменить фильтры.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
         </Card>
       </div>
     </div>

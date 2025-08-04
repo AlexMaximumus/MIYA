@@ -8,7 +8,6 @@ export interface Word {
 }
 
 const n5: Word[] = [
-    // Существительные
     { word: '人', reading: 'ひと', translation: 'человек', pos: 'существительное', jlpt: 'N5' },
     { word: '学生', reading: 'がくせい', translation: 'студент', pos: 'существительное', jlpt: 'N5' },
     { word: '先生', reading: 'せんせい', translation: 'учитель', pos: 'существительное', jlpt: 'N5' },
@@ -114,8 +113,6 @@ const n5: Word[] = [
     { word: '新聞', reading: 'しんぶん', translation: 'газета', pos: 'существительное', jlpt: 'N5' },
     { word: '雑誌', reading: 'ざっし', translation: 'журнал', pos: 'существительное', jlpt: 'N5' },
     { word: '辞書', reading: 'じしょ', translation: 'словарь', pos: 'существительное', jlpt: 'N5' },
-
-    // Местоимения
     { word: '私', reading: 'わたし', translation: 'я', pos: 'местоимение', jlpt: 'N5' },
     { word: 'あなた', reading: 'あなた', translation: 'ты, вы', pos: 'местоимение', jlpt: 'N5' },
     { word: '彼', reading: 'かれ', translation: 'он', pos: 'местоимение', jlpt: 'N5' },
@@ -131,8 +128,6 @@ const n5: Word[] = [
     { word: '誰', reading: 'だれ', translation: 'кто?', pos: 'местоимение', jlpt: 'N5' },
     { word: '何', reading: 'なに', translation: 'что?', pos: 'местоимение', jlpt: 'N5' },
     { word: '僕', reading: 'ぼく', translation: 'я (муж.)', pos: 'местоимение', jlpt: 'N5' },
-
-    // Глаголы
     { word: '行く', reading: 'いく', translation: 'идти', pos: 'глагол', jlpt: 'N5' },
     { word: '来る', reading: 'くる', translation: 'приходить', pos: 'глагол', jlpt: 'N5' },
     { word: '帰る', reading: 'かえる', translation: 'возвращаться', pos: 'глагол', jlpt: 'N5' },
@@ -175,8 +170,6 @@ const n5: Word[] = [
     { word: 'もらう', reading: 'もらう', translation: 'получать', pos: 'глагол', jlpt: 'N5' },
     { word: 'あげる', reading: 'あげる', translation: 'давать', pos: 'глагол', jlpt: 'N5' },
     { word: 'くれる', reading: 'くれる', translation: 'давать (мне)', pos: 'глагол', jlpt: 'N5' },
-
-    // Прилагательные
     { word: '大きい', reading: 'おおきい', translation: 'большой', pos: 'прилагательное', jlpt: 'N5' },
     { word: '小さい', reading: 'ちいさい', translation: 'маленький', pos: 'прилагательное', jlpt: 'N5' },
     { word: '新しい', reading: 'あたらしい', translation: 'новый', pos: 'прилагательное', jlpt: 'N5' },
@@ -212,8 +205,6 @@ const n5: Word[] = [
     { word: '少ない', reading: 'すくない', translation: 'малочисленный', pos: 'прилагательное', jlpt: 'N5' },
     { word: '暖かい', reading: 'あたたかい', translation: 'теплый', pos: 'прилагательное', jlpt: 'N5' },
     { word: '涼しい', reading: 'すずしい', translation: 'прохладный', pos: 'прилагательное', jlpt: 'N5' },
-
-    // Наречия
     { word: '今', reading: 'いま', translation: 'сейчас', pos: 'наречие', jlpt: 'N5' },
     { word: '毎日', reading: 'まいにち', translation: 'каждый день', pos: 'наречие', jlpt: 'N5' },
     { word: 'いつも', reading: 'いつも', translation: 'всегда', pos: 'наречие', jlpt: 'N5' },
@@ -227,8 +218,6 @@ const n5: Word[] = [
     { word: 'もう', reading: 'もう', translation: 'уже', pos: 'наречие', jlpt: 'N5' },
     { word: 'まだ', reading: 'まだ', translation: 'еще', pos: 'наречие', jlpt: 'N5' },
     { word: '一緒に', reading: 'いっしょに', translation: 'вместе', pos: 'наречие', jlpt: 'N5' },
-    
-    // Частицы и выражения
     { word: 'はい', reading: 'はい', translation: 'да', pos: 'выражение', jlpt: 'N5' },
     { word: 'いいえ', reading: 'いいえ', translation: 'нет', pos: 'выражение', jlpt: 'N5' },
     { word: 'です', reading: 'です', translation: 'есть (связка)', pos: 'частица', jlpt: 'N5' },
@@ -258,7 +247,6 @@ const n5: Word[] = [
 ];
 
 const n4: Word[] = [
-    // Существительные
     { word: '意見', reading: 'いけん', translation: 'мнение', pos: 'существительное', jlpt: 'N4' },
     { word: '経験', reading: 'けいけん', translation: 'опыт', pos: 'существительное', jlpt: 'N4' },
     { word: '理由', reading: 'りゆう', translation: 'причина', pos: 'существительное', jlpt: 'N4' },
@@ -342,8 +330,6 @@ const n4: Word[] = [
     { word: '冬', reading: 'ふゆ', translation: 'зима', pos: 'существительное', jlpt: 'N4' },
     { word: '天ぷら', reading: 'てんぷら', translation: 'темпура', pos: 'существительное', jlpt: 'N4' },
     { word: 'すき焼き', reading: 'すきやき', translation: 'сукияки', pos: 'существительное', jlpt: 'N4' },
-
-    // Глаголы
     { word: '覚える', reading: 'おぼえる', translation: 'помнить, учить', pos: 'глагол', jlpt: 'N4' },
     { word: '決める', reading: 'きめる', translation: 'решать', pos: 'глагол', jlpt: 'N4' },
     { word: '考える', reading: 'かんがえる', translation: 'думать', pos: 'глагол', jlpt: 'N4' },
@@ -391,8 +377,6 @@ const n4: Word[] = [
     { word: '通う', reading: 'かよう', translation: 'регулярно посещать', pos: 'глагол', jlpt: 'N4' },
     { word: '答える', reading: 'こたえる', translation: 'отвечать', pos: 'глагол', jlpt: 'N4' },
     { word: '質問する', reading: 'しつもんする', translation: 'задавать вопрос', pos: 'глагол', jlpt: 'N4' },
-
-    // Прилагательные
     { word: '嬉しい', reading: 'うれしい', translation: 'радостный', pos: 'прилагательное', jlpt: 'N4' },
     { word: '悲しい', reading: 'かなしい', translation: 'грустный', pos: 'прилагательное', jlpt: 'N4' },
     { word: '寂しい', reading: 'さびしい', translation: 'одинокий', pos: 'прилагательное', jlpt: 'N4' },
@@ -423,8 +407,6 @@ const n4: Word[] = [
     { word: '複雑', reading: 'ふくざつ', translation: 'сложный', pos: 'прилагательное', jlpt: 'N4' },
     { word: '簡単', reading: 'かんたん', translation: 'простой', pos: 'прилагательное', jlpt: 'N4' },
     { word: '自由', reading: 'じゆう', translation: 'свободный', pos: 'прилагательное', jlpt: 'N4' },
-
-    // Наречия
     { word: '多分', reading: 'たぶん', translation: 'наверное', pos: 'наречие', jlpt: 'N4' },
     { word: 'きっと', reading: 'きっと', translation: 'обязательно, точно', pos: 'наречие', jlpt: 'N4' },
     { word: 'もし', reading: 'もし', translation: 'если', pos: 'наречие', jlpt: 'N4' },
@@ -442,8 +424,6 @@ const n4: Word[] = [
     { word: 'ほとんど', reading: 'ほとんど', translation: 'почти', pos: 'наречие', jlpt: 'N4' },
     { word: 'ずいぶん', reading: 'ずいぶん', translation: 'весьма, очень', pos: 'наречие', jlpt: 'N4' },
     { word: 'まず', reading: 'まず', translation: 'прежде всего', pos: 'наречие', jlpt: 'N4' },
-
-    // Другое
     { word: 'しかし', reading: 'しかし', translation: 'однако', pos: 'другое', jlpt: 'N4' },
     { word: 'そして', reading: 'そして', translation: 'и, а также', pos: 'другое', jlpt: 'N4' },
     { word: 'それから', reading: 'それから', translation: 'затем, после этого', pos: 'другое', jlpt: 'N4' },
@@ -452,10 +432,15 @@ const n4: Word[] = [
     { word: 'では', reading: 'では', translation: 'ну, что ж', pos: 'выражение', jlpt: 'N4' },
 ];
 
+const n3: Word[] = [];
+const n2: Word[] = [];
+const n1: Word[] = [];
+
 
 export const vocabularyData = {
     n5,
-    n4
+    n4,
+    n3,
+    n2,
+    n1
 };
-
-    
