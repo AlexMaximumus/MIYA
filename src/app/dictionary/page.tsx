@@ -43,35 +43,24 @@ export default function DictionaryPage() {
 
             const lowerSearchTerm = searchTerm.toLowerCase();
 
-            // First, check for a whole-word match in the Russian translation.
+            // --- Russian Translation Search ---
             const translationWords = word.translation.toLowerCase().split(/[\s,]+/);
-            if (translationWords.includes(lowerSearchTerm)) {
-              return true;
-            }
+            const wholeWordMatch = translationWords.includes(lowerSearchTerm);
+            const partialTranslationMatch = word.translation.toLowerCase().includes(lowerSearchTerm);
 
-            // If no Russian match, check for Japanese/Romaji match.
-            // This prevents wanakana from incorrectly converting Russian text.
+            // --- Japanese/Romaji Search ---
             const romajiSearchTerm = wanakana.toRomaji(lowerSearchTerm);
             const hiraganaSearchTerm = wanakana.toHiragana(lowerSearchTerm);
             const katakanaSearchTerm = wanakana.toKatakana(lowerSearchTerm);
 
-            // Match Japanese word or reading (hiragana/katakana)
             const matchesWord = word.word.includes(hiraganaSearchTerm) || word.word.includes(katakanaSearchTerm);
             const matchesReading = word.reading.includes(hiraganaSearchTerm) || word.reading.includes(katakanaSearchTerm);
             
-            // Match Romaji against the reading
             const readingAsRomaji = wanakana.toRomaji(word.reading);
             const matchesRomaji = readingAsRomaji.includes(romajiSearchTerm);
-
-            // Fallback to partial translation search if nothing else matches
-            if (!matchesWord && !matchesReading && !matchesRomaji) {
-                if (word.translation.toLowerCase().includes(lowerSearchTerm)) {
-                    return true;
-                }
-            }
-
-
-            return matchesWord || matchesReading || matchesRomaji;
+            
+            // Combine all checks with OR
+            return wholeWordMatch || partialTranslationMatch || matchesWord || matchesReading || matchesRomaji;
         });
     }, [searchTerm, jlptLevel, partOfSpeech]);
 
