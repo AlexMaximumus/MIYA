@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useWordProgress } from '@/hooks/use-word-progress';
 
 const floatingWords = [
   { text: 'こんにちは', highlighted: false },
@@ -20,6 +21,10 @@ const floatingWords = [
   { text: '日本語', highlighted: false },
 ];
 
+const grammarLessons = ['lesson-1', 'lesson-2'];
+const wordFormationLessons = ['word-formation-lesson-1'];
+
+
 export default function MainScreen() {
   const [isVibrating, setIsVibrating] = useState(false);
   const [animatedWords, setAnimatedWords] = useState<typeof floatingWords>([]);
@@ -28,10 +33,39 @@ export default function MainScreen() {
   const [showEasterEgg, setShowEasterEgg] = useState(false);
   const [randomAnalysis, setRandomAnalysis] = useState<JapaneseAnalysisOutput | null>(null);
 
+  // Word Progress
+  const { getLearnedWordsCount, getTodaysReviewCount } = useWordProgress();
+  const [learnedWords, setLearnedWords] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+
+  // Lesson Progress
+  const [grammarProgress, setGrammarProgress] = useState<number | null>(null);
+  const [wordFormationProgress, setWordFormationProgress] = useState<number | null>(null);
+
+
   useEffect(() => {
     // This runs only on the client, after hydration
     setRandomAnalysis(mainScreenAnalyses[Math.floor(Math.random() * mainScreenAnalyses.length)]);
-  }, []);
+
+    // Calculate word progress
+    setLearnedWords(getLearnedWordsCount());
+    setReviewCount(getTodaysReviewCount());
+
+    // Calculate average grammar progress
+    const totalGrammarProgress = grammarLessons.reduce((acc, id) => {
+        const stored = localStorage.getItem(`${id}-progress`);
+        return acc + (stored ? JSON.parse(stored) : 0);
+    }, 0);
+    setGrammarProgress(Math.round(totalGrammarProgress / grammarLessons.length));
+
+     // Calculate average word formation progress
+    const totalWordFormationProgress = wordFormationLessons.reduce((acc, id) => {
+        const stored = localStorage.getItem(`${id}-progress`);
+        return acc + (stored ? JSON.parse(stored) : 0);
+    }, 0);
+    setWordFormationProgress(Math.round(totalWordFormationProgress / wordFormationLessons.length));
+
+  }, [getLearnedWordsCount, getTodaysReviewCount]);
 
 
   const handleTitleClick = () => {
@@ -108,6 +142,10 @@ export default function MainScreen() {
               icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
               title="Тренировка дня"
               description="Изучайте слова по системе интервальных повторений"
+              stats={[
+                  { label: "Изучено слов", value: learnedWords },
+                  { label: "К повторению", value: reviewCount }
+              ]}
             />
         </Link>
         <Link href="/kana">
@@ -129,6 +167,7 @@ export default function MainScreen() {
               icon={<Puzzle className="w-10 h-10 md:w-12 md:h-12" />}
               title="Грамматика"
               description="Освойте правила и структуры"
+              progress={grammarProgress}
             />
         </Link>
         <Link href="/word-formation">
@@ -136,6 +175,7 @@ export default function MainScreen() {
               icon={<CaseUpper className="w-10 h-10 md:w-12 md:h-12" />}
               title="Словообразование"
               description="Изучите строение слов"
+              progress={wordFormationProgress}
             />
         </Link>
          <Link href="/vocabulary">
@@ -149,3 +189,4 @@ export default function MainScreen() {
     </div>
   );
 }
+

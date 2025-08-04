@@ -3,6 +3,10 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { vocabularyData } from '@/lib/dictionary-data';
+
+const allWordsList = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
+
 
 // --- Types ---
 export type WordProgressStatus = 'new' | 'learning' | 'reviewing' | 'mastered';
@@ -20,6 +24,8 @@ interface WordProgressState {
     updateWordProgress: (word: string, isCorrect: boolean) => void;
     getWordStatus: (word: string) => WordProgressStatus;
     getReviewQueue: (allWords: { word: string }[], newWordsPerDay?: number) => string[];
+    getLearnedWordsCount: () => number;
+    getTodaysReviewCount: () => number;
     resetProgress: () => void;
 }
 
@@ -120,6 +126,31 @@ export const useWordProgress = create<WordProgressState>()(
         // Combine and shuffle
         const queue = [...new Set([...dueForReview, ...newWords])];
         return queue.sort(() => Math.random() - 0.5);
+      },
+
+      getLearnedWordsCount: () => {
+        const { progress } = get();
+        // Learned words are those that are not 'new'
+        return Object.values(progress).filter(p => p.status !== 'new').length;
+      },
+
+      getTodaysReviewCount: () => {
+        const { progress } = get();
+        const now = new Date();
+         // Get all words due for review
+        const dueForReview = Object.values(progress).filter(p => {
+            if (p.status === 'mastered') return false;
+            const nextReviewDate = new Date(p.nextReview);
+            return nextReviewDate <= now;
+        }).length;
+
+        // Get new words available today
+        const newWordsCount = allWordsList
+            .filter(w => !progress[w.word])
+            .slice(0, 10)
+            .length;
+            
+        return dueForReview + newWordsCount;
       },
 
       resetProgress: () => {
