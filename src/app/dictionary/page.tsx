@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { vocabularyData } from '@/lib/dictionary-data';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import * as wanakana from 'wanakana';
 import WordQuiz from '@/components/word-quiz';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab } from '@/types/quiz-types';
@@ -28,6 +27,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from '@/components/ui/tooltip';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 
 const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
@@ -46,7 +46,6 @@ export default function DictionaryPage() {
     const [quizLength, setQuizLength] = useState<QuizLength>('25');
     const [quizQuestionType, setQuizQuestionType] = useState<QuizQuestionTypeVocab>('jp_to_ru');
 
-    const parentRef = useRef<HTMLDivElement>(null);
     const { getWordStatus } = useWordProgress();
 
     const filteredWords = useMemo(() => {
@@ -77,13 +76,6 @@ export default function DictionaryPage() {
             return wholeWordMatch || partialTranslationMatch || matchesWord || matchesReading || matchesRomaji;
         });
     }, [searchTerm, jlptLevel, partOfSpeech]);
-
-    const rowVirtualizer = useVirtualizer({
-        count: filteredWords.length,
-        getScrollElement: () => parentRef.current,
-        estimateSize: () => 61,
-        overscan: 5,
-    });
     
     const startQuiz = () => {
         setQuizActive(true);
@@ -210,7 +202,7 @@ export default function DictionaryPage() {
 
 
         <Card>
-            <div ref={parentRef} className="h-[600px] overflow-auto relative">
+            <ScrollArea className="h-[600px]">
                 <Table>
                     <TableHeader className="sticky top-0 bg-card z-10">
                         <TableRow>
@@ -220,23 +212,12 @@ export default function DictionaryPage() {
                             <TableHead className="w-[120px] text-center">Уровень</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
-                        {rowVirtualizer.getVirtualItems().length > 0 ? (
-                             rowVirtualizer.getVirtualItems().map(virtualRow => {
-                                const word = filteredWords[virtualRow.index];
+                    <TableBody>
+                        {filteredWords.length > 0 ? (
+                             filteredWords.map(word => {
                                 const status = getWordStatus(word.word);
                                 return (
-                                    <TableRow
-                                        key={virtualRow.key}
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            width: '100%',
-                                            height: `${virtualRow.size}px`,
-                                            transform: `translateY(${virtualRow.start}px)`,
-                                        }}
-                                    >
+                                    <TableRow key={word.word}>
                                         <TableCell className="w-[200px] font-japanese text-lg font-medium flex items-center gap-2">
                                             {status === 'mastered' && (
                                                 <TooltipProvider>
@@ -269,9 +250,11 @@ export default function DictionaryPage() {
                         )}
                     </TableBody>
                 </Table>
-            </div>
+            </ScrollArea>
         </Card>
       </div>
     </div>
   );
 }
+
+    
