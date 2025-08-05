@@ -166,10 +166,10 @@ function HomeworkContent() {
                             </div>
                         )}
                         
-                        {task.type === 'image-upload' && task.settings.dataUrl && (
+                        {task.type === 'image-upload' && (
                              <div className="space-y-4">
                                 {task.settings.instructions && <p className="text-card-foreground whitespace-pre-wrap">{task.settings.instructions}</p>}
-                                <Image src={task.settings.dataUrl} alt="Прикрепленное изображение" width={800} height={600} className="rounded-lg border w-full h-auto" />
+                                {task.settings.dataUrl && <Image src={task.settings.dataUrl} alt="Прикрепленное изображение" width={800} height={600} className="rounded-lg border w-full h-auto" />}
                              </div>
                         )}
 
@@ -208,5 +208,7 @@ export default function HomeworkPage() {
         </div>
     )
 }
+
+    
 
     
