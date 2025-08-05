@@ -13,7 +13,10 @@ import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Set up the worker for pdfjs
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+  ).toString();
 
 // Function to parse page ranges (e.g., "1,3,5-7")
 const parsePageString = (pageStr: string): number[] => {
