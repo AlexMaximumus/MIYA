@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clipboard, Send, BookOpen, PlusCircle, Trash2, GripVertical, Settings, FileText, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Clipboard, Send, BookOpen, PlusCircle, Trash2, GripVertical, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -42,7 +42,7 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, Reorder } from 'framer-motion';
 import { Textarea } from '@/components/ui/textarea';
 
-type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'instructions';
+type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'instructions' | 'image-upload';
 interface Task {
     id: string;
     type: TaskType;
@@ -113,6 +113,7 @@ export default function HomeworkGeneratorPage() {
             case 'kana': return 'Тест по Кане';
             case 'grammar': return 'Урок грамматики';
             case 'instructions': return 'Блок с инструкциями';
+            case 'image-upload': return 'Прикрепленное изображение';
             default: return 'Новое задание';
         }
     }
@@ -124,6 +125,7 @@ export default function HomeworkGeneratorPage() {
             case 'kana': return { kanaSet: 'hiragana', questionType: 'kana-to-romaji', quizLength: 'full' };
             case 'grammar': return { lesson: '1' };
             case 'instructions': return { text: '' };
+            case 'image-upload': return { dataUrl: null, instructions: '' };
             default: return {};
         }
     }
@@ -140,7 +142,14 @@ export default function HomeworkGeneratorPage() {
 
         const assignmentData = {
             title: homeworkTitle,
-            tasks: tasks,
+            tasks: tasks.map(task => {
+                // We don't need to send the full image dataUrl in the link if it's too big
+                if (task.type === 'image-upload' && task.settings.dataUrl && task.settings.dataUrl.length > 2000000) {
+                     toast({ title: 'Файл слишком большой!', description: 'Изображение не будет включено в ссылку.', variant: 'destructive'});
+                     return {...task, settings: {...task.settings, dataUrl: null}};
+                }
+                return task;
+            }),
         };
 
         try {
@@ -148,9 +157,16 @@ export default function HomeworkGeneratorPage() {
             const encodedData = btoa(encodeURIComponent(jsonString));
             
             const url = `${window.location.origin}/homework?assignment=${encodedData}`;
+            
+            if (url.length > 8000) { // URL length limit check
+                toast({ title: 'Ошибка: Слишком длинная ссылка!', description: 'Домашнее задание слишком большое. Попробуйте уменьшить количество заданий или размер изображений.', variant: 'destructive'});
+                setGeneratedUrl('');
+                setTelegramLink('');
+                return;
+            }
+
             setGeneratedUrl(url);
 
-            const tgMessage = `Домашнее задание: ${homeworkTitle}\n\n${url}`;
             setTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Домашнее задание: ${homeworkTitle}`)}`);
             
             toast({
@@ -190,7 +206,41 @@ export default function HomeworkGeneratorPage() {
             }
         }
 
+        const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                    toast({ title: 'Файл слишком большой!', description: 'Пожалуйста, выберите изображение размером до 2 МБ.', variant: 'destructive'});
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    updateTaskSettings(id, { dataUrl: reader.result as string });
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
         switch(type) {
+            case 'image-upload':
+                return (
+                    <div className="space-y-2 mt-2">
+                         <Label>Инструкции к изображению (необязательно)</Label>
+                         <Textarea
+                            placeholder="Например: Опишите, что происходит на этой картинке."
+                            value={settings.instructions}
+                            onChange={(e) => updateTaskSettings(id, { instructions: e.target.value })}
+                        />
+                        {settings.dataUrl ? (
+                            <div className='relative mt-2 p-2 border rounded-md'>
+                                <Image src={settings.dataUrl} alt="Предпросмотр" width={200} height={150} className="rounded-md w-full h-auto max-h-48 object-contain" />
+                                <Button variant="destructive" size="sm" className='absolute top-2 right-2' onClick={() => updateTaskSettings(id, { dataUrl: null })}>Удалить</Button>
+                            </div>
+                        ) : (
+                            <Input type="file" accept="image/*" onChange={handleImageUpload} />
+                        )}
+                    </div>
+                );
             case 'textbook':
                 return (
                     <div className="space-y-2 mt-2">
@@ -346,11 +396,12 @@ export default function HomeworkGeneratorPage() {
                             <DialogContent>
                                 <DialogHeader><DialogTitle>Выберите тип задания</DialogTitle></DialogHeader>
                                 <div className='grid grid-cols-2 gap-4 py-4'>
-                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('textbook')}><BookOpen className='mr-2'/>Учебник</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('textbook')}><BookOpen className='mr-2'/>Страницы учебника</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('dictionary')}><FileText className='mr-2'/>Тест по словарю</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('kana')}><FileText className='mr-2'/>Тест по Кане</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('grammar')}><FileText className='mr-2'/>Урок грамматики</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('instructions')}><FileText className='mr-2'/>Блок инструкций</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('image-upload')}><ImageIcon className='mr-2'/>Прикрепить изображение</Button></DialogTrigger>
                                 </div>
                             </DialogContent>
                         </Dialog>

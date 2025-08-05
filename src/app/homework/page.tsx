@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
 
 
-type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'instructions';
+type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'instructions' | 'image-upload';
 interface Task {
     id: string;
     type: TaskType;
@@ -164,6 +164,13 @@ function HomeworkContent() {
                                 </CardDescription>
                                <Button onClick={() => startQuiz(task)} className="btn-gradient">Перейти к уроку {task.settings.lesson}</Button>
                             </div>
+                        )}
+                        
+                        {task.type === 'image-upload' && task.settings.dataUrl && (
+                             <div className="space-y-4">
+                                {task.settings.instructions && <p className="text-card-foreground whitespace-pre-wrap">{task.settings.instructions}</p>}
+                                <Image src={task.settings.dataUrl} alt="Прикрепленное изображение" width={800} height={600} className="rounded-lg border w-full h-auto" />
+                             </div>
                         )}
 
                         {task.type === 'instructions' && (
