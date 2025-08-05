@@ -31,10 +31,10 @@ type DialogueStep = {
 
 const dialogueScript: DialogueStep[] = [
     { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.konnichiwa },
-    { type: 'prompt', expected: 'こんにちは', expectedRomaji: ['konnichiha', 'konnitiha'] },
+    { type: 'prompt', expected: 'こんにちは', expectedRomaji: ['konnichiwa', 'konnitiwa'] },
     { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.hajimemashite },
     { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.anatanonamaewa },
-    { type: 'prompt', expected: '私[ваше имя]です', expectedRomaji: ['watashiha', 'desu'] }, // Special case
+    { type: 'prompt', expected: '私[ваше имя]です', expectedRomaji: ['watashi wa ... desu'] }, // Special case
     { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.hajimemashite_name },
     { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.yoroshiku },
     { type: 'prompt', expected: 'こちらこそよろしくお願いします', expectedRomaji: ['kochirakosoyoroshikuonegaishimasu'] },
@@ -83,20 +83,22 @@ export default function DialogueChat() {
         e.preventDefault();
         if (!inputValue.trim() || !isWaitingForUser) return;
 
-        const romajiInput = wanakana.toRomaji(inputValue).replace(/\s/g, '');
+        const romajiInput = wanakana.toRomaji(inputValue, { customKanaMapping: { は: 'wa' } }).replace(/\s/g, '');
         const step = initialDialogueScript.current[currentStep];
 
         if (step.type !== 'prompt') return;
         
-        const isNamePrompt = step.expectedRomaji.includes('watashiha') && step.expectedRomaji.includes('desu');
+        const isNamePrompt = step.expectedRomaji.includes('watashi wa ... desu');
         let isCorrect = false;
         
         if (isNamePrompt) {
-            const namePartRegex = /watashiha(.*)desu/;
+            const namePartRegex = /watashiwa(.*)desu/;
             const match = romajiInput.match(namePartRegex);
             if (match && match[1]) {
                 isCorrect = true;
-                const userName = wanakana.toHiragana(match[1]) || 'ひと';
+                const nameInRomaji = match[1];
+                const userName = wanakana.toKana(nameInRomaji);
+                
                 // Update the script for this session
                 initialDialogueScript.current.forEach(s => {
                     if (s.type === 'message' && s.analysis.fullTranslation.includes('[name]')) {
@@ -166,7 +168,7 @@ export default function DialogueChat() {
                     <div className="relative w-full">
                         <Input
                             value={inputValue}
-                            onChange={(e) => setInputValue(wanakana.toHiragana(e.target.value))}
+                            onChange={(e) => setInputValue(e.target.value)}
                             placeholder={isWaitingForUser ? 'Ваш ответ...' : 'Юки печатает...'}
                             className="text-lg pr-10 font-japanese"
                             disabled={!isWaitingForUser}
