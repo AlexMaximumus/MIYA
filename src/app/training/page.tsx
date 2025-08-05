@@ -181,11 +181,11 @@ export default function TrainingPage() {
                         </div>
                      ) : currentWord ? (
                         <>
-                            <div className="relative text-center">
+                            <div className="text-center">
                                 {currentQueueItem.type === 'new' ? (
-                                    <Badge variant="default" className="absolute -top-6 left-1/2 -translate-x-1/2">Новое слово</Badge>
+                                    <Badge variant="default" className="mb-2">Новое слово</Badge>
                                 ) : (
-                                    <Badge variant="secondary" className="absolute -top-6 left-1/2 -translate-x-1/2">На повторении</Badge>
+                                    <Badge variant="secondary" className="mb-2">На повторении</Badge>
                                 )}
 
                                 {isJpToRu ? (
@@ -240,4 +240,3 @@ export default function TrainingPage() {
         </div>
     );
 }
-
