@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clipboard, Send, BookOpen, PlusCircle, Trash2, GripVertical, Settings, FileText } from 'lucide-react';
+import { ArrowLeft, Clipboard, Send, BookOpen, PlusCircle, Trash2, GripVertical, Settings, FileText, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -40,8 +40,9 @@ import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestion
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, Reorder } from 'framer-motion';
+import { Textarea } from '@/components/ui/textarea';
 
-type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar';
+type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'image' | 'instructions';
 interface Task {
     id: string;
     type: TaskType;
@@ -111,6 +112,8 @@ export default function HomeworkGeneratorPage() {
             case 'dictionary': return 'Тест по словарю';
             case 'kana': return 'Тест по Кане';
             case 'grammar': return 'Урок грамматики';
+            case 'image': return 'Задание с изображением';
+            case 'instructions': return 'Блок с инструкциями';
             default: return 'Новое задание';
         }
     }
@@ -121,6 +124,8 @@ export default function HomeworkGeneratorPage() {
             case 'dictionary': return { vocabSet: 'N5', questionType: 'jp_to_ru', quizLength: '25' };
             case 'kana': return { kanaSet: 'hiragana', questionType: 'kana-to-romaji', quizLength: 'full' };
             case 'grammar': return { lesson: '1' };
+            case 'image': return { path: '', instructions: '' };
+            case 'instructions': return { text: '' };
             default: return {};
         }
     }
@@ -216,12 +221,12 @@ export default function HomeworkGeneratorPage() {
                                                             <DialogTrigger asChild>
                                                                 <Card className="border-none shadow-none cursor-zoom-in">
                                                                     <CardContent className="flex aspect-square items-center justify-center p-0 relative">
-                                                                        <Image src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`} alt={`Страница ${pageNumber}`} width={800} height={1131} className={cn("w-full h-full object-contain transition-transform duration-300", currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50")} />
+                                                                        <Image src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`} alt={`Страница ${pageNumber}`} width={800} height={1131} className={cn("w-full h-full object-contain transition-transform duration-300", currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50")} unoptimized />
                                                                     </CardContent>
                                                                 </Card>
                                                             </DialogTrigger>
                                                             <DialogContent className="max-w-5xl h-[95vh] p-2">
-                                                                <Image src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`} alt={`Страница ${pageNumber}`} width={1200} height={1697} className="w-full h-full object-contain" />
+                                                                <Image src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`} alt={`Страница ${pageNumber}`} width={1200} height={1697} className="w-full h-full object-contain" unoptimized />
                                                             </DialogContent>
                                                         </Dialog>
                                                     </div>
@@ -279,6 +284,37 @@ export default function HomeworkGeneratorPage() {
                         </Select>
                     </div>
                 );
+            case 'image':
+                return (
+                    <div className="space-y-2 mt-2">
+                        <Label htmlFor={`image-path-${id}`}>Путь к изображению</Label>
+                        <Input
+                            id={`image-path-${id}`}
+                            placeholder="Например: /my-files/task.png"
+                            value={settings.path}
+                            onChange={(e) => updateTaskSettings(id, { path: e.target.value })}
+                        />
+                        <Label htmlFor={`image-instr-${id}`}>Инструкции для ученика</Label>
+                        <Textarea
+                            id={`image-instr-${id}`}
+                            placeholder="Например: Опишите, что вы видите на картинке."
+                            value={settings.instructions}
+                            onChange={(e) => updateTaskSettings(id, { instructions: e.target.value })}
+                        />
+                    </div>
+                );
+            case 'instructions':
+                 return (
+                    <div className="space-y-2 mt-2">
+                        <Label htmlFor={`instr-text-${id}`}>Текст задания</Label>
+                        <Textarea
+                            id={`instr-text-${id}`}
+                            placeholder="Например: Прочитайте статью по ссылке https://... и ответьте на вопросы."
+                            value={settings.text}
+                            onChange={(e) => updateTaskSettings(id, { text: e.target.value })}
+                        />
+                    </div>
+                );
             default: return null;
         }
     }
@@ -331,10 +367,12 @@ export default function HomeworkGeneratorPage() {
                             <DialogContent>
                                 <DialogHeader><DialogTitle>Выберите тип задания</DialogTitle></DialogHeader>
                                 <div className='grid grid-cols-2 gap-4 py-4'>
-                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('textbook')}><FileText className='mr-2'/>Учебник</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('textbook')}><BookOpen className='mr-2'/>Учебник</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('dictionary')}><FileText className='mr-2'/>Тест по словарю</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('kana')}><FileText className='mr-2'/>Тест по Кане</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('grammar')}><FileText className='mr-2'/>Урок грамматики</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('image')}><ImageIcon className='mr-2'/>Задание с картинкой</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('instructions')}><FileText className='mr-2'/>Блок инструкций</Button></DialogTrigger>
                                 </div>
                             </DialogContent>
                         </Dialog>

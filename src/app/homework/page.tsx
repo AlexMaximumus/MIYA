@@ -6,12 +6,12 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, FileWarning, BookOpen, TestTubeDiagonal } from 'lucide-react';
+import { ArrowLeft, FileWarning, BookOpen, TestTubeDiagonal, FileText, Image as ImageIcon } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
 
 
-type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar';
+type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'image' | 'instructions';
 interface Task {
     id: string;
     type: TaskType;
@@ -164,6 +164,30 @@ function HomeworkContent() {
                                 </CardDescription>
                                <Button onClick={() => startQuiz(task)} className="btn-gradient">Перейти к уроку {task.settings.lesson}</Button>
                             </div>
+                        )}
+
+                        {task.type === 'image' && (
+                             <div className="space-y-4">
+                                <p className="text-muted-foreground whitespace-pre-wrap">{task.settings.instructions}</p>
+                                {task.settings.path && (
+                                    <div className="border rounded-lg overflow-hidden shadow-md">
+                                        <Image
+                                            src={task.settings.path}
+                                            alt="Задание с изображением"
+                                            width={800}
+                                            height={600}
+                                            className="w-full h-auto object-contain"
+                                            unoptimized
+                                        />
+                                    </div>
+                                )}
+                             </div>
+                        )}
+
+                        {task.type === 'instructions' && (
+                             <div className="space-y-4">
+                                <p className="text-card-foreground whitespace-pre-wrap">{task.settings.text}</p>
+                             </div>
                         )}
                     </CardContent>
                 </Card>
