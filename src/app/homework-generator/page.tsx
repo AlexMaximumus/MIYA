@@ -126,8 +126,43 @@ export default function HomeworkGeneratorPage() {
     }
     
     const generateLink = () => {
-        // This will be implemented in the next step
-        toast({ title: "Генерация ссылки пока в разработке", description: "Этот функционал будет добавлен на следующем шаге.", variant: "destructive"})
+        if (!homeworkTitle.trim() || tasks.length === 0) {
+            toast({
+                title: 'Не все поля заполнены',
+                description: 'Пожалуйста, укажите название работы и добавьте хотя бы одно задание.',
+                variant: 'destructive',
+            });
+            return;
+        }
+
+        const assignmentData = {
+            title: homeworkTitle,
+            tasks: tasks,
+        };
+
+        try {
+            const jsonString = JSON.stringify(assignmentData);
+            const encodedData = btoa(encodeURIComponent(jsonString));
+            
+            const url = `${window.location.origin}/homework?assignment=${encodedData}`;
+            setGeneratedUrl(url);
+
+            const tgMessage = `Домашнее задание: ${homeworkTitle}\n\n${url}`;
+            setTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Домашнее задание: ${homeworkTitle}`)}`);
+            
+            toast({
+                title: 'Ссылка успешно сгенерирована!',
+                description: 'Теперь вы можете скопировать её или отправить в Telegram.',
+            });
+
+        } catch (error) {
+            console.error("Failed to generate link:", error);
+            toast({
+                title: 'Ошибка при генерации ссылки',
+                description: 'Не удалось создать ссылку. Пожалуйста, попробуйте снова.',
+                variant: 'destructive',
+            });
+        }
     };
 
     const handleCopy = () => {
