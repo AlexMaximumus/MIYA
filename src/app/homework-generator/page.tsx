@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clipboard, Send, BookOpen, PlusCircle, Trash2, GripVertical, Settings, FileText } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -325,5 +325,3 @@ export default function HomeworkGeneratorPage() {
         </div>
     );
 }
-
-    
