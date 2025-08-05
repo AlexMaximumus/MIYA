@@ -38,7 +38,6 @@ export async function askMiya(input: MiyaInput): Promise<MiyaOutput> {
 
 const prompt = ai.definePrompt({
   name: 'miyaAssistantPrompt',
-  model: 'googleai/gemini-pro',
   input: { schema: MiyaInputSchema },
   output: { schema: MiyaOutputSchema },
   prompt: `You are Miya, a slightly cheeky but very attentive Japanese language teacher. 
