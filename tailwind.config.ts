@@ -116,6 +116,10 @@ export default {
           'from': { filter: 'grayscale(0%)' },
           'to': { filter: 'grayscale(100%)' },
         },
+        'background-shine': {
+          'from': { 'background-position': '0 0' },
+          'to': { 'background-position': '-200% 0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -126,7 +130,11 @@ export default {
         'float-and-fade': 'float-and-fade 5s ease-in-out forwards',
         'flip': 'flip 1s ease-in-out',
         'grayscale-in': 'grayscale-in 1s ease-out forwards',
+        'background-shine': 'background-shine 2s linear infinite',
       },
+      backgroundSize: {
+        '200%': '200% 100%',
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],

@@ -137,7 +137,8 @@ export default function MainScreen() {
         )}
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        <Link href="/training">
+        <Link href="/training" className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
             <CategoryCard
               icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
               title="Тренировка дня"
@@ -146,6 +147,7 @@ export default function MainScreen() {
                   { label: "Изучено слов", value: learnedWords },
                   { label: "К повторению", value: reviewCount }
               ]}
+              isSpecial
             />
         </Link>
         <Link href="/kana">
@@ -189,5 +191,6 @@ export default function MainScreen() {
     </div>
   );
 }
+
 
 
