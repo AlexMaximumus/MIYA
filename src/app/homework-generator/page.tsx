@@ -21,7 +21,7 @@ import { useTeacherMode } from '@/hooks/use-teacher-mode';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
 import { Label } from '@/components/ui/label';
 
-type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation' | 'pdf';
+type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation';
 
 export default function HomeworkGeneratorPage() {
     const [quizType, setQuizType] = useState<QuizType>('dictionary');
@@ -38,9 +38,6 @@ export default function HomeworkGeneratorPage() {
 
     // Grammar/Word-Formation state
     const [lesson, setLesson] = useState('1');
-
-    // PDF state
-    const [pdfPages, setPdfPages] = useState('');
 
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
@@ -86,10 +83,6 @@ export default function HomeworkGeneratorPage() {
                     break;
                 case 'word-formation':
                     path = `/word-formation/lesson-${lesson}`;
-                    break;
-                case 'pdf':
-                    path = '/homework-viewer';
-                    if(pdfPages) params.append('pages', pdfPages.replace(/\s/g, ''));
                     break;
             }
             
@@ -198,19 +191,6 @@ export default function HomeworkGeneratorPage() {
                         </SelectContent>
                     </Select>
                 );
-            case 'pdf':
-                return (
-                    <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="pdf-pages">Номера страниц (через запятую)</Label>
-                        <Input
-                            id="pdf-pages"
-                            placeholder="Например: 5, 8, 12-15"
-                            value={pdfPages}
-                            onChange={(e) => setPdfPages(e.target.value)}
-                        />
-                         <p className="text-xs text-muted-foreground">Используйте запятые для отдельных страниц и тире для диапазонов.</p>
-                    </div>
-                );
             default: return null;
         }
     }
@@ -253,7 +233,6 @@ export default function HomeworkGeneratorPage() {
                                 <SelectItem value="kana">Тест по Кане</SelectItem>
                                 <SelectItem value="grammar">Урок грамматики</SelectItem>
                                 <SelectItem value="word-formation">Урок словообразования</SelectItem>
-                                <SelectItem value="pdf">Задание по учебнику (PDF)</SelectItem>
                             </SelectContent>
                         </Select>
                         
