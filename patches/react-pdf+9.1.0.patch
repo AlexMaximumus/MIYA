@@ -1,12 +1,39 @@
 diff --git a/node_modules/react-pdf/package.json b/node_modules/react-pdf/package.json
-index 3b3810f..5381a1a 100644
+index 548f45a..83072f4 100644
 --- a/node_modules/react-pdf/package.json
 +++ b/node_modules/react-pdf/package.json
-@@ -62,6 +62,6 @@
-   },
+@@ -83,7 +83,7 @@
+     "prop-types": "^15.8.1",
+     "tiny-invariant": "^1.3.3",
+     "tiny-warning": "^1.0.3"
+-  },
++  }, 
    "peerDependencies": {
-     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-0",
--    "pdfjs-dist": "4.4.188"
-+    "pdfjs-dist": "4.2.67"
-   }
- }
+     "pdfjs-dist": "4.4.168",
+     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+diff --git a/node_modules/react-pdf/dist/esm/Document.js b/node_modules/react-pdf/dist/esm/Document.js
+index 99a515f..f91e9f1 100644
+--- a/node_modules/react-pdf/dist/esm/Document.js
++++ b/node_modules/react-pdf/dist/esm/Document.js
+@@ -3,7 +3,7 @@
+ import { useResolver } from '@wojtekmaj/react-hooks';
+ import { getDocument, PDFWorker } from 'pdfjs-dist';
+ import PageContext from './PageContext.js';
+-import { eventProps, isBrowser, isDefined, makePageCallback, } from './shared/utils.js';
++import { eventProps, isBrowser, isDefined, makePageCallback } from './shared/utils.js';
+ import type { DocumentProps, PDFDocumentProxy, PDFPageProxy } from './shared/types.js';
+ const DocumentContext = /*#__PURE__*/ createContext(null);
+ const defaultOptions = isBrowser ? window.PDFJS || {} : {};
+diff --git a/node_modules/react-pdf/dist/cjs/Document.js b/node_modules/react-pdf/dist/cjs/Document.js
+index 95a201b..407c97f 100644
+--- a/node_modules/react-pdf/dist/cjs/Document.js
++++ b/node_modules/react-pdf/dist/cjs/Document.js
+@@ -10,7 +10,7 @@
+ const _react = /*#__PURE__*/ _interopRequireDefault(require("react"));
+ const _propTypes = /*#__PURE__*/ _interopRequireDefault(require("prop-types"));
+ const _reactHooks = require("@wojtekmaj/react-hooks");
+-const _pdfjsDist = require("pdfjs-dist");
++const _pdfjsDist = require("pdfjs-dist/legacy/build/pdf.js");
+ const _PageContext = /*#__PURE__*/ _interopRequireDefault(require("./PageContext.js"));
+ const _utils = require("./shared/utils.js");
+ const DocumentContext = /*#__PURE__*/ (0, _react.createContext)(null);
