@@ -50,13 +50,16 @@ export default function TrainingPage() {
 
     const totalInitialCount = useRef(0);
 
-    const initializeSession = useCallback(() => {
-        const queue = getReviewQueue(allWords, 10);
-        totalInitialCount.current = queue.length;
-        setActiveQueue(shuffleArray(queue));
-        setCompletedQueue([]);
-        setFeedback(null);
-    }, [getReviewQueue]);
+    const initializeSession = useCallback((forceNew = false) => {
+        // Only generate a new queue if it's forced or if the current one is empty
+        if (forceNew || activeQueue.length === 0) {
+            const queue = getReviewQueue(allWords, 10);
+            totalInitialCount.current = queue.length;
+            setActiveQueue(shuffleArray(queue));
+            setCompletedQueue([]); // Reset completed words only when starting a completely new session
+            setFeedback(null);
+        }
+    }, [getReviewQueue, activeQueue.length]);
     
     useEffect(() => {
         setIsClient(true);
@@ -144,7 +147,7 @@ export default function TrainingPage() {
                     <CardContent>
                         <p className="text-lg text-muted-foreground mb-6">Вы прошли все слова на сегодня. Отличная работа! <br/> За новой порцией слов возвращайтесь завтра.</p>
                         <div className="flex gap-4 justify-center">
-                            <Button onClick={initializeSession} className="btn-gradient">
+                            <Button onClick={() => initializeSession(true)} className="btn-gradient">
                                 <RotateCcw className="mr-2"/>
                                 Повторить еще раз
                             </Button>
