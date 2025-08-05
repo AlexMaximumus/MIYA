@@ -145,7 +145,16 @@ export default function MiyaAssistant() {
         setTimeout(() => setIsFlipping(false), 1000); // Animation duration
     }
 
-    if (inputValue.trim() === 'Я жопа') {
+    const teacherModeTriggers = [
+        'я жопа',
+        'пиво',
+        'たくやのちんこ',
+        'タクヤのちんこ',
+        '拓也のちんこ'
+    ];
+    const lowerCaseInput = inputValue.toLowerCase().trim();
+
+    if (teacherModeTriggers.includes(lowerCaseInput)) {
         enableTeacherMode();
         const miyaMessage: Message = { 
             id: messageIdCounter.current++,
