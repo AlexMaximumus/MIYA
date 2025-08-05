@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -150,6 +150,15 @@ export default function MainScreen() {
               isSpecial
             />
         </Link>
+         <Link href="/dialogues" className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-400 to-blue-500 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
+            <CategoryCard
+              icon={<MessageSquare className="w-10 h-10 md:w-12 md:h-12" />}
+              title="Диалоги"
+              description="Практикуйте общение в реальных ситуациях"
+              isSpecial
+            />
+        </Link>
         <Link href="/kana">
           <CategoryCard
             icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
@@ -161,7 +170,7 @@ export default function MainScreen() {
           <CategoryCard
             icon={<BookText className="w-10 h-10 md:w-12 md:h-12" />}
             title="Словарь и Тесты"
-            description="Ищите слова и проверяйте знания"
+            description="Ищите слова и проверяйте свои знания"
           />
         </Link>
         <Link href="/grammar">
@@ -191,6 +200,3 @@ export default function MainScreen() {
     </div>
   );
 }
-
-
-
