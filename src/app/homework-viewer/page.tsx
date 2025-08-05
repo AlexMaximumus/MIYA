@@ -32,6 +32,10 @@ const parsePages = (pagesStr: string | null): number[] => {
     return result;
 }
 
+const formatPageNumber = (num: number): string => {
+    return num.toString().padStart(4, '0');
+};
+
 function HomeworkViewerContent() {
     const searchParams = useSearchParams();
     const pagesStr = searchParams.get('pages');
@@ -57,7 +61,7 @@ function HomeworkViewerContent() {
             {pages.map(pageNumber => (
                 <div key={pageNumber} className="border rounded-lg overflow-hidden shadow-lg">
                     <Image
-                        src={`/textbook/${pageNumber}.jpg`}
+                        src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`}
                         alt={`Страница учебника ${pageNumber}`}
                         width={800}
                         height={1131} // Assuming A4-like aspect ratio
