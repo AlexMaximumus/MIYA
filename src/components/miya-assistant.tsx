@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Send, X, CornerDownLeft, Loader2, Heart } from 'lucide-react';
 import { askMiya, MiyaOutput } from '@/ai/flows/miya-assistant-flow';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useTeacherMode } from '@/hooks/use-teacher-mode';
@@ -58,6 +58,7 @@ export default function MiyaAssistant() {
   const [activeTaunt, setActiveTaunt] = useState<string | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tauntTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -121,6 +122,7 @@ export default function MiyaAssistant() {
 
   const getContextFromPath = () => {
     if (isTeacherMode) return 'Teacher Mode';
+    if (pathname.includes('/sentence-scramble')) return 'Sentence Scramble Minigame';
     if (pathname.includes('/kana')) return 'Kana tables/quiz';
     if (pathname.includes('/dictionary')) return 'Vocabulary and tests section';
     if (pathname.includes('/training')) return 'Spaced repetition training';
@@ -137,7 +139,24 @@ export default function MiyaAssistant() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
-    if (inputValue.toLowerCase().includes('сальтуха')) {
+    const lowerCaseInput = inputValue.toLowerCase().trim();
+
+    if (lowerCaseInput === 'давай поиграем') {
+        const miyaMessage: Message = { 
+            id: messageIdCounter.current++,
+            text: 'О, хочешь поиграть? Отлично! Пон.', 
+            sender: 'miya',
+          };
+        setMessages((prev) => [...prev, miyaMessage]);
+        setInputValue('');
+        setTimeout(() => {
+            router.push('/sentence-scramble');
+            setIsOpen(false);
+        }, 1000);
+        return;
+    }
+
+    if (lowerCaseInput.includes('сальтуха')) {
         setIsFlipping(true);
         if (audioRef.current) {
             audioRef.current.play();
@@ -152,7 +171,6 @@ export default function MiyaAssistant() {
         'タクヤのちんこ',
         '拓也のちんこ'
     ];
-    const lowerCaseInput = inputValue.toLowerCase().trim();
 
     if (teacherModeTriggers.includes(lowerCaseInput)) {
         enableTeacherMode();

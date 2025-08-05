@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School, Gamepad2 } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -225,6 +225,13 @@ export default function MainScreen() {
             title="Лексика по урокам"
             description="Тематические подборки слов"
           />
+        </Link>
+         <Link href="/sentence-scramble">
+            <CategoryCard
+              icon={<Gamepad2 className="w-10 h-10 md:w-12 md:h-12" />}
+              title="Собери фразу"
+              description="Мини-игра на составление предложений"
+            />
         </Link>
         <div className="relative group">
             <CategoryCard
