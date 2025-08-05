@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, type SetStateAction } from 'react';
+import { useState, useEffect, type SetStateAction, Suspense } from 'react';
 import KanaTable from '@/components/kana-table';
 import KanaQuiz from '@/components/kana-quiz';
 import { hiraganaData, katakanaData } from '@/lib/kana-data';
@@ -25,15 +25,34 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 import type { KanaSet, QuizLength, QuizQuestionTypeKana } from '@/types/quiz-types';
+import { useSearchParams } from 'next/navigation';
 
 
-export default function KanaPage() {
+function KanaPageContent() {
+  const searchParams = useSearchParams();
   const [isQuizActive, setQuizActive] = useState(false);
   const [activeKanaSet, setActiveKanaSet] = useState<KanaSet>('hiragana');
   const [quizLength, setQuizLength] = useState<QuizLength>('full');
   const [quizQuestionType, setQuizQuestionType] = useState<QuizQuestionTypeKana>('kana-to-romaji');
   const [api, setApi] = useState<CarouselApi>()
   const [currentSlide, setCurrentSlide] = useState(0)
+
+  useEffect(() => {
+    // Check for URL params to auto-start a quiz
+    const autoStartQuiz = searchParams.get('quiz') === 'true';
+    if (autoStartQuiz) {
+        const kanaSetParam = searchParams.get('kanaSet') as KanaSet | null;
+        const qTypeParam = searchParams.get('questionType') as QuizQuestionTypeKana | null;
+        const qLengthParam = searchParams.get('quizLength') as QuizLength | null;
+
+        if (kanaSetParam && qTypeParam && qLengthParam) {
+            setActiveKanaSet(kanaSetParam);
+            setQuizQuestionType(qTypeParam);
+            setQuizLength(qLengthParam);
+            setQuizActive(true);
+        }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!api) {
@@ -74,6 +93,10 @@ export default function KanaPage() {
 
   const endQuiz = () => {
     setQuizActive(false);
+    // If we came here from a generated link, redirect back to home on quiz end.
+    if (searchParams.get('quiz') === 'true') {
+        window.location.href = '/';
+    }
   };
 
   if (isQuizActive) {
@@ -164,4 +187,10 @@ export default function KanaPage() {
   );
 }
 
-    
+export default function KanaPage() {
+    return (
+        <Suspense fallback={<div>Загрузка...</div>}>
+            <KanaPageContent />
+        </Suspense>
+    );
+}

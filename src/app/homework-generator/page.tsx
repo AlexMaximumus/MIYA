@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clipboard, Check } from 'lucide-react';
+import { ArrowLeft, Clipboard } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,13 +18,26 @@ import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useTeacherMode } from '@/hooks/use-teacher-mode';
-import type { QuizLength, VocabSet, QuizQuestionTypeVocab } from '@/types/quiz-types';
+import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
+
+type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation';
 
 export default function HomeworkGeneratorPage() {
-    const [quizType, setQuizType] = useState('dictionary');
+    const [quizType, setQuizType] = useState<QuizType>('dictionary');
+    
+    // Dictionary state
     const [vocabSet, setVocabSet] = useState<VocabSet>('N5');
-    const [questionType, setQuestionType] = useState<QuizQuestionTypeVocab>('jp_to_ru');
-    const [quizLength, setQuizLength] = useState<QuizLength>('25');
+    const [questionTypeVocab, setQuestionTypeVocab] = useState<QuizQuestionTypeVocab>('jp_to_ru');
+    const [quizLengthVocab, setQuizLengthVocab] = useState<QuizLength>('25');
+    
+    // Kana state
+    const [kanaSet, setKanaSet] = useState<KanaSet>('hiragana');
+    const [questionTypeKana, setQuestionTypeKana] = useState<QuizQuestionTypeKana>('kana-to-romaji');
+    const [quizLengthKana, setQuizLengthKana] = useState<QuizLength>('full');
+
+    // Grammar/Word-Formation state
+    const [lesson, setLesson] = useState('1');
+
     const [generatedUrl, setGeneratedUrl] = useState('');
 
     const [_, copy] = useCopyToClipboard();
@@ -48,14 +61,28 @@ export default function HomeworkGeneratorPage() {
             let path = '';
             const params = new URLSearchParams();
 
-            if (quizType === 'dictionary') {
-                path = '/dictionary';
-                params.append('quiz', 'true');
-                params.append('vocabSet', vocabSet);
-                params.append('questionType', questionType);
-                params.append('quizLength', quizLength);
+            switch(quizType) {
+                case 'dictionary':
+                    path = '/dictionary';
+                    params.append('quiz', 'true');
+                    params.append('vocabSet', vocabSet);
+                    params.append('questionType', questionTypeVocab);
+                    params.append('quizLength', quizLengthVocab);
+                    break;
+                case 'kana':
+                    path = '/kana';
+                    params.append('quiz', 'true');
+                    params.append('kanaSet', kanaSet);
+                    params.append('questionType', questionTypeKana);
+                    params.append('quizLength', quizLengthKana);
+                    break;
+                case 'grammar':
+                    path = `/grammar/lesson-${lesson}`;
+                    break;
+                case 'word-formation':
+                    path = `/word-formation/lesson-${lesson}`;
+                    break;
             }
-            // Future logic for grammar quizzes can be added here
             
             const fullUrl = `${baseUrl}${path}?${params.toString()}`;
             setGeneratedUrl(fullUrl);
@@ -67,6 +94,100 @@ export default function HomeworkGeneratorPage() {
             .then(() => toast({ title: 'Ссылка скопирована!', description: 'Теперь вы можете отправить ее ученику.' }))
             .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
     };
+    
+    const renderOptions = () => {
+        switch(quizType) {
+            case 'dictionary':
+                return (
+                    <>
+                        <Select value={vocabSet} onValueChange={(v) => setVocabSet(v as VocabSet)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Уровень слов" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="N5">Словарь N5</SelectItem>
+                                <SelectItem value="N4">Словарь N4</SelectItem>
+                                <SelectItem value="N3" disabled>Словарь N3 (скоро)</SelectItem>
+                                <SelectItem value="N2" disabled>Словарь N2 (скоро)</SelectItem>
+                                <SelectItem value="N1" disabled>Словарь N1 (скоро)</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={questionTypeVocab} onValueChange={(v) => setQuestionTypeVocab(v as QuizQuestionTypeVocab)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Тип вопросов" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="jp_to_ru">Слово → Перевод</SelectItem>
+                                <SelectItem value="ru_to_jp">Перевод → Слово</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={quizLengthVocab} onValueChange={(v) => setQuizLengthVocab(v as QuizLength)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Количество вопросов" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="25">25 вопросов</SelectItem>
+                                <SelectItem value="50">50 вопросов</SelectItem>
+                                <SelectItem value="full">Все слова уровня</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </>
+                );
+            case 'kana':
+                 return (
+                    <>
+                        <Select value={kanaSet} onValueChange={(v) => setKanaSet(v as KanaSet)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Азбука" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="hiragana">Хирагана</SelectItem>
+                                <SelectItem value="katakana">Катакана</SelectItem>
+                                <SelectItem value="all">Смешанный</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={questionTypeKana} onValueChange={(v) => setQuestionTypeKana(v as QuizQuestionTypeKana)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Тип вопросов" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="kana-to-romaji">Символ → Ромадзи</SelectItem>
+                                <SelectItem value="romaji-to-kana">Ромадзи → Символ</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={quizLengthKana} onValueChange={(v) => setQuizLengthKana(v as QuizLength)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Количество вопросов" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="25">25 вопросов</SelectItem>
+                                <SelectItem value="50">50 вопросов</SelectItem>
+                                <SelectItem value="full">Полный тест</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </>
+                );
+            case 'grammar':
+            case 'word-formation':
+                 return (
+                    <Select value={lesson} onValueChange={setLesson}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Урок" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="1">Урок 1</SelectItem>
+                            {quizType === 'grammar' && <SelectItem value="2">Урок 2</SelectItem>}
+                            <SelectItem value="3" disabled>Урок 3 (скоро)</SelectItem>
+                        </SelectContent>
+                    </Select>
+                );
+            default: return null;
+        }
+    }
 
     if (!isClient || isTeacherMode === false) {
         // Render nothing or a loading spinner while redirecting
@@ -97,52 +218,22 @@ export default function HomeworkGeneratorPage() {
                         <CardTitle>Параметры теста</CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Select value={quizType} onValueChange={setQuizType}>
-                            <SelectTrigger>
+                        <Select value={quizType} onValueChange={(v) => setQuizType(v as QuizType)}>
+                            <SelectTrigger className="md:col-span-2">
                                 <SelectValue placeholder="Тип задания" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="dictionary">Тест по словарю</SelectItem>
-                                <SelectItem value="grammar" disabled>Тест по грамматике (скоро)</SelectItem>
+                                <SelectItem value="kana">Тест по Кане</SelectItem>
+                                <SelectItem value="grammar">Урок грамматики</SelectItem>
+                                <SelectItem value="word-formation">Урок словообразования</SelectItem>
                             </SelectContent>
                         </Select>
                         
-                        <Select value={vocabSet} onValueChange={(v) => setVocabSet(v as VocabSet)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Уровень слов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="N5">Словарь N5</SelectItem>
-                                <SelectItem value="N4">Словарь N4</SelectItem>
-                                <SelectItem value="N3">Словарь N3</SelectItem>
-                                <SelectItem value="N2">Словарь N2</SelectItem>
-                                <SelectItem value="N1">Словарь N1</SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        <Select value={questionType} onValueChange={(v) => setQuestionType(v as QuizQuestionTypeVocab)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Тип вопросов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="jp_to_ru">Слово → Перевод</SelectItem>
-                                <SelectItem value="ru_to_jp">Перевод → Слово</SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        <Select value={quizLength} onValueChange={(v) => setQuizLength(v as QuizLength)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Количество вопросов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="25">25 вопросов</SelectItem>
-                                <SelectItem value="50">50 вопросов</SelectItem>
-                                <SelectItem value="full">Все слова уровня</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        {renderOptions()}
                         
                         <Button size="lg" onClick={generateLink} className="md:col-span-2 btn-gradient">
-                            Сгенерировать ссылку на тест
+                            Сгенерировать ссылку
                         </Button>
                     </CardContent>
                 </Card>
