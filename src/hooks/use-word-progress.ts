@@ -78,7 +78,8 @@ export const useWordProgress = create<WordProgressState>()(
         if (isCorrect) {
           newStreak = currentWord.streak + 1;
         } else {
-          newStreak = Math.max(0, Math.floor(currentWord.streak / 2));
+          // If incorrect, reset streak but maybe not to 0 to be less punishing
+          newStreak = Math.max(0, currentWord.streak - 2);
         }
         
         if (newStreak >= MASTERED_STREAK) {
@@ -166,5 +167,3 @@ export const useWordProgress = create<WordProgressState>()(
     }
   )
 );
-
-    

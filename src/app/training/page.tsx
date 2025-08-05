@@ -121,7 +121,12 @@ export default function TrainingPage() {
         } else {
             setFeedback('incorrect');
             setTimeout(() => {
-                setActiveQueue(prev => shuffleArray(prev)); // Shuffle to reorder incorrect card
+                // Move incorrect card to a random position in the last 1/3 of the queue
+                const remaining = activeQueue.slice(1);
+                const incorrectCard = activeQueue[0];
+                const insertIndex = Math.floor(remaining.length * 2/3) + Math.floor(Math.random() * (remaining.length / 3));
+                remaining.splice(insertIndex, 0, incorrectCard);
+                setActiveQueue(remaining);
                 setFeedback(null);
             }, 1200);
         }
