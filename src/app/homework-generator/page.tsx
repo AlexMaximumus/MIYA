@@ -42,7 +42,7 @@ import { cn } from '@/lib/utils';
 import { AnimatePresence, Reorder } from 'framer-motion';
 import { Textarea } from '@/components/ui/textarea';
 
-type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'image' | 'instructions';
+type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar' | 'instructions';
 interface Task {
     id: string;
     type: TaskType;
@@ -112,7 +112,6 @@ export default function HomeworkGeneratorPage() {
             case 'dictionary': return 'Тест по словарю';
             case 'kana': return 'Тест по Кане';
             case 'grammar': return 'Урок грамматики';
-            case 'image': return 'Задание с изображением';
             case 'instructions': return 'Блок с инструкциями';
             default: return 'Новое задание';
         }
@@ -124,7 +123,6 @@ export default function HomeworkGeneratorPage() {
             case 'dictionary': return { vocabSet: 'N5', questionType: 'jp_to_ru', quizLength: '25' };
             case 'kana': return { kanaSet: 'hiragana', questionType: 'kana-to-romaji', quizLength: 'full' };
             case 'grammar': return { lesson: '1' };
-            case 'image': return { path: '', instructions: '' };
             case 'instructions': return { text: '' };
             default: return {};
         }
@@ -284,25 +282,6 @@ export default function HomeworkGeneratorPage() {
                         </Select>
                     </div>
                 );
-            case 'image':
-                return (
-                    <div className="space-y-2 mt-2">
-                        <Label htmlFor={`image-path-${id}`}>Путь к изображению</Label>
-                        <Input
-                            id={`image-path-${id}`}
-                            placeholder="Например: /my-files/task.png"
-                            value={settings.path}
-                            onChange={(e) => updateTaskSettings(id, { path: e.target.value })}
-                        />
-                        <Label htmlFor={`image-instr-${id}`}>Инструкции для ученика</Label>
-                        <Textarea
-                            id={`image-instr-${id}`}
-                            placeholder="Например: Опишите, что вы видите на картинке."
-                            value={settings.instructions}
-                            onChange={(e) => updateTaskSettings(id, { instructions: e.target.value })}
-                        />
-                    </div>
-                );
             case 'instructions':
                  return (
                     <div className="space-y-2 mt-2">
@@ -371,7 +350,6 @@ export default function HomeworkGeneratorPage() {
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('dictionary')}><FileText className='mr-2'/>Тест по словарю</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('kana')}><FileText className='mr-2'/>Тест по Кане</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('grammar')}><FileText className='mr-2'/>Урок грамматики</Button></DialogTrigger>
-                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('image')}><ImageIcon className='mr-2'/>Задание с картинкой</Button></DialogTrigger>
                                     <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('instructions')}><FileText className='mr-2'/>Блок инструкций</Button></DialogTrigger>
                                 </div>
                             </DialogContent>
@@ -398,3 +376,5 @@ export default function HomeworkGeneratorPage() {
         </div>
     );
 }
+
+    
