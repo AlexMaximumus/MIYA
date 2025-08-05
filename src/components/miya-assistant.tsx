@@ -119,8 +119,14 @@ export default function MiyaAssistant() {
 
   const getContextFromPath = () => {
     if (pathname.includes('/kana')) return 'Kana tables/quiz';
-    if (pathname.includes('/vocabulary')) return 'Vocabulary section';
-    if (pathname.includes('/grammar')) return 'Grammar lesson';
+    if (pathname.includes('/dictionary')) return 'Vocabulary and tests section';
+    if (pathname.includes('/training')) return 'Spaced repetition training';
+    if (pathname.includes('/grammar/lesson-1')) return 'Grammar lesson 1: Basics';
+    if (pathname.includes('/grammar/lesson-2')) return 'Grammar lesson 2: Questions';
+    if (pathname.includes('/grammar')) return 'Grammar section';
+    if (pathname.includes('/word-formation/lesson-1')) return 'Word Formation lesson 1: Affixes';
+    if (pathname.includes('/word-formation')) return 'Word Formation section';
+    if (pathname.includes('/vocabulary')) return 'Vocabulary by lesson section';
     return 'Main screen';
   };
 
@@ -144,7 +150,7 @@ export default function MiyaAssistant() {
     setIsLoading(true);
 
     const history = newMessages.slice(0, -1).map(msg => ({
-        role: msg.sender,
+        role: (msg.sender === 'user' ? 'user' : 'miya') as 'user' | 'miya',
         message: msg.text,
       }));
 
