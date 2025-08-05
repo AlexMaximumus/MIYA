@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookText, Filter, TestTubeDiagonal, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
@@ -217,7 +217,7 @@ export default function DictionaryPage() {
                              filteredWords.map(word => {
                                 const status = getWordStatus(word.word);
                                 return (
-                                    <TableRow key={word.word}>
+                                    <TableRow key={`${word.word}-${word.translation}`}>
                                         <TableCell className="w-[200px] font-japanese text-lg font-medium flex items-center gap-2">
                                             {status === 'mastered' && (
                                                 <TooltipProvider>
@@ -256,5 +256,3 @@ export default function DictionaryPage() {
     </div>
   );
 }
-
-    
