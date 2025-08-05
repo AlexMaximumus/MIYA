@@ -403,3 +403,58 @@ export const grammarAnalyses = {
         "fullTranslation": "Ямада — преподаватель или студент?"
     }
 }
+
+export const dialogueAnalyses = {
+    konnichiwa: {
+        sentence: [{ word: 'こんにちは', furigana: 'こんにちは', translation: 'Добрый день', partOfSpeech: 'междометие' }],
+        fullTranslation: 'Добрый день!'
+    },
+    hajimemashite: {
+        sentence: [
+            { word: 'はじめまして', furigana: 'はじめまして', translation: 'приятно познакомиться', partOfSpeech: 'выражение' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+            { word: '私', furigana: 'わたし', translation: 'я', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'ゆき', furigana: 'ゆき', translation: 'Юки', partOfSpeech: 'имя собственное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+        ],
+        fullTranslation: 'Приятно познакомиться. Я Юки.'
+    },
+    anatanonamaewa: {
+        sentence: [
+            { word: 'あなた', furigana: 'あなた', translation: 'вы', partOfSpeech: 'местоимение' },
+            { word: 'の', furigana: 'の', translation: 'частица (принадлежность)', partOfSpeech: 'частица (принадлежность)' },
+            { word: 'お名前', furigana: 'おなまえ', translation: 'имя (вежл.)', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: '？', furigana: '', translation: 'вопрос', partOfSpeech: 'знак препинания' },
+        ],
+        fullTranslation: 'Как вас зовут?'
+    },
+    hajimemashite_name: {
+        sentence: [
+            { word: '[name]', furigana: '[name]', translation: 'Имя пользователя', partOfSpeech: 'имя собственное' },
+            { word: 'さん', furigana: 'さん', translation: 'г-н/г-жа', partOfSpeech: 'суффикс вежливости' },
+            { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+            { word: 'はじめまして', furigana: 'はじめまして', translation: 'приятно познакомиться', partOfSpeech: 'выражение' },
+            { word: '！', furigana: '', translation: 'воскл. знак', partOfSpeech: 'знак препинания' },
+        ],
+        fullTranslation: 'Приятно познакомиться, [name]!'
+    },
+    yoroshiku: {
+        sentence: [
+            { word: 'どうぞ', furigana: 'どうぞ', translation: 'пожалуйста', partOfSpeech: 'наречие' },
+            { word: 'よろしく', furigana: 'よろしく', translation: 'прошу любить', partOfSpeech: 'наречие' },
+            { word: 'お願いします', furigana: 'おねがいします', translation: 'и жаловать', partOfSpeech: 'выражение' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+        ],
+        fullTranslation: 'Прошу любить и жаловать.'
+    },
+    yokudekimashita: {
+        sentence: [
+            { word: 'よくできました', furigana: 'よくできました', translation: 'отлично сделано', partOfSpeech: 'выражение' },
+            { word: '🎉', furigana: '', translation: 'эмодзи', partOfSpeech: 'знак препинания' },
+        ],
+        fullTranslation: 'Отлично получилось! 🎉'
+    }
+};

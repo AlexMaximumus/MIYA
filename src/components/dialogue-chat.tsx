@@ -9,23 +9,37 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import * as wanakana from 'wanakana';
 import { Card, CardContent } from '@/components/ui/card';
+import InteractiveText from './interactive-text';
+import { type JapaneseAnalysisOutput, dialogueAnalyses } from '@/ai/precomputed-analysis';
 
 type Message = {
     sender: 'user' | 'yuki';
     text: string;
+    analysis?: JapaneseAnalysisOutput;
     isHint?: boolean;
 };
 
-const dialogueScript = [
-    { type: 'message', sender: 'yuki', text: 'こんにちは！' },
-    { type: 'prompt', expected: 'こんにちは' },
-    { type: 'message', sender: 'yuki', text: 'はじめまして。わたしはゆきです。' },
-    { type: 'message', sender: 'yuki', text: 'あなたのおなまえは？' },
-    { type: 'prompt', expected: 'わたしは[name]です' }, // User can insert their name
-    { type: 'message', sender: 'yuki', text: '[name]さん、はじめまして！' },
-    { type: 'message', sender: 'yuki', text: 'どうぞよろしくおねがいします。' },
-    { type: 'prompt', expected: 'こちらこそよろしくおねがいします' },
-    { type: 'message', sender: 'yuki', text: 'よくできました！🎉' },
+type DialogueStep = {
+    type: 'message';
+    sender: 'yuki';
+    analysis: JapaneseAnalysisOutput;
+    originalText: string;
+} | {
+    type: 'prompt';
+    expected: string; // The full phrase in kana/kanji for display in hints
+    expectedRomaji: string; // The romaji version for validation
+};
+
+const dialogueScript: DialogueStep[] = [
+    { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.konnichiwa, originalText: 'こんにちは！' },
+    { type: 'prompt', expected: 'こんにちは', expectedRomaji: 'konnichiha' },
+    { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.hajimemashite, originalText: 'はじめまして。わたしはゆきです。' },
+    { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.anatanonamaewa, originalText: 'あなたのお名前は？' },
+    { type: 'prompt', expected: '私[ваше имя]です', expectedRomaji: 'watashiha[name]desu' },
+    { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.hajimemashite_name, originalText: '[name]さん、はじめまして！' },
+    { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.yoroshiku, originalText: 'どうぞよろしくお願いします。' },
+    { type: 'prompt', expected: 'こちらこそよろしくお願いします', expectedRomaji: 'kochirakosoyoroshikuonegaishimasu' },
+    { type: 'message', sender: 'yuki', analysis: dialogueAnalyses.yokudekimashita, originalText: 'よくできました！🎉' },
 ];
 
 
@@ -54,7 +68,7 @@ export default function DialogueChat() {
     
             if (step.type === 'message') {
                 setTimeout(() => {
-                    setMessages(prev => [...prev, { sender: step.sender as 'yuki', text: step.text }]);
+                    setMessages(prev => [...prev, { sender: 'yuki', text: step.originalText, analysis: step.analysis }]);
                     setCurrentStep(prev => prev + 1);
                 }, 800);
             } else if (step.type === 'prompt') {
@@ -69,26 +83,24 @@ export default function DialogueChat() {
         e.preventDefault();
         if (!inputValue.trim() || !isWaitingForUser) return;
 
-        const romajiInput = wanakana.toRomaji(inputValue.toLowerCase());
+        const romajiInput = wanakana.toRomaji(inputValue.toLowerCase()).replace(/\s/g, '');
         const step = dialogueScript[currentStep];
 
         if (step.type !== 'prompt') return;
-
-        // Special handling for name insertion
-        const isNamePrompt = step.expected.includes('[name]');
+        
+        const isNamePrompt = step.expectedRomaji.includes('[name]');
         let isCorrect = false;
         let userName = 'User';
 
         if (isNamePrompt) {
-            const pattern = step.expected.replace('[name]', '(.+)').replace(/\s/g, '\\s*');
-            const regex = new RegExp(wanakana.toRomaji(pattern));
-            const match = romajiInput.match(regex);
-            if (match && match[1]) {
+            // Simplified logic for name prompt: check if it starts with "watashiha" and ends with "desu"
+            if (romajiInput.startsWith('watashiha') && romajiInput.endsWith('desu')) {
                 isCorrect = true;
-                userName = wanakana.toHiragana(match[1]); // Keep user name in hiragana
+                const namePart = romajiInput.substring('watashiha'.length, romajiInput.length - 'desu'.length);
+                userName = wanakana.toHiragana(namePart) || 'ひと'; // default name if empty
             }
         } else {
-            isCorrect = romajiInput === wanakana.toRomaji(step.expected);
+            isCorrect = romajiInput === step.expectedRomaji;
         }
         
         if (isCorrect) {
@@ -96,28 +108,31 @@ export default function DialogueChat() {
             setInputValue('');
             setShowHint(false);
             setIsWaitingForUser(false);
-
-            // Replace [name] in subsequent messages
+            
             if (isNamePrompt) {
                 dialogueScript.forEach(s => {
-                    if (s.type === 'message' && s.text.includes('[name]')) {
-                        s.text = s.text.replace('[name]', userName);
+                    if (s.type === 'message' && s.originalText.includes('[name]')) {
+                       s.analysis.sentence.forEach(word => {
+                           if (word.word === '[name]') {
+                               word.word = userName;
+                               word.furigana = wanakana.toHiragana(userName);
+                           }
+                       });
                     }
                 });
             }
 
             setCurrentStep(prev => prev + 1);
         } else {
-            // Show incorrect feedback (e.g., shake input)
-             setMessages(prev => [...prev, { sender: 'user', text: `😕 ${inputValue}` }]);
-             setShowHint(true);
+            setMessages(prev => [...prev, { sender: 'user', text: `😕 ${inputValue}` }]);
+            setShowHint(true);
         }
     };
     
     const handleShowHint = () => {
         const step = dialogueScript[currentStep];
         if (step.type === 'prompt') {
-            setMessages(prev => [...prev, { sender: 'yuki', text: `Попробуй сказать: "${step.expected.replace('[name]', 'ваше имя')}"`, isHint: true }]);
+            setMessages(prev => [...prev, { sender: 'yuki', text: `Попробуй сказать: "${step.expected.replace('[ваше имя]', '...')}"`, isHint: true }]);
         }
     }
 
@@ -136,12 +151,16 @@ export default function DialogueChat() {
                                     <Image src="/yuki-pixel.png" alt="Yuki Avatar" fill className="object-cover" />
                                 </div>
                             )}
-                            <div className={cn('rounded-lg px-3 py-2 max-w-[85%] font-japanese text-lg', 
+                            <div className={cn('rounded-lg px-3 py-2 max-w-[85%]', 
                                 msg.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card',
                                 msg.isHint && 'bg-amber-100 text-amber-900 border border-amber-300',
                                 msg.text.startsWith('😕') && 'bg-destructive/20 text-destructive-foreground'
                             )}>
-                                {msg.text.replace('😕 ', '')}
+                                {msg.analysis ? (
+                                    <InteractiveText analysis={msg.analysis} />
+                                ) : (
+                                    <p className="font-japanese text-lg">{msg.text.replace('😕 ', '')}</p>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -151,9 +170,9 @@ export default function DialogueChat() {
                     <div className="relative w-full">
                         <Input
                             value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
+                            onChange={(e) => setInputValue(wanakana.toHiragana(e.target.value))}
                             placeholder={isWaitingForUser ? 'Ваш ответ...' : 'Юки печатает...'}
-                            className="text-lg pr-10"
+                            className="text-lg pr-10 font-japanese"
                             disabled={!isWaitingForUser}
                             onFocus={() => setShowHint(false)}
                         />
@@ -172,3 +191,4 @@ export default function DialogueChat() {
         </Card>
     );
 }
+```
