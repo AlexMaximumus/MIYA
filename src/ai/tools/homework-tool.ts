@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A tool for Miya to generate homework assignments.
@@ -14,6 +15,7 @@ const HomeworkOutputSchema = z.string().describe(`The generated homework assignm
 
 const homeworkPrompt = ai.definePrompt({
     name: 'homeworkGenerator',
+    model: 'googleai/gemini-pro',
     input: { schema: HomeworkInputSchema },
     output: { schema: HomeworkOutputSchema },
     prompt: `You are a Japanese language teacher creating a homework assignment.
