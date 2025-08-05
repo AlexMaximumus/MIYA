@@ -93,8 +93,7 @@ Current user context: {{{currentContext}}}
 Conversation History:
 {{#if history}}
 {{#each history}}
-  {{#if (eq role "user")}}User: {{message}}{{/if}}
-  {{#if (eq role "miya")}}Miya: {{message}}{{/if}}
+{{role}}: {{message}}
 {{/each}}
 {{else}}
 (No conversation history yet)
