@@ -21,7 +21,7 @@ export default function DictionaryRow({ word }: DictionaryRowProps) {
     const { getWordStatus } = useWordProgress();
 
     if (!word) {
-        return null; // Or a placeholder
+        return null;
     }
     const status = getWordStatus(word.word);
 
@@ -50,3 +50,4 @@ export default function DictionaryRow({ word }: DictionaryRowProps) {
         </>
     );
 }
+

@@ -11,6 +11,7 @@ import { useWordProgress } from '@/hooks/use-word-progress';
 import { vocabularyData } from '@/lib/dictionary-data';
 import type { Word } from '@/lib/dictionary-data';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
 
@@ -18,10 +19,16 @@ const shuffleArray = <T,>(array: T[]): T[] => {
     return [...array].sort(() => Math.random() - 0.5);
 };
 
+type QueueItem = {
+    word: string;
+    type: 'new' | 'review';
+};
+
+type QuestionType = 'jp_to_ru' | 'ru_to_jp';
 
 export default function TrainingPage() {
-    const { getReviewQueue, updateWordProgress, resetProgress } = useWordProgress();
-    const [dailyQueue, setDailyQueue] = useState<string[]>([]);
+    const { getReviewQueue, updateWordProgress } = useWordProgress();
+    const [dailyQueue, setDailyQueue] = useState<QueueItem[]>([]);
     const [wordMap, setWordMap] = useState<Map<string, Word>>(new Map());
     
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -29,6 +36,7 @@ export default function TrainingPage() {
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [isFinished, setIsFinished] = useState(false);
     const [correctCount, setCorrectCount] = useState(0);
+    const [questionType, setQuestionType] = useState<QuestionType>('jp_to_ru');
     
     const [isClient, setIsClient] = useState(false);
 
@@ -43,29 +51,36 @@ export default function TrainingPage() {
     
     useEffect(() => {
         setIsClient(true);
-        // Create a map for quick word lookups
         const map = new Map<string, Word>();
         allWords.forEach(word => map.set(word.word, word));
         setWordMap(map);
         initializeSession();
     }, [initializeSession]);
 
-    const generateOptions = useCallback((correctWord: Word) => {
-        const wrongAnswers = allWords
-            .filter(w => w.word !== correctWord.word)
-            .map(w => w.translation);
-        
-        const shuffledWrong = shuffleArray(wrongAnswers).slice(0, 3);
-        const allOptions = shuffleArray([...shuffledWrong, correctWord.translation]);
-        setOptions(allOptions);
+    const generateOptions = useCallback((correctWord: Word, type: QuestionType) => {
+        if (type === 'jp_to_ru') {
+            const wrongAnswers = allWords
+                .filter(w => w.word !== correctWord.word)
+                .map(w => w.translation);
+            const shuffledWrong = shuffleArray(wrongAnswers).slice(0, 3);
+            setOptions(shuffleArray([...shuffledWrong, correctWord.translation]));
+        } else { // ru_to_jp
+            const wrongAnswers = allWords
+                .filter(w => w.word !== correctWord.word)
+                .map(w => w.word);
+            const shuffledWrong = shuffleArray(wrongAnswers).slice(0, 3);
+            setOptions(shuffleArray([...shuffledWrong, correctWord.word]));
+        }
     }, []);
 
     useEffect(() => {
         if (dailyQueue.length > 0 && currentQuestionIndex < dailyQueue.length) {
-            const currentWordKey = dailyQueue[currentQuestionIndex];
+            const currentWordKey = dailyQueue[currentQuestionIndex].word;
             const currentWord = wordMap.get(currentWordKey);
             if (currentWord) {
-                generateOptions(currentWord);
+                const newQuestionType = Math.random() > 0.5 ? 'jp_to_ru' : 'ru_to_jp';
+                setQuestionType(newQuestionType);
+                generateOptions(currentWord, newQuestionType);
             }
         } else if (dailyQueue.length > 0 && currentQuestionIndex >= dailyQueue.length) {
             setIsFinished(true);
@@ -73,15 +88,16 @@ export default function TrainingPage() {
     }, [currentQuestionIndex, dailyQueue, generateOptions, wordMap]);
 
 
-    const handleAnswer = (selectedTranslation: string) => {
+    const handleAnswer = (selectedOption: string) => {
         if (feedback) return;
 
-        const currentWordKey = dailyQueue[currentQuestionIndex];
+        const currentWordKey = dailyQueue[currentQuestionIndex].word;
         const correctWord = wordMap.get(currentWordKey);
-
         if (!correctWord) return;
 
-        const isCorrect = selectedTranslation === correctWord.translation;
+        const isCorrect = questionType === 'jp_to_ru' 
+            ? selectedOption === correctWord.translation
+            : selectedOption === correctWord.word;
 
         if (isCorrect) {
             setFeedback('correct');
@@ -128,9 +144,11 @@ export default function TrainingPage() {
         )
     }
 
-    const currentWordKey = dailyQueue[currentQuestionIndex];
-    const currentWord = wordMap.get(currentWordKey);
+    const currentQueueItem = dailyQueue[currentQuestionIndex];
+    const currentWord = currentQueueItem ? wordMap.get(currentQueueItem.word) : null;
     const progress = (currentQuestionIndex / dailyQueue.length) * 100;
+    
+    const isJpToRu = questionType === 'jp_to_ru';
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8 animate-fade-in">
@@ -146,7 +164,7 @@ export default function TrainingPage() {
                     </div>
                     <Progress value={progress} className="mt-2" />
                 </CardHeader>
-                <CardContent className="flex flex-col items-center gap-8 min-h-[350px] justify-center">
+                <CardContent className="flex flex-col items-center gap-6 min-h-[380px] justify-center">
                      {isFinished ? (
                          <div className="text-center">
                             <h2 className="text-2xl font-bold mb-4">Тренировка завершена!</h2>
@@ -163,13 +181,26 @@ export default function TrainingPage() {
                         </div>
                      ) : currentWord ? (
                         <>
-                            <div className="text-center">
-                                <p className="text-muted-foreground mb-1">{currentWord.reading}</p>
-                                <p className="text-6xl font-bold font-japanese">{currentWord.word}</p>
+                            <div className="relative text-center">
+                                {currentQueueItem.type === 'new' ? (
+                                    <Badge variant="default" className="absolute -top-6 left-1/2 -translate-x-1/2">Новое слово</Badge>
+                                ) : (
+                                    <Badge variant="secondary" className="absolute -top-6 left-1/2 -translate-x-1/2">На повторении</Badge>
+                                )}
+
+                                {isJpToRu ? (
+                                    <>
+                                        <p className="text-muted-foreground mb-1">{currentWord.reading}</p>
+                                        <p className="text-6xl font-bold font-japanese">{currentWord.word}</p>
+                                    </>
+                                ) : (
+                                    <p className="text-4xl font-bold">{currentWord.translation}</p>
+                                )}
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                                 {options.map((option, index) => {
-                                    const isCorrectAnswer = option === currentWord.translation;
+                                    const correctAnswer = isJpToRu ? currentWord.translation : currentWord.word;
+                                    const isCorrectAnswer = option === correctAnswer;
                                     let buttonClass = '';
 
                                     if (feedback) {
@@ -184,7 +215,7 @@ export default function TrainingPage() {
                                         <Button
                                             key={index}
                                             onClick={() => handleAnswer(option)}
-                                            className={cn("h-16 text-lg transition-all duration-300 transform", buttonClass)}
+                                            className={cn("h-16 text-lg transition-all duration-300 transform", !isJpToRu && 'font-japanese', buttonClass)}
                                             disabled={!!feedback}
                                         >
                                             {option}
@@ -209,3 +240,4 @@ export default function TrainingPage() {
         </div>
     );
 }
+
