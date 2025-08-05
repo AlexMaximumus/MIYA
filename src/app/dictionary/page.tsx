@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookText, Filter, TestTubeDiagonal, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
@@ -35,7 +36,8 @@ const partsOfSpeech = [...new Set(allWords.map(word => word.pos))].sort();
 const jlptLevels: VocabSet[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
 
 
-export default function DictionaryPage() {
+function DictionaryContent() {
+    const searchParams = useSearchParams();
     const [searchTerm, setSearchTerm] = useState('');
     const [jlptLevel, setJlptLevel] = useState<VocabSet | 'all'>('all');
     const [partOfSpeech, setPartOfSpeech] = useState('all');
@@ -47,6 +49,23 @@ export default function DictionaryPage() {
     const [quizQuestionType, setQuizQuestionType] = useState<QuizQuestionTypeVocab>('jp_to_ru');
 
     const { getWordStatus } = useWordProgress();
+
+    useEffect(() => {
+        // Check for URL params to auto-start a quiz
+        const autoStartQuiz = searchParams.get('quiz') === 'true';
+        if (autoStartQuiz) {
+            const vocabSet = searchParams.get('vocabSet') as VocabSet | null;
+            const qType = searchParams.get('questionType') as QuizQuestionTypeVocab | null;
+            const qLength = searchParams.get('quizLength') as QuizLength | null;
+
+            if (vocabSet && qType && qLength) {
+                setQuizJlptLevel(vocabSet);
+                setQuizQuestionType(qType);
+                setQuizLength(qLength);
+                setQuizActive(true);
+            }
+        }
+    }, [searchParams]);
 
     const filteredWords = useMemo(() => {
         return allWords.filter(word => {
@@ -83,6 +102,10 @@ export default function DictionaryPage() {
 
     const endQuiz = () => {
         setQuizActive(false);
+        // If we came here from a generated link, redirect back to home on quiz end.
+        if (searchParams.get('quiz') === 'true') {
+            window.location.href = '/';
+        }
     };
 
     if (isQuizActive) {
@@ -255,4 +278,12 @@ export default function DictionaryPage() {
       </div>
     </div>
   );
+}
+
+export default function DictionaryPage() {
+    return (
+        <Suspense fallback={<div>Загрузка...</div>}>
+            <DictionaryContent />
+        </Suspense>
+    );
 }

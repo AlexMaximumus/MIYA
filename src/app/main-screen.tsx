@@ -4,12 +4,16 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useWordProgress } from '@/hooks/use-word-progress';
+import { useTeacherMode } from '@/hooks/use-teacher-mode';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
+
 
 const floatingWords = [
   { text: 'こんにちは', highlighted: false },
@@ -41,6 +45,8 @@ export default function MainScreen() {
   // Lesson Progress
   const [grammarProgress, setGrammarProgress] = useState<number | null>(null);
   const [wordFormationProgress, setWordFormationProgress] = useState<number | null>(null);
+
+  const { isTeacherMode, isNewTeacher } = useTeacherMode();
 
 
   useEffect(() => {
@@ -127,6 +133,15 @@ export default function MainScreen() {
         )}
       </div>
       <div className="mb-12 min-h-[60px]">
+        {isTeacherMode && isNewTeacher && (
+             <Alert className="max-w-lg mb-8 animate-fade-in border-primary/50 text-foreground">
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Режим Учителя активирован!</AlertTitle>
+                <AlertDescription>
+                    Теперь ты сенсей. Задавай домашку через новый раздел.
+                </AlertDescription>
+            </Alert>
+        )}
         {randomAnalysis ? (
           <InteractiveText analysis={randomAnalysis} />
         ) : (
@@ -137,19 +152,31 @@ export default function MainScreen() {
         )}
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        <Link href="/training" className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
-            <CategoryCard
-              icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
-              title="Тренировка дня"
-              description="Изучайте слова по системе интервальных повторений"
-              stats={[
-                  { label: "Изучено слов", value: learnedWords },
-                  { label: "К повторению", value: reviewCount }
-              ]}
-              isSpecial
-            />
-        </Link>
+        {isTeacherMode ? (
+            <Link href="/homework-generator" className="relative group md:col-span-2 lg:col-span-3">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-400 to-primary rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
+                <CategoryCard
+                    icon={<GraduationCap className="w-10 h-10 md:w-12 md:h-12" />}
+                    title="Конструктор Д/З"
+                    description="Создавайте кастомные тесты и делитесь ими с учениками"
+                    isSpecial
+                />
+            </Link>
+        ) : (
+            <Link href="/training" className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
+                <CategoryCard
+                icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
+                title="Тренировка дня"
+                description="Изучайте слова по системе интервальных повторений"
+                stats={[
+                    { label: "Изучено слов", value: learnedWords },
+                    { label: "К повторению", value: reviewCount }
+                ]}
+                isSpecial
+                />
+            </Link>
+        )}
         <Link href="/kana">
           <CategoryCard
             icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}

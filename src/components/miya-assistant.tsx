@@ -10,6 +10,7 @@ import { askMiya, MiyaOutput } from '@/ai/flows/miya-assistant-flow';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { useTeacherMode } from '@/hooks/use-teacher-mode';
 
 
 type Message = {
@@ -61,6 +62,7 @@ export default function MiyaAssistant() {
   const tauntTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const messageIdCounter = useRef(0);
+  const { isTeacherMode, enableTeacherMode } = useTeacherMode();
 
   useEffect(() => {
     // This is needed to correctly wire up the audioRef on the client
@@ -118,6 +120,7 @@ export default function MiyaAssistant() {
   };
 
   const getContextFromPath = () => {
+    if (isTeacherMode) return 'Teacher Mode';
     if (pathname.includes('/kana')) return 'Kana tables/quiz';
     if (pathname.includes('/dictionary')) return 'Vocabulary and tests section';
     if (pathname.includes('/training')) return 'Spaced repetition training';
@@ -140,6 +143,18 @@ export default function MiyaAssistant() {
             audioRef.current.play();
         }
         setTimeout(() => setIsFlipping(false), 1000); // Animation duration
+    }
+
+    if (inputValue.trim() === 'Я жопа') {
+        enableTeacherMode();
+        const miyaMessage: Message = { 
+            id: messageIdCounter.current++,
+            text: 'Режим учителя активирован, сенсей. Пон.', 
+            sender: 'miya',
+          };
+        setMessages((prev) => [...prev, miyaMessage]);
+        setInputValue('');
+        return;
     }
 
     const newMessageId = messageIdCounter.current++;
@@ -214,7 +229,8 @@ export default function MiyaAssistant() {
           size="icon" 
           className={cn(
             "rounded-full w-16 h-16 shadow-lg transition-all duration-300 p-0 overflow-hidden group bg-card",
-            affectionMode && 'bg-gradient-to-br from-pink-400 to-rose-400'
+            affectionMode && 'bg-gradient-to-br from-pink-400 to-rose-400',
+            isTeacherMode && 'border-2 border-primary'
             )}
         >
           {isOpen ? <X className="w-8 h-8"/> : 
@@ -235,10 +251,10 @@ export default function MiyaAssistant() {
 
       {isOpen && (
         <div className={cn("fixed bottom-24 right-6 z-50 w-[calc(100%-3rem)] max-w-sm animate-fade-in", isFlipping && 'animate-flip', isKoseiMode && 'animate-grayscale-in pointer-events-none')}>
-          <Card className={cn("shadow-2xl bg-card/80 backdrop-blur-lg border-primary/30 transition-all duration-500", affectionMode && 'border-pink-300/50')}>
+          <Card className={cn("shadow-2xl bg-card/80 backdrop-blur-lg border-primary/30 transition-all duration-500", affectionMode && 'border-pink-300/50', isTeacherMode && 'border-primary')}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className={cn("transition-colors duration-500", affectionMode && 'text-rose-500')}>
-                {affectionMode ? 'Мия-тян ♡' : 'Мия-сенсей'}
+              <CardTitle className={cn("transition-colors duration-500", affectionMode && 'text-rose-500', isTeacherMode && 'text-primary')}>
+                {isTeacherMode ? 'Мия-сенсей (Режим Учителя)' : (affectionMode ? 'Мия-тян ♡' : 'Мия-сенсей')}
               </CardTitle>
               <p className="text-xs text-muted-foreground">{isKoseiMode ? "5 минут назад..." : "На связи"}</p>
             </CardHeader>
