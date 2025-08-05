@@ -136,16 +136,17 @@ export default function TrainingPage() {
     if (totalInitialCount.current > 0 && activeQueue.length === 0 && completedQueue.length === totalInitialCount.current) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8 animate-fade-in">
-                 <Card className="w-full max-w-lg text-center">
+                 <Card className="w-full max-w-lg text-center p-6">
                      <CardHeader>
+                        <CheckCircle2 className="w-16 h-16 mx-auto text-green-500 mb-4" />
                         <CardTitle className="text-2xl">Тренировка завершена!</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-lg text-muted-foreground mb-6">Вы прошли все слова на сегодня. Отличная работа!</p>
+                        <p className="text-lg text-muted-foreground mb-6">Вы прошли все слова на сегодня. Отличная работа! <br/> За новой порцией слов возвращайтесь завтра.</p>
                         <div className="flex gap-4 justify-center">
                             <Button onClick={initializeSession} className="btn-gradient">
                                 <RotateCcw className="mr-2"/>
-                                Начать заново
+                                Повторить еще раз
                             </Button>
                             <Button asChild variant="outline">
                                 <Link href="/">Вернуться на главную</Link>
@@ -160,9 +161,10 @@ export default function TrainingPage() {
     if (totalInitialCount.current === 0) {
          return (
              <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
-                <Card className="w-full max-w-lg text-center">
+                <Card className="w-full max-w-lg text-center p-6">
                      <CardHeader>
-                        <CardTitle className="text-2xl">Отличная работа!</CardTitle>
+                        <CheckCircle2 className="w-16 h-16 mx-auto text-green-500 mb-4" />
+                        <CardTitle className="text-2xl">Все сделано!</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-lg text-muted-foreground mb-6">Вы прошли все доступные на сегодня слова. Загляните завтра за новой порцией!</p>
@@ -286,4 +288,3 @@ export default function TrainingPage() {
         </div>
     );
 }
-
