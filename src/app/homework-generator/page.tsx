@@ -142,14 +142,7 @@ export default function HomeworkGeneratorPage() {
 
         const assignmentData = {
             title: homeworkTitle,
-            tasks: tasks.map(task => {
-                // We don't need to send the full image dataUrl in the link if it's too big
-                if (task.type === 'image-upload' && task.settings.dataUrl && task.settings.dataUrl.length > 2000000) {
-                     toast({ title: 'Файл слишком большой!', description: 'Изображение не будет включено в ссылку.', variant: 'destructive'});
-                     return {...task, settings: {...task.settings, dataUrl: null}};
-                }
-                return task;
-            }),
+            tasks: tasks,
         };
 
         try {
@@ -158,7 +151,7 @@ export default function HomeworkGeneratorPage() {
             
             const url = `${window.location.origin}/homework?assignment=${encodedData}`;
             
-            if (url.length > 8000) { // URL length limit check
+            if (url.length > 8000) { // URL length limit check for most browsers
                 toast({ title: 'Ошибка: Слишком длинная ссылка!', description: 'Домашнее задание слишком большое. Попробуйте уменьшить количество заданий или размер изображений.', variant: 'destructive'});
                 setGeneratedUrl('');
                 setTelegramLink('');
@@ -427,5 +420,3 @@ export default function HomeworkGeneratorPage() {
         </div>
     );
 }
-
-    
