@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, BookText, Filter, TestTubeDiagonal } from 'lucide-react';
+import { ArrowLeft, BookText, Filter, TestTubeDiagonal, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,12 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { vocabularyData } from '@/lib/dictionary-data';
-import DictionaryRow from '@/components/dictionary-row';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import * as wanakana from 'wanakana';
 import WordQuiz from '@/components/word-quiz';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab } from '@/types/quiz-types';
+import { useWordProgress } from '@/hooks/use-word-progress';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from '@/components/ui/tooltip';
+
 
 const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
 const partsOfSpeech = [...new Set(allWords.map(word => word.pos))].sort();
@@ -39,6 +47,7 @@ export default function DictionaryPage() {
     const [quizQuestionType, setQuizQuestionType] = useState<QuizQuestionTypeVocab>('jp_to_ru');
 
     const parentRef = useRef<HTMLDivElement>(null);
+    const { getWordStatus } = useWordProgress();
 
     const filteredWords = useMemo(() => {
         return allWords.filter(word => {
@@ -201,20 +210,21 @@ export default function DictionaryPage() {
 
 
         <Card>
-            <div ref={parentRef} className="h-[600px] overflow-auto">
-                <Table style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
+            <div ref={parentRef} className="h-[600px] overflow-auto relative">
+                <Table>
                     <TableHeader className="sticky top-0 bg-card z-10">
                         <TableRow>
-                            <TableHead className="w-[150px]">Слово</TableHead>
-                            <TableHead className="w-[150px]">Чтение</TableHead>
+                            <TableHead className="w-[200px]">Слово</TableHead>
+                            <TableHead className="w-[200px]">Чтение</TableHead>
                             <TableHead>Перевод</TableHead>
-                            <TableHead className="w-[100px] text-center">Уровень</TableHead>
+                            <TableHead className="w-[120px] text-center">Уровень</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
                         {rowVirtualizer.getVirtualItems().length > 0 ? (
                              rowVirtualizer.getVirtualItems().map(virtualRow => {
                                 const word = filteredWords[virtualRow.index];
+                                const status = getWordStatus(word.word);
                                 return (
                                     <TableRow
                                         key={virtualRow.key}
@@ -227,7 +237,26 @@ export default function DictionaryPage() {
                                             transform: `translateY(${virtualRow.start}px)`,
                                         }}
                                     >
-                                        <DictionaryRow word={word} />
+                                        <TableCell className="w-[200px] font-japanese text-lg font-medium flex items-center gap-2">
+                                            {status === 'mastered' && (
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger>
+                                                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Выучено!</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )}
+                                            {word.word}
+                                        </TableCell>
+                                        <TableCell className="w-[200px] font-japanese text-muted-foreground">{word.reading}</TableCell>
+                                        <TableCell>{word.translation}</TableCell>
+                                        <TableCell className="w-[120px] text-center">
+                                            <Badge variant="secondary">{word.jlpt}</Badge>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })

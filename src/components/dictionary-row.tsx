@@ -27,7 +27,7 @@ export default function DictionaryRow({ word }: DictionaryRowProps) {
 
     return (
         <>
-            <TableCell className="w-[150px] font-japanese text-lg font-medium flex items-center gap-2">
+            <TableCell className="w-[200px] font-japanese text-lg font-medium flex items-center gap-2">
                 {status === 'mastered' && (
                     <TooltipProvider>
                         <Tooltip>
@@ -42,12 +42,11 @@ export default function DictionaryRow({ word }: DictionaryRowProps) {
                 )}
                 {word.word}
             </TableCell>
-            <TableCell className="w-[150px] font-japanese text-muted-foreground">{word.reading}</TableCell>
+            <TableCell className="w-[200px] font-japanese text-muted-foreground">{word.reading}</TableCell>
             <TableCell>{word.translation}</TableCell>
-            <TableCell className="w-[100px] text-center">
+            <TableCell className="w-[120px] text-center">
                 <Badge variant="secondary">{word.jlpt}</Badge>
             </TableCell>
         </>
     );
 }
-
