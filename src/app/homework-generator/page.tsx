@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clipboard, Send, BookOpen } from 'lucide-react';
+import { ArrowLeft, Clipboard, Send, BookOpen, PlusCircle, Trash2, GripVertical, Settings, FileText } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -22,6 +22,7 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
+    DialogDescription,
   } from "@/components/ui/dialog"
 import {
     Carousel,
@@ -38,12 +39,18 @@ import { useTeacherMode } from '@/hooks/use-teacher-mode';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { AnimatePresence, Reorder } from 'framer-motion';
 
-type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation' | 'textbook';
+type TaskType = 'textbook' | 'dictionary' | 'kana' | 'grammar';
+interface Task {
+    id: string;
+    type: TaskType;
+    title: string;
+    settings: any;
+}
 
 const TOTAL_TEXTBOOK_PAGES = 339;
 const textbookPages = Array.from({ length: TOTAL_TEXTBOOK_PAGES }, (_, i) => i + 1);
-
 
 const formatPageNumber = (num: number): string => {
     return num.toString().padStart(4, '0');
@@ -51,28 +58,10 @@ const formatPageNumber = (num: number): string => {
 
 
 export default function HomeworkGeneratorPage() {
-    const [quizType, setQuizType] = useState<QuizType>('textbook');
-    
-    // Dictionary state
-    const [vocabSet, setVocabSet] = useState<VocabSet>('N5');
-    const [questionTypeVocab, setQuestionTypeVocab] = useState<QuizQuestionTypeVocab>('jp_to_ru');
-    const [quizLengthVocab, setQuizLengthVocab] = useState<QuizLength>('25');
-    
-    // Kana state
-    const [kanaSet, setKanaSet] = useState<KanaSet>('hiragana');
-    const [questionTypeKana, setQuestionTypeKana] = useState<QuizQuestionTypeKana>('kana-to-romaji');
-    const [quizLengthKana, setQuizLengthKana] = useState<QuizLength>('full');
-
-    // Grammar/Word-Formation state
-    const [lesson, setLesson] = useState('1');
-
-    // Textbook state
-    const [pages, setPages] = useState('');
-    const [api, setApi] = useState<CarouselApi>()
-    const [currentSlide, setCurrentSlide] = useState(0)
-
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
+    const [homeworkTitle, setHomeworkTitle] = useState('');
 
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
@@ -80,201 +69,107 @@ export default function HomeworkGeneratorPage() {
     const { isTeacherMode } = useTeacherMode();
     const [isClient, setIsClient] = useState(false);
 
+    // Textbook viewer state
+    const [api, setApi] = useState<CarouselApi>()
+    const [currentSlide, setCurrentSlide] = useState(0)
+
+
     useEffect(() => {
         setIsClient(true);
-        // Redirect if not in teacher mode
-        if (isTeacherMode === false) { // check for explicit false, as initial state can be undefined
+        if (isTeacherMode === false) {
              router.push('/');
         }
     }, [isTeacherMode, router]);
     
     useEffect(() => {
-        if (!api) {
-          return
-        }
-     
-        setCurrentSlide(api.selectedScrollSnap())
-     
-        api.on("select", () => {
-          setCurrentSlide(api.selectedScrollSnap())
-        })
-      }, [api])
+        if (!api) return;
+        setCurrentSlide(api.selectedScrollSnap());
+        api.on("select", () => setCurrentSlide(api.selectedScrollSnap()));
+    }, [api]);
 
+    const addTask = (type: TaskType) => {
+        const newTask: Task = {
+            id: `${type}-${Date.now()}`,
+            type,
+            title: getTaskTitle(type),
+            settings: getDefaultSettings(type)
+        };
+        setTasks([...tasks, newTask]);
+    };
 
-    const addPageToSelection = (pageNumber: number) => {
-        const currentPages = pages.split(',').filter(p => p.trim() !== '');
-        const pageStr = String(pageNumber);
-        if (!currentPages.includes(pageStr)) {
-            const newPages = [...currentPages, pageStr];
-            // Sort pages numerically
-            newPages.sort((a, b) => Number(a) - Number(b));
-            setPages(newPages.join(', '));
-            toast({ title: `Страница ${pageNumber} добавлена!`})
-        } else {
-            toast({ title: `Страница ${pageNumber} уже добавлена.`, variant: "destructive"})
+    const removeTask = (id: string) => {
+        setTasks(tasks.filter(task => task.id !== id));
+    };
+
+    const updateTaskSettings = (id: string, newSettings: any) => {
+        setTasks(tasks.map(task => task.id === id ? { ...task, settings: { ...task.settings, ...newSettings } } : task));
+    };
+
+    const getTaskTitle = (type: TaskType) => {
+        switch(type) {
+            case 'textbook': return 'Страницы из учебника';
+            case 'dictionary': return 'Тест по словарю';
+            case 'kana': return 'Тест по Кане';
+            case 'grammar': return 'Урок грамматики';
+            default: return 'Новое задание';
         }
     }
 
-
-    const generateLink = () => {
-        if (typeof window !== 'undefined') {
-            const baseUrl = window.location.origin;
-            let path = '';
-            const params = new URLSearchParams();
-
-            switch(quizType) {
-                case 'dictionary':
-                    path = '/dictionary';
-                    params.append('quiz', 'true');
-                    params.append('vocabSet', vocabSet);
-                    params.append('questionType', questionTypeVocab);
-                    params.append('quizLength', quizLengthVocab);
-                    break;
-                case 'kana':
-                    path = '/kana';
-                    params.append('quiz', 'true');
-                    params.append('kanaSet', kanaSet);
-                    params.append('questionType', questionTypeKana);
-                    params.append('quizLength', quizLengthKana);
-                    break;
-                case 'grammar':
-                    path = `/grammar/lesson-${lesson}`;
-                    break;
-                case 'word-formation':
-                    path = `/word-formation/lesson-${lesson}`;
-                    break;
-                case 'textbook':
-                    path = '/homework-viewer';
-                    params.append('pages', pages.replace(/\s/g, ''));
-                    break;
-            }
-            
-            const fullUrl = `${baseUrl}${path}?${params.toString()}`;
-            setGeneratedUrl(fullUrl);
-
-            const shareText = encodeURIComponent('Привет! Вот твое домашнее задание:');
-            const shareUrl = encodeURIComponent(fullUrl);
-            setTelegramLink(`https://t.me/share/url?url=${shareUrl}&text=${shareText}`);
+    const getDefaultSettings = (type: TaskType) => {
+        switch(type) {
+            case 'textbook': return { pages: '' };
+            case 'dictionary': return { vocabSet: 'N5', questionType: 'jp_to_ru', quizLength: '25' };
+            case 'kana': return { kanaSet: 'hiragana', questionType: 'kana-to-romaji', quizLength: 'full' };
+            case 'grammar': return { lesson: '1' };
+            default: return {};
         }
+    }
+    
+    const generateLink = () => {
+        // This will be implemented in the next step
+        toast({ title: "Генерация ссылки пока в разработке", description: "Этот функционал будет добавлен на следующем шаге.", variant: "destructive"})
     };
 
     const handleCopy = () => {
         copy(generatedUrl)
-            .then(() => toast({ title: 'Ссылка скопирована!', description: 'Теперь вы можете отправить ее ученику.' }))
-            .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
+            .then(() => toast({ title: 'Ссылка скопирована!' }))
+            .catch(() => toast({ title: 'Ошибка', variant: 'destructive' }));
     };
-    
-    const renderOptions = () => {
-        switch(quizType) {
-            case 'dictionary':
-                return (
-                    <>
-                        <Select value={vocabSet} onValueChange={(v) => setVocabSet(v as VocabSet)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Уровень слов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="N5">Словарь N5</SelectItem>
-                                <SelectItem value="N4">Словарь N4</SelectItem>
-                                <SelectItem value="N3">Словарь N3</SelectItem>
-                                <SelectItem value="N2">Словарь N2</SelectItem>
-                                <SelectItem value="N1">Словарь N1</SelectItem>
-                            </SelectContent>
-                        </Select>
 
-                        <Select value={questionTypeVocab} onValueChange={(v) => setQuestionTypeVocab(v as QuizQuestionTypeVocab)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Тип вопросов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="jp_to_ru">Слово → Перевод</SelectItem>
-                                <SelectItem value="ru_to_jp">Перевод → Слово</SelectItem>
-                            </SelectContent>
-                        </Select>
+    const renderTaskSettings = (task: Task) => {
+        const { id, type, settings } = task;
 
-                        <Select value={quizLengthVocab} onValueChange={(v) => setQuizLengthVocab(v as QuizLength)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Количество вопросов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="25">25 вопросов</SelectItem>
-                                <SelectItem value="50">50 вопросов</SelectItem>
-                                <SelectItem value="full">Все слова уровня</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </>
-                );
-            case 'kana':
-                 return (
-                    <>
-                        <Select value={kanaSet} onValueChange={(v) => setKanaSet(v as KanaSet)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Азбука" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="hiragana">Хирагана</SelectItem>
-                                <SelectItem value="katakana">Катакана</SelectItem>
-                                <SelectItem value="all">Смешанный</SelectItem>
-                            </SelectContent>
-                        </Select>
+        const addPageToSelection = (pageNumber: number) => {
+            const currentPages = settings.pages.split(',').filter((p: string) => p.trim() !== '');
+            const pageStr = String(pageNumber);
+            if (!currentPages.includes(pageStr)) {
+                const newPages = [...currentPages, pageStr];
+                newPages.sort((a, b) => Number(a) - Number(b));
+                updateTaskSettings(id, { pages: newPages.join(', ') });
+                toast({ title: `Страница ${pageNumber} добавлена!`})
+            } else {
+                toast({ title: `Страница ${pageNumber} уже добавлена.`, variant: "destructive"})
+            }
+        }
 
-                        <Select value={questionTypeKana} onValueChange={(v) => setQuestionTypeKana(v as QuizQuestionTypeKana)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Тип вопросов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="kana-to-romaji">Символ → Ромадзи</SelectItem>
-                                <SelectItem value="romaji-to-kana">Ромадзи → Символ</SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        <Select value={quizLengthKana} onValueChange={(v) => setQuizLengthKana(v as QuizLength)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Количество вопросов" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="25">25 вопросов</SelectItem>
-                                <SelectItem value="50">50 вопросов</SelectItem>
-                                <SelectItem value="full">Полный тест</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </>
-                );
-            case 'grammar':
-            case 'word-formation':
-                 return (
-                    <Select value={lesson} onValueChange={setLesson}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Урок" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="1">Урок 1</SelectItem>
-                            {quizType === 'grammar' && <SelectItem value="2">Урок 2</SelectItem>}
-                            <SelectItem value="3" disabled>Урок 3 (скоро)</SelectItem>
-                        </SelectContent>
-                    </Select>
-                );
+        switch(type) {
             case 'textbook':
                 return (
-                    <div className="md:col-span-2 space-y-2">
-                        <Label htmlFor="pages">Номера страниц (через запятую или диапазоны)</Label>
+                    <div className="space-y-2 mt-2">
+                        <Label htmlFor={`pages-${id}`}>Номера страниц (через запятую или диапазоны)</Label>
                         <div className="flex gap-2">
                             <Input
-                                id="pages"
+                                id={`pages-${id}`}
                                 placeholder="Например: 5, 8, 12-15"
-                                value={pages}
-                                onChange={(e) => setPages(e.target.value)}
+                                value={settings.pages}
+                                onChange={(e) => updateTaskSettings(id, { pages: e.target.value })}
                             />
-                             <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="outline"><BookOpen className="mr-2 h-4 w-4" />Просмотр</Button>
-                                </DialogTrigger>
+                            <Dialog>
+                                <DialogTrigger asChild><Button variant="outline" size="icon"><BookOpen /></Button></DialogTrigger>
                                 <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
                                     <DialogHeader>
-                                    <DialogTitle>Просмотр учебника</DialogTitle>
-                                    <CardDescription>
-                                        Выберите нужные страницы для домашнего задания.
-                                    </CardDescription>
+                                        <DialogTitle>Просмотр учебника</DialogTitle>
+                                        <DialogDescription>Выберите нужные страницы для домашнего задания.</DialogDescription>
                                     </DialogHeader>
                                     <div className="flex-grow rounded-lg overflow-hidden border relative flex items-center justify-center">
                                        <Carousel setApi={setApi} className="w-full max-w-sm">
@@ -282,125 +177,153 @@ export default function HomeworkGeneratorPage() {
                                             {textbookPages.map(pageNumber => (
                                                 <CarouselItem key={pageNumber}>
                                                     <div className="p-1">
-                                                        <Dialog>
+                                                         <Dialog>
                                                             <DialogTrigger asChild>
                                                                 <Card className="border-none shadow-none cursor-zoom-in">
                                                                     <CardContent className="flex aspect-square items-center justify-center p-0 relative">
-                                                                        <Image
-                                                                            src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`}
-                                                                            alt={`Страница учебника ${pageNumber}`}
-                                                                            width={800}
-                                                                            height={1131}
-                                                                            className={cn("w-full h-full object-contain transition-transform duration-300",
-                                                                                currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50"
-                                                                            )}
-                                                                        />
+                                                                        <Image src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`} alt={`Страница ${pageNumber}`} width={800} height={1131} className={cn("w-full h-full object-contain transition-transform duration-300", currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50")} />
                                                                     </CardContent>
                                                                 </Card>
                                                             </DialogTrigger>
                                                             <DialogContent className="max-w-5xl h-[95vh] p-2">
-                                                                <Image
-                                                                    src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`}
-                                                                    alt={`Страница учебника ${pageNumber} - увеличено`}
-                                                                    width={1200}
-                                                                    height={1697}
-                                                                    className="w-full h-full object-contain"
-                                                                />
+                                                                <Image src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`} alt={`Страница ${pageNumber}`} width={1200} height={1697} className="w-full h-full object-contain" />
                                                             </DialogContent>
                                                         </Dialog>
                                                     </div>
                                                 </CarouselItem>
                                             ))}
                                             </CarouselContent>
-                                            <CarouselPrevious />
-                                            <CarouselNext />
+                                            <CarouselPrevious /><CarouselNext />
                                         </Carousel>
                                     </div>
                                     <DialogFooter className="flex-row justify-between items-center pt-4">
-                                        <div className="text-lg font-semibold">
-                                            Страница {currentSlide + 1}
-                                        </div>
+                                        <div className="text-lg font-semibold">Страница {currentSlide + 1}</div>
                                         <Button onClick={() => addPageToSelection(currentSlide + 1)}>Добавить страницу в Д/З</Button>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
                         </div>
                     </div>
-                )
+                );
+            case 'dictionary':
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                        <Select value={settings.vocabSet} onValueChange={(v) => updateTaskSettings(id, { vocabSet: v })}>
+                            <SelectTrigger><SelectValue placeholder="Уровень" /></SelectTrigger>
+                            <SelectContent><SelectItem value="N5">N5</SelectItem><SelectItem value="N4">N4</SelectItem></SelectContent>
+                        </Select>
+                        <Select value={settings.questionType} onValueChange={(v) => updateTaskSettings(id, { questionType: v })}>
+                            <SelectTrigger><SelectValue placeholder="Тип" /></SelectTrigger>
+                            <SelectContent><SelectItem value="jp_to_ru">Слово → Перевод</SelectItem><SelectItem value="ru_to_jp">Перевод → Слово</SelectItem></SelectContent>
+                        </Select>
+                        <Select value={settings.quizLength} onValueChange={(v) => updateTaskSettings(id, { quizLength: v })}>
+                            <SelectTrigger><SelectValue placeholder="Длина" /></SelectTrigger>
+                            <SelectContent><SelectItem value="25">25</SelectItem><SelectItem value="50">50</SelectItem><SelectItem value="full">Все</SelectItem></SelectContent>
+                        </Select>
+                    </div>
+                );
+            case 'kana':
+                 return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                        <Select value={settings.kanaSet} onValueChange={(v) => updateTaskSettings(id, { kanaSet: v })}>
+                            <SelectTrigger><SelectValue placeholder="Азбука" /></SelectTrigger>
+                            <SelectContent><SelectItem value="hiragana">Хирагана</SelectItem><SelectItem value="katakana">Катакана</SelectItem><SelectItem value="all">Все</SelectItem></SelectContent>
+                        </Select>
+                        <Select value={settings.questionType} onValueChange={(v) => updateTaskSettings(id, { questionType: v })}>
+                            <SelectTrigger><SelectValue placeholder="Тип" /></SelectTrigger>
+                            <SelectContent><SelectItem value="kana-to-romaji">Кана → Ромадзи</SelectItem><SelectItem value="romaji-to-kana">Ромадзи → Кана</SelectItem></SelectContent>
+                        </Select>
+                    </div>
+                );
+            case 'grammar':
+                 return (
+                    <div className="mt-2">
+                        <Select value={settings.lesson} onValueChange={(v) => updateTaskSettings(id, { lesson: v })}>
+                            <SelectTrigger><SelectValue placeholder="Урок" /></SelectTrigger>
+                            <SelectContent><SelectItem value="1">Урок 1</SelectItem><SelectItem value="2">Урок 2</SelectItem></SelectContent>
+                        </Select>
+                    </div>
+                );
             default: return null;
         }
     }
 
-    if (!isClient || isTeacherMode === false) {
-        // Render nothing or a loading spinner while redirecting
-        return null;
-    }
+    if (!isClient || isTeacherMode === false) return null;
 
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in pb-24">
             <div className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-4">
-                    <Button asChild variant="ghost">
-                        <Link href="/">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Назад на главную
-                        </Link>
-                    </Button>
+                    <Button asChild variant="ghost"><Link href="/"><ArrowLeft />Назад</Link></Button>
                 </div>
                 <Card className="w-full mb-8 shadow-lg border-primary/50">
                     <CardHeader>
-                        <CardTitle className="text-2xl md:text-3xl">Конструктор домашних заданий</CardTitle>
-                        <CardDescription>Создайте тест для ученика и поделитесь ссылкой.</CardDescription>
+                        <CardTitle className="text-2xl md:text-3xl">Комбо-конструктор заданий</CardTitle>
+                        <CardDescription>Соберите комплексное домашнее задание из нескольких частей.</CardDescription>
                     </CardHeader>
                 </Card>
 
                 <Card className="w-full">
                     <CardHeader>
-                        <CardTitle>Параметры теста</CardTitle>
+                        <Label htmlFor='homework-title' className='text-lg font-bold'>Название домашнего задания</Label>
+                        <Input id='homework-title' value={homeworkTitle} onChange={(e) => setHomeworkTitle(e.target.value)} placeholder='Например: "Домашка на выходные"' className='mt-2'/>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Select value={quizType} onValueChange={(v) => setQuizType(v as QuizType)}>
-                            <SelectTrigger className="md:col-span-2">
-                                <SelectValue placeholder="Тип задания" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="dictionary">Тест по словарю</SelectItem>
-                                <SelectItem value="kana">Тест по Кане</SelectItem>
-                                <SelectItem value="grammar">Урок грамматики</SelectItem>
-                                <SelectItem value="word-formation">Урок словообразования</SelectItem>
-                                <SelectItem value="textbook">Задание по учебнику (Изображения)</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        
-                        {renderOptions()}
-                        
-                        <Button size="lg" onClick={generateLink} className="md:col-span-2 btn-gradient">
-                            Сгенерировать ссылку
-                        </Button>
+                    <CardContent>
+                        <Reorder.Group axis="y" values={tasks} onReorder={setTasks} className="space-y-4">
+                            <AnimatePresence>
+                                {tasks.map((task, index) => (
+                                    <Reorder.Item key={task.id} value={task} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                        <Card className='p-4 bg-muted/50 relative group'>
+                                            <div className='flex items-start justify-between'>
+                                                <div className='flex items-center gap-2'>
+                                                    <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab group-hover:opacity-100 opacity-50 transition-opacity" />
+                                                    <h4 className='font-semibold'>{index + 1}. {task.title}</h4>
+                                                </div>
+                                                <Button variant="ghost" size="icon" onClick={() => removeTask(task.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                                            </div>
+                                            {renderTaskSettings(task)}
+                                        </Card>
+                                    </Reorder.Item>
+                                ))}
+                            </AnimatePresence>
+                        </Reorder.Group>
+
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" className="w-full mt-6"><PlusCircle className="mr-2"/>Добавить блок задания</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader><DialogTitle>Выберите тип задания</DialogTitle></DialogHeader>
+                                <div className='grid grid-cols-2 gap-4 py-4'>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('textbook')}><FileText className='mr-2'/>Учебник</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('dictionary')}><FileText className='mr-2'/>Тест по словарю</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('kana')}><FileText className='mr-2'/>Тест по Кане</Button></DialogTrigger>
+                                    <DialogTrigger asChild><Button variant='outline' onClick={() => addTask('grammar')}><FileText className='mr-2'/>Урок грамматики</Button></DialogTrigger>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
                     </CardContent>
+                    <CardFooter>
+                        <Button size="lg" onClick={generateLink} className="w-full btn-gradient" disabled={tasks.length === 0}>
+                            Сгенерировать ссылку на Д/З
+                        </Button>
+                    </CardFooter>
                 </Card>
                 
                 {generatedUrl && (
                     <Card className="mt-8 animate-fade-in">
-                        <CardHeader>
-                            <CardTitle>Готовая ссылка</CardTitle>
-                        </CardHeader>
+                        <CardHeader><CardTitle>Готовая ссылка</CardTitle></CardHeader>
                         <CardContent className="flex items-center gap-2">
                             <Input value={generatedUrl} readOnly className="text-muted-foreground"/>
-                            <Button onClick={handleCopy} size="icon" variant="outline">
-                                <Clipboard className="w-5 h-5"/>
-                            </Button>
-                            <Button asChild size="icon" variant="outline">
-                                <a href={telegramLink} target="_blank" rel="noopener noreferrer">
-                                    <Send className="w-5 h-5" />
-                                </a>
-                            </Button>
+                            <Button onClick={handleCopy} size="icon" variant="outline"><Clipboard /></Button>
+                            <Button asChild size="icon" variant="outline"><a href={telegramLink} target="_blank" rel="noopener noreferrer"><Send /></a></Button>
                         </CardContent>
                     </Card>
                 )}
-
             </div>
         </div>
     );
 }
+
+    
