@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { KanaCharacter, hiraganaData, katakanaData } from '@/lib/kana-data';
-import type { KanaSet, QuizLength } from '@/app/kana/page';
+import type { KanaSet, QuizLength, QuizQuestionTypeKana } from '@/types/quiz-types';
 
 interface KanaQuizProps {
   onQuizEnd: () => void;
   kanaSet: KanaSet;
   quizLength: QuizLength;
-  questionType: 'kana-to-romaji' | 'romaji-to-kana';
+  questionType: QuizQuestionTypeKana;
 }
 
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -42,9 +42,12 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
     let questionPool = retryIncorrect ? incorrectAnswers : allChars;
     questionPool = shuffleArray(questionPool);
     
-    if (quizLength === '25' && !retryIncorrect) {
+    if (quizLength === '25') {
       questionPool = questionPool.slice(0, 25);
+    } else if (quizLength === '50') {
+      questionPool = questionPool.slice(0, 50);
     }
+
 
     setQuestions(questionPool);
     setCurrentQuestionIndex(0);
@@ -154,7 +157,7 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
 
   const getQuizTitle = () => {
     const setLabel = { hiragana: 'Хирагана', katakana: 'Катакана', all: 'Смешанный' }[kanaSet];
-    const lengthLabel = quizLength === '25' ? ' (25)' : '';
+    const lengthLabel = { '25': ' (25)', '50': ' (50)', 'full': '' }[quizLength];
     return `Тест: ${setLabel}${lengthLabel}`;
   }
 
@@ -202,5 +205,3 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
     </div>
   );
 }
-
-    

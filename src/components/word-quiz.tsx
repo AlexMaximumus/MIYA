@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Word } from '@/lib/dictionary-data';
-import type { QuizLength, VocabSet } from '@/app/kana/page';
+import type { QuizLength, VocabSet, QuizQuestionTypeVocab } from '@/types/quiz-types';
 import { cn } from '@/lib/utils';
 
 interface WordQuizProps {
   onQuizEnd: () => void;
   words: Word[];
-  questionType: 'jp_to_ru' | 'ru_to_jp';
+  questionType: QuizQuestionTypeVocab;
   quizLength: QuizLength;
   vocabSet: VocabSet;
 }
@@ -35,8 +35,10 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
     let questionPool = retryIncorrect ? incorrectAnswers : words;
     questionPool = shuffleArray(questionPool);
     
-    if (quizLength === '25' && !retryIncorrect) {
+    if (quizLength === '25') {
       questionPool = questionPool.slice(0, 25);
+    } else if (quizLength === '50') {
+        questionPool = questionPool.slice(0, 50);
     }
 
     setQuestions(questionPool);
@@ -145,7 +147,7 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
   const isJpToRu = questionType === 'jp_to_ru';
 
   const getQuizTitle = () => {
-    const lengthLabel = quizLength === '25' ? ' (25)' : '';
+    const lengthLabel = { '25': ' (25)', '50': ' (50)', 'full': '' }[quizLength];
     return `Тест: Словарь ${vocabSet}${lengthLabel}`;
   }
 
@@ -160,7 +162,7 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
            <Progress value={progress} className="mt-2" />
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8">
-            <div className="text-center p-8 rounded-lg w-full">
+            <div className="text-center p-8 rounded-lg w-full min-h-[160px] flex flex-col justify-center">
                 {isJpToRu ? (
                     <>
                         <p className="text-muted-foreground mb-1">{currentQuestion.reading}</p>

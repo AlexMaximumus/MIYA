@@ -152,14 +152,14 @@ export default function MainScreen() {
           <CategoryCard
             icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
             title="Кана"
-            description="Изучите японские слоги"
+            description="Изучите и проверьте знание японских азбук"
           />
         </Link>
         <Link href="/dictionary">
           <CategoryCard
             icon={<BookText className="w-10 h-10 md:w-12 md:h-12" />}
-            title="Словарь"
-            description="Расширяйте словарный запас"
+            title="Словарь и Тесты"
+            description="Ищите слова и проверяйте знания"
           />
         </Link>
         <Link href="/grammar">
@@ -189,4 +189,5 @@ export default function MainScreen() {
     </div>
   );
 }
+
 
