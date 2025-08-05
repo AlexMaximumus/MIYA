@@ -27,6 +27,7 @@ interface WordProgressState {
     progress: Record<string, WordProgress>;
     updateWordProgress: (word: string, isCorrect: boolean) => void;
     getWordStatus: (word: string) => WordProgressStatus;
+    getStreak: (word: string) => number;
     getReviewQueue: (allWords: { word: string }[], newWordsPerDay?: number) => QueueItem[];
     getLearnedWordsCount: () => number;
     getTodaysReviewCount: () => number;
@@ -108,6 +109,11 @@ export const useWordProgress = create<WordProgressState>()(
         const { progress } = get();
         return progress[word]?.status || 'new';
       },
+
+      getStreak: (word) => {
+        const { progress } = get();
+        return progress[word]?.streak || 0;
+      },
       
       getReviewQueue: (allWords, newWordsPerDay = 10) => {
         const { progress } = get();
@@ -161,3 +167,4 @@ export const useWordProgress = create<WordProgressState>()(
   )
 );
 
+    

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, type SetStateAction } from 'react';
@@ -23,15 +24,21 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel"
+import WordQuiz from '@/components/word-quiz';
+import { vocabularyData } from '@/lib/dictionary-data';
 
 export type KanaSet = 'hiragana' | 'katakana' | 'all';
+export type QuizMode = 'kana' | 'vocabulary';
 export type QuizLength = 'full' | '25';
+export type VocabSet = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 
 export default function KanaPage() {
+  const [quizMode, setQuizMode] = useState<QuizMode>('kana');
   const [isQuizActive, setQuizActive] = useState(false);
   const [activeKanaSet, setActiveKanaSet] = useState<KanaSet>('hiragana');
+  const [activeVocabSet, setActiveVocabSet] = useState<VocabSet>('N5');
   const [quizLength, setQuizLength] = useState<QuizLength>('full');
-  const [quizQuestionType, setQuizQuestionType] = useState<'kana-to-romaji' | 'romaji-to-kana'>('kana-to-romaji');
+  const [quizQuestionType, setQuizQuestionType] = useState<'kana-to-romaji' | 'romaji-to-kana' | 'jp_to_ru' | 'ru_to_jp'>('kana-to-romaji');
   const [api, setApi] = useState<CarouselApi>()
   const [currentSlide, setCurrentSlide] = useState(0)
 
@@ -45,7 +52,9 @@ export default function KanaPage() {
     const handleSelect = () => {
       const selectedSlide = api.selectedScrollSnap();
       setCurrentSlide(selectedSlide)
-      setActiveKanaSet(selectedSlide === 0 ? 'hiragana' : 'katakana')
+      if (quizMode === 'kana') {
+        setActiveKanaSet(selectedSlide === 0 ? 'hiragana' : 'katakana')
+      }
     }
 
     api.on("select", handleSelect)
@@ -53,7 +62,7 @@ export default function KanaPage() {
     return () => {
       api.off("select", handleSelect)
     }
-  }, [api])
+  }, [api, quizMode])
 
   const handleKanaSetChange = (value: SetStateAction<string>) => {
     const kanaSet = value as KanaSet;
@@ -65,6 +74,16 @@ export default function KanaPage() {
     }
   };
 
+  const handleQuizModeChange = (value: string) => {
+    const newMode = value as QuizMode;
+    setQuizMode(newMode);
+    if (newMode === 'kana') {
+      setQuizQuestionType('kana-to-romaji');
+    } else {
+      setQuizQuestionType('jp_to_ru');
+    }
+  }
+
 
   const startQuiz = () => {
     setQuizActive(true);
@@ -75,17 +94,79 @@ export default function KanaPage() {
   };
 
   if (isQuizActive) {
+    if (quizMode === 'vocabulary') {
+        const words = vocabularyData[activeVocabSet.toLowerCase() as 'n5' | 'n4'];
+        return <WordQuiz
+            onQuizEnd={endQuiz}
+            words={words}
+            questionType={quizQuestionType as 'jp_to_ru' | 'ru_to_jp'}
+            quizLength={quizLength}
+            vocabSet={activeVocabSet}
+        />
+    }
     return <KanaQuiz 
         onQuizEnd={endQuiz} 
         kanaSet={activeKanaSet}
         quizLength={quizLength}
-        questionType={quizQuestionType} 
+        questionType={quizQuestionType as 'kana-to-romaji' | 'romaji-to-kana'}
     />;
   }
   
   const getTitle = () => {
+    if (quizMode === 'vocabulary') return "Тест по словарю";
     if (activeKanaSet === 'all') return "Хирагана и Катакана";
     return currentSlide === 0 ? "Хирагана" : "Катакана";
+  }
+
+  const renderQuizOptions = () => {
+    if (quizMode === 'kana') {
+      return (
+        <>
+          <Select value={activeKanaSet} onValueChange={handleKanaSetChange}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Набор символов" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="hiragana">Хирагана</SelectItem>
+                    <SelectItem value="katakana">Катакана</SelectItem>
+                    <SelectItem value="all">Смешанный (Все подряд)</SelectItem>
+                </SelectContent>
+            </Select>
+            <Select value={quizQuestionType} onValueChange={(value) => setQuizQuestionType(value as 'kana-to-romaji' | 'romaji-to-kana')}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Тип теста" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="kana-to-romaji">Символ → Ромадзи</SelectItem>
+                    <SelectItem value="romaji-to-kana">Ромадзи → Символ</SelectItem>
+                </SelectContent>
+            </Select>
+        </>
+      )
+    }
+    return (
+        <>
+            <Select value={activeVocabSet} onValueChange={(v) => setActiveVocabSet(v as VocabSet)}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Уровень слов" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="N5">Словарь N5</SelectItem>
+                    <SelectItem value="N4">Словарь N4</SelectItem>
+                    <SelectItem value="N3" disabled>Словарь N3 (скоро)</SelectItem>
+                </SelectContent>
+            </Select>
+             <Select value={quizQuestionType} onValueChange={(value) => setQuizQuestionType(value as 'jp_to_ru' | 'ru_to_jp')}>
+                <SelectTrigger className="w-full sm:w-[240px]">
+                    <SelectValue placeholder="Тип теста" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="jp_to_ru">Слово → Перевод</SelectItem>
+                    <SelectItem value="ru_to_jp">Перевод → Слово</SelectItem>
+                </SelectContent>
+            </Select>
+        </>
+    )
   }
 
   return (
@@ -102,35 +183,38 @@ export default function KanaPage() {
         {getTitle()}
       </h1>
 
-      <Carousel setApi={setApi} className="w-full max-w-lg">
-        <CarouselContent>
-          <CarouselItem>
-              <KanaTable data={hiraganaData} />
-          </CarouselItem>
-          <CarouselItem>
-              <KanaTable data={katakanaData} />
-          </CarouselItem>
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+      {quizMode === 'kana' && (
+         <Carousel setApi={setApi} className="w-full max-w-lg">
+            <CarouselContent>
+            <CarouselItem>
+                <KanaTable data={hiraganaData} />
+            </CarouselItem>
+            <CarouselItem>
+                <KanaTable data={katakanaData} />
+            </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+        </Carousel>
+      )}
       
       <Card className="w-full max-w-5xl mt-8 p-6 bg-card/70 shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Проверьте свои знания</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
-            <Select value={activeKanaSet} onValueChange={handleKanaSetChange}>
+            <Select value={quizMode} onValueChange={handleQuizModeChange}>
                 <SelectTrigger className="w-full sm:w-[240px]">
-                    <SelectValue placeholder="Набор символов" />
+                    <SelectValue placeholder="Режим" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="hiragana">Хирагана</SelectItem>
-                    <SelectItem value="katakana">Катакана</SelectItem>
-                    <SelectItem value="all">Смешанный (Все подряд)</SelectItem>
+                    <SelectItem value="kana">Тест по Кане</SelectItem>
+                    <SelectItem value="vocabulary">Тест по Словарю</SelectItem>
                 </SelectContent>
             </Select>
-
+            
+            {renderQuizOptions()}
+            
             <Select value={quizLength} onValueChange={(value) => setQuizLength(value as QuizLength)}>
                 <SelectTrigger className="w-full sm:w-[240px]">
                     <SelectValue placeholder="Длина теста" />
@@ -141,15 +225,6 @@ export default function KanaPage() {
                 </SelectContent>
             </Select>
 
-            <Select value={quizQuestionType} onValueChange={(value) => setQuizQuestionType(value as 'kana-to-romaji' | 'romaji-to-kana')}>
-                <SelectTrigger className="w-full sm:w-[240px]">
-                    <SelectValue placeholder="Тип теста" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="kana-to-romaji">Символ → Ромадзи</SelectItem>
-                    <SelectItem value="romaji-to-kana">Ромадзи → Символ</SelectItem>
-                </SelectContent>
-            </Select>
             <Button size="lg" onClick={startQuiz} className="w-full sm:w-auto btn-gradient">
               Начать тест
             </Button>
@@ -164,3 +239,5 @@ export default function KanaPage() {
     </div>
   );
 }
+
+    

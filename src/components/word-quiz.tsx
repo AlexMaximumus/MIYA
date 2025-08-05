@@ -5,41 +5,34 @@ import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { KanaCharacter, hiraganaData, katakanaData } from '@/lib/kana-data';
-import type { KanaSet, QuizLength } from '@/app/kana/page';
+import { Word } from '@/lib/dictionary-data';
+import type { QuizLength, VocabSet } from '@/app/kana/page';
+import { cn } from '@/lib/utils';
 
-interface KanaQuizProps {
+interface WordQuizProps {
   onQuizEnd: () => void;
-  kanaSet: KanaSet;
+  words: Word[];
+  questionType: 'jp_to_ru' | 'ru_to_jp';
   quizLength: QuizLength;
-  questionType: 'kana-to-romaji' | 'romaji-to-kana';
+  vocabSet: VocabSet;
 }
 
 const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
-const flattenKana = (data: (KanaCharacter | null)[][]): KanaCharacter[] => {
-    return data.flat().filter((c): c is KanaCharacter => c !== null);
-}
 
-export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType }: KanaQuizProps) {
-  const allChars = useMemo(() => {
-    if (kanaSet === 'hiragana') return flattenKana(hiraganaData);
-    if (kanaSet === 'katakana') return flattenKana(katakanaData);
-    return [...flattenKana(hiraganaData), ...flattenKana(katakanaData)];
-  }, [kanaSet]);
-
-  const [questions, setQuestions] = useState<KanaCharacter[]>([]);
+export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, vocabSet }: WordQuizProps) {
+  const [questions, setQuestions] = useState<Word[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState<string[]>([]);
   const [score, setScore] = useState(0);
-  const [incorrectAnswers, setIncorrectAnswers] = useState<KanaCharacter[]>([]);
+  const [incorrectAnswers, setIncorrectAnswers] = useState<Word[]>([]);
   const [isFinished, setIsFinished] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
 
   const generateQuestions = (retryIncorrect = false) => {
-    let questionPool = retryIncorrect ? incorrectAnswers : allChars;
+    let questionPool = retryIncorrect ? incorrectAnswers : words;
     questionPool = shuffleArray(questionPool);
     
     if (quizLength === '25' && !retryIncorrect) {
@@ -56,15 +49,15 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
   
   useEffect(() => {
     generateQuestions();
-  }, [allChars, questionType, quizLength]);
+  }, [words, questionType, quizLength]);
 
-  const generateOptions = (correctAnswer: KanaCharacter) => {
-    const isKanaToRomaji = questionType === 'kana-to-romaji';
-    const correctOption = isKanaToRomaji ? correctAnswer.romaji : correctAnswer.kana;
+  const generateOptions = (correctAnswer: Word) => {
+    const isJpToRu = questionType === 'jp_to_ru';
+    const correctOption = isJpToRu ? correctAnswer.translation : correctAnswer.word;
     
-    let wrongOptions = allChars
-      .filter((char) => char.romaji !== correctAnswer.romaji)
-      .map((char) => isKanaToRomaji ? char.romaji : char.kana);
+    let wrongOptions = words
+      .filter((char) => char.word !== correctAnswer.word)
+      .map((char) => isJpToRu ? char.translation : char.word);
     
     wrongOptions = shuffleArray(wrongOptions).slice(0, 3);
     const allOptions = shuffleArray([...wrongOptions, correctOption]);
@@ -84,9 +77,9 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
     if (feedback) return;
 
     const correctAnswer = questions[currentQuestionIndex];
-    const isCorrect = questionType === 'kana-to-romaji' 
-        ? selectedOption === correctAnswer.romaji 
-        : selectedOption === correctAnswer.kana;
+    const isCorrect = questionType === 'jp_to_ru' 
+        ? selectedOption === correctAnswer.translation 
+        : selectedOption === correctAnswer.word;
 
     if (isCorrect) {
       setScore(score + 1);
@@ -118,7 +111,7 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
                 <h3 className="font-bold">Ошибки:</h3>
                 <div className="flex flex-wrap justify-center gap-2 mt-2">
                   {incorrectAnswers.map((char, i) => (
-                    <span key={i} className="text-lg text-destructive">{char.kana} ({char.romaji})</span>
+                    <span key={i} className="text-lg text-destructive">{char.word} ({char.translation})</span>
                   ))}
                 </div>
               </div>
@@ -149,13 +142,11 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
 
   const progress = ((currentQuestionIndex) / questions.length) * 100;
   
-  const questionText = questionType === 'kana-to-romaji' ? currentQuestion.kana : currentQuestion.romaji;
-  const optionIsKana = questionType === 'romaji-to-kana';
+  const isJpToRu = questionType === 'jp_to_ru';
 
   const getQuizTitle = () => {
-    const setLabel = { hiragana: 'Хирагана', katakana: 'Катакана', all: 'Смешанный' }[kanaSet];
     const lengthLabel = quizLength === '25' ? ' (25)' : '';
-    return `Тест: ${setLabel}${lengthLabel}`;
+    return `Тест: Словарь ${vocabSet}${lengthLabel}`;
   }
 
 
@@ -169,25 +160,32 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
            <Progress value={progress} className="mt-2" />
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8">
-          <div className={`rounded-lg bg-card-foreground/5 p-8 ${optionIsKana ? "text-6xl" : "text-8xl font-japanese"}`}>
-            {questionText}
-          </div>
+            <div className="text-center p-8 rounded-lg w-full">
+                {isJpToRu ? (
+                    <>
+                        <p className="text-muted-foreground mb-1">{currentQuestion.reading}</p>
+                        <p className="text-6xl font-bold font-japanese">{currentQuestion.word}</p>
+                    </>
+                ) : (
+                    <p className="text-4xl font-bold">{currentQuestion.translation}</p>
+                )}
+            </div>
           <div className="grid grid-cols-2 gap-4 w-full">
             {options.map((option) => {
-              const isCorrectOption = questionType === 'kana-to-romaji' 
-                ? option === currentQuestion.romaji 
-                : option === currentQuestion.kana;
+              const isCorrectOption = isJpToRu
+                ? option === currentQuestion.translation
+                : option === currentQuestion.word;
 
               return (
               <Button
                 key={option}
                 onClick={() => handleAnswer(option)}
-                className={`h-16 text-2xl transition-all duration-300 transform 
-                ${optionIsKana ? 'font-japanese text-4xl' : ''}
-                ${feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : ''}
-                ${feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : ''}
-                ${feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''}
-                `}
+                className={cn(`h-16 text-xl transition-all duration-300 transform`,
+                !isJpToRu && 'font-japanese text-2xl',
+                feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
+                feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : '',
+                feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
+                )}
                 disabled={!!feedback}
               >
                 {option}

@@ -1,17 +1,16 @@
 
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Check, X, RotateCcw, BrainCircuit } from 'lucide-react';
 import { useWordProgress } from '@/hooks/use-word-progress';
 import { vocabularyData } from '@/lib/dictionary-data';
 import type { Word } from '@/lib/dictionary-data';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 
 const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.n3, ...vocabularyData.n2, ...vocabularyData.n1];
 
@@ -26,8 +25,17 @@ type QueueItem = {
 
 type QuestionType = 'jp_to_ru' | 'ru_to_jp';
 
+const getStreakColor = (streak: number) => {
+    if (streak === 0) return 'bg-pink-100/60'; // New
+    if (streak === 1) return 'bg-yellow-100/60'; // Learning
+    if (streak <= 3) return 'bg-blue-100/60'; // Getting there
+    if (streak <= 5) return 'bg-teal-100/60'; // Good
+    if (streak > 5) return 'bg-green-200/60'; // Mastered
+    return 'bg-card';
+}
+
 export default function TrainingPage() {
-    const { getReviewQueue, updateWordProgress } = useWordProgress();
+    const { getReviewQueue, updateWordProgress, getStreak } = useWordProgress();
     const [dailyQueue, setDailyQueue] = useState<QueueItem[]>([]);
     const [wordMap, setWordMap] = useState<Map<string, Word>>(new Map());
     
@@ -149,6 +157,7 @@ export default function TrainingPage() {
     const progress = (currentQuestionIndex / dailyQueue.length) * 100;
     
     const isJpToRu = questionType === 'jp_to_ru';
+    const streak = currentWord ? getStreak(currentWord.word) : 0;
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8 animate-fade-in">
@@ -181,13 +190,7 @@ export default function TrainingPage() {
                         </div>
                      ) : currentWord ? (
                         <>
-                            <div className="text-center">
-                                {currentQueueItem.type === 'new' ? (
-                                    <Badge variant="default" className="mb-2">Новое слово</Badge>
-                                ) : (
-                                    <Badge variant="secondary" className="mb-2">На повторении</Badge>
-                                )}
-
+                            <div className={cn("text-center p-8 rounded-lg w-full transition-colors duration-300", getStreakColor(streak))}>
                                 {isJpToRu ? (
                                     <>
                                         <p className="text-muted-foreground mb-1">{currentWord.reading}</p>
@@ -240,3 +243,5 @@ export default function TrainingPage() {
         </div>
     );
 }
+
+    
