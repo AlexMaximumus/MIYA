@@ -150,15 +150,6 @@ export default function MainScreen() {
               isSpecial
             />
         </Link>
-         <Link href="/dialogues" className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-400 to-blue-500 rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
-            <CategoryCard
-              icon={<MessageSquare className="w-10 h-10 md:w-12 md:h-12" />}
-              title="Диалоги"
-              description="Практикуйте общение в реальных ситуациях"
-              isSpecial
-            />
-        </Link>
         <Link href="/kana">
           <CategoryCard
             icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
@@ -196,6 +187,16 @@ export default function MainScreen() {
             description="Тематические подборки слов"
           />
         </Link>
+        <div className="relative group">
+            <CategoryCard
+              icon={<MessageSquare className="w-10 h-10 md:w-12 md:h-12" />}
+              title="Диалоги"
+              description="Практикуйте общение в реальных ситуациях"
+            />
+            <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-not-allowed">
+              <span className="text-white text-lg font-bold bg-black/60 px-4 py-2 rounded-md">СКОРО</span>
+            </div>
+        </div>
       </div>
     </div>
   );
