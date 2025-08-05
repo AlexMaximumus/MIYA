@@ -8,6 +8,7 @@ import { Send, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import * as wanakana from 'wanakana';
+import { Card, CardContent } from '@/components/ui/card';
 
 type Message = {
     sender: 'user' | 'yuki';
