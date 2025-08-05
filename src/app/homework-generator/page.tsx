@@ -201,7 +201,7 @@ export default function HomeworkGeneratorPage() {
 
 
     return (
-        <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
+        <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in pb-24">
             <div className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-4">
                     <Button asChild variant="ghost">
