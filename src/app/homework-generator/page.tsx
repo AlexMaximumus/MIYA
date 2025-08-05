@@ -21,7 +21,7 @@ import { useTeacherMode } from '@/hooks/use-teacher-mode';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
 import { Label } from '@/components/ui/label';
 
-type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation';
+type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation' | 'textbook';
 
 export default function HomeworkGeneratorPage() {
     const [quizType, setQuizType] = useState<QuizType>('dictionary');
@@ -38,6 +38,9 @@ export default function HomeworkGeneratorPage() {
 
     // Grammar/Word-Formation state
     const [lesson, setLesson] = useState('1');
+
+    // Textbook state
+    const [pages, setPages] = useState('');
 
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
@@ -83,6 +86,10 @@ export default function HomeworkGeneratorPage() {
                     break;
                 case 'word-formation':
                     path = `/word-formation/lesson-${lesson}`;
+                    break;
+                case 'textbook':
+                    path = '/homework-viewer';
+                    params.append('pages', pages.replace(/\s/g, ''));
                     break;
             }
             
@@ -191,6 +198,19 @@ export default function HomeworkGeneratorPage() {
                         </SelectContent>
                     </Select>
                 );
+            case 'textbook':
+                return (
+                    <div className="md:col-span-2">
+                        <Label htmlFor="pages">Номера страниц (через запятую)</Label>
+                        <Input
+                            id="pages"
+                            placeholder="Например: 5, 8, 12-15"
+                            value={pages}
+                            onChange={(e) => setPages(e.target.value)}
+                            className="mt-2"
+                        />
+                    </div>
+                )
             default: return null;
         }
     }
@@ -233,6 +253,7 @@ export default function HomeworkGeneratorPage() {
                                 <SelectItem value="kana">Тест по Кане</SelectItem>
                                 <SelectItem value="grammar">Урок грамматики</SelectItem>
                                 <SelectItem value="word-formation">Урок словообразования</SelectItem>
+                                <SelectItem value="textbook">Задание по учебнику (Изображения)</SelectItem>
                             </SelectContent>
                         </Select>
                         
