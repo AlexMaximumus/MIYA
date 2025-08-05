@@ -1,21 +1,21 @@
 {
-    "name": "MIYA LINGO: Japanese Learning Companion",
-    "short_name": "MIYA LINGO",
-    "description": "Your friendly companion for mastering the Japanese language.",
+    "name": "MIYA LINGO",
+    "short_name": "MIYA",
+    "description": "Your friendly companion for mastering the Japanese language, from hiragana to syntax.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#A0E7E5",
     "theme_color": "#A0E7E5",
     "icons": [
-        {
-            "src": "/my-cool-icon.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/my-cool-icon.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
+      {
+        "src": "/my-cool-icon.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/my-cool-icon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
     ]
 }
