@@ -23,16 +23,27 @@ import {
     DialogTrigger,
     DialogFooter,
   } from "@/components/ui/dialog"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+    type CarouselApi,
+} from "@/components/ui/carousel"
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useTeacherMode } from '@/hooks/use-teacher-mode';
 import type { QuizLength, VocabSet, QuizQuestionTypeVocab, KanaSet, QuizQuestionTypeKana } from '@/types/quiz-types';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 
 type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation' | 'textbook';
 
 const TOTAL_TEXTBOOK_PAGES = 339;
+const textbookPages = Array.from({ length: TOTAL_TEXTBOOK_PAGES }, (_, i) => i + 1);
+
 
 const formatPageNumber = (num: number): string => {
     return num.toString().padStart(4, '0');
@@ -57,7 +68,8 @@ export default function HomeworkGeneratorPage() {
 
     // Textbook state
     const [pages, setPages] = useState('');
-    const [viewerCurrentPage, setViewerCurrentPage] = useState(1);
+    const [api, setApi] = useState<CarouselApi>()
+    const [currentSlide, setCurrentSlide] = useState(0)
 
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
@@ -75,6 +87,19 @@ export default function HomeworkGeneratorPage() {
              router.push('/');
         }
     }, [isTeacherMode, router]);
+    
+    useEffect(() => {
+        if (!api) {
+          return
+        }
+     
+        setCurrentSlide(api.selectedScrollSnap())
+     
+        api.on("select", () => {
+          setCurrentSlide(api.selectedScrollSnap())
+        })
+      }, [api])
+
 
     const addPageToSelection = (pageNumber: number) => {
         const currentPages = pages.split(',').filter(p => p.trim() !== '');
@@ -247,23 +272,42 @@ export default function HomeworkGeneratorPage() {
                                 <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
                                     <DialogHeader>
                                     <DialogTitle>Просмотр учебника</DialogTitle>
+                                    <CardDescription>
+                                        Выберите нужные страницы для домашнего задания.
+                                    </CardDescription>
                                     </DialogHeader>
-                                    <div className="flex-grow rounded-lg overflow-hidden border">
-                                        <Image
-                                            src={`/textbook/textbook_page-${formatPageNumber(viewerCurrentPage)}.jpg`}
-                                            alt={`Страница учебника ${viewerCurrentPage}`}
-                                            width={800}
-                                            height={1131}
-                                            className="w-full h-full object-contain"
-                                        />
+                                    <div className="flex-grow rounded-lg overflow-hidden border relative flex items-center justify-center">
+                                       <Carousel setApi={setApi} className="w-full max-w-sm">
+                                            <CarouselContent>
+                                            {textbookPages.map(pageNumber => (
+                                                <CarouselItem key={pageNumber}>
+                                                    <div className="p-1">
+                                                        <Card className="border-none shadow-none">
+                                                            <CardContent className="flex aspect-square items-center justify-center p-0 relative">
+                                                                <Image
+                                                                    src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`}
+                                                                    alt={`Страница учебника ${pageNumber}`}
+                                                                    width={800}
+                                                                    height={1131}
+                                                                    className={cn("w-full h-full object-contain transition-transform duration-300",
+                                                                        currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50"
+                                                                    )}
+                                                                />
+                                                            </CardContent>
+                                                        </Card>
+                                                    </div>
+                                                </CarouselItem>
+                                            ))}
+                                            </CarouselContent>
+                                            <CarouselPrevious />
+                                            <CarouselNext />
+                                        </Carousel>
                                     </div>
-                                    <DialogFooter className="flex-row justify-between items-center">
-                                        <div className="flex gap-2 items-center">
-                                            <Button variant="outline" onClick={() => setViewerCurrentPage(p => Math.max(1, p - 1))}>Назад</Button>
-                                            <span>Страница {viewerCurrentPage} из {TOTAL_TEXTBOOK_PAGES}</span>
-                                            <Button variant="outline" onClick={() => setViewerCurrentPage(p => Math.min(TOTAL_TEXTBOOK_PAGES, p + 1))}>Вперед</Button>
+                                    <DialogFooter className="flex-row justify-between items-center pt-4">
+                                        <div className="text-lg font-semibold">
+                                            Страница {currentSlide + 1}
                                         </div>
-                                        <Button onClick={() => addPageToSelection(viewerCurrentPage)}>Добавить страницу в Д/З</Button>
+                                        <Button onClick={() => addPageToSelection(currentSlide + 1)}>Добавить страницу в Д/З</Button>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
@@ -348,4 +392,3 @@ export default function HomeworkGeneratorPage() {
     );
 }
 
-    
