@@ -97,7 +97,7 @@ function HomeworkContent() {
                 path = '/kana';
                 params.append('kanaSet', task.settings.kanaSet);
                 params.append('questionType', task.settings.questionType);
-                params.append('quizLength', 'full'); // Let's default kana to full for now
+                params.append('quizLength', task.settings.quizLength || 'full'); 
                 break;
             case 'grammar':
                 path = `/grammar/lesson-${task.settings.lesson}`;
