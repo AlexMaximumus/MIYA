@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clipboard } from 'lucide-react';
+import { ArrowLeft, Clipboard, Send } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -39,6 +39,7 @@ export default function HomeworkGeneratorPage() {
     const [lesson, setLesson] = useState('1');
 
     const [generatedUrl, setGeneratedUrl] = useState('');
+    const [telegramLink, setTelegramLink] = useState('');
 
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
@@ -86,6 +87,10 @@ export default function HomeworkGeneratorPage() {
             
             const fullUrl = `${baseUrl}${path}?${params.toString()}`;
             setGeneratedUrl(fullUrl);
+
+            const shareText = encodeURIComponent('Привет! Вот твое домашнее задание:');
+            const shareUrl = encodeURIComponent(fullUrl);
+            setTelegramLink(`https://t.me/share/url?url=${shareUrl}&text=${shareText}`);
         }
     };
 
@@ -107,9 +112,9 @@ export default function HomeworkGeneratorPage() {
                             <SelectContent>
                                 <SelectItem value="N5">Словарь N5</SelectItem>
                                 <SelectItem value="N4">Словарь N4</SelectItem>
-                                <SelectItem value="N3" disabled>Словарь N3 (скоро)</SelectItem>
-                                <SelectItem value="N2" disabled>Словарь N2 (скоро)</SelectItem>
-                                <SelectItem value="N1" disabled>Словарь N1 (скоро)</SelectItem>
+                                <SelectItem value="N3">Словарь N3</SelectItem>
+                                <SelectItem value="N2">Словарь N2</SelectItem>
+                                <SelectItem value="N1">Словарь N1</SelectItem>
                             </SelectContent>
                         </Select>
 
@@ -243,10 +248,15 @@ export default function HomeworkGeneratorPage() {
                         <CardHeader>
                             <CardTitle>Готовая ссылка</CardTitle>
                         </CardHeader>
-                        <CardContent className="flex items-center gap-4">
+                        <CardContent className="flex items-center gap-2">
                             <Input value={generatedUrl} readOnly className="text-muted-foreground"/>
                             <Button onClick={handleCopy} size="icon" variant="outline">
                                 <Clipboard className="w-5 h-5"/>
+                            </Button>
+                            <Button asChild size="icon" variant="outline">
+                                <a href={telegramLink} target="_blank" rel="noopener noreferrer">
+                                    <Send className="w-5 h-5" />
+                                </a>
                             </Button>
                         </CardContent>
                     </Card>
