@@ -82,24 +82,27 @@ export default function DialogueChat() {
     const handleUserInput = (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputValue.trim() || !isWaitingForUser) return;
-
-        const romajiInput = wanakana.toRomaji(inputValue, { customKanaMapping: { は: 'wa' } }).replace(/\s/g, '');
+    
         const step = initialDialogueScript.current[currentStep];
-
         if (step.type !== 'prompt') return;
-        
+    
+        // Normalize user input to romaji, handling 'は' as 'wa'
+        const romajiInput = wanakana.toRomaji(inputValue, { customKanaMapping: { 'は': 'wa' } }).replace(/\s/g, '');
+    
         const isNamePrompt = step.expectedRomaji.includes('watashi wa ... desu');
         let isCorrect = false;
-        
+    
         if (isNamePrompt) {
-            const namePartRegex = /watashiwa(.*)desu/;
+            // More robust check for "watashi ha/wa NAME desu"
+            const namePartRegex = /^(watashi(?:wa|ha))(.+)(desu)$/;
             const match = romajiInput.match(namePartRegex);
-            if (match && match[1]) {
+    
+            if (match && match[2]) {
                 isCorrect = true;
-                const nameInRomaji = match[1];
+                const nameInRomaji = match[2];
                 const userName = wanakana.toKana(nameInRomaji);
                 
-                // Update the script for this session
+                // Update the dynamic part of the script for this session
                 initialDialogueScript.current.forEach(s => {
                     if (s.type === 'message' && s.analysis.fullTranslation.includes('[name]')) {
                        s.analysis.sentence.forEach(word => {
@@ -112,6 +115,7 @@ export default function DialogueChat() {
                 });
             }
         } else {
+            // General check for other steps
             isCorrect = step.expectedRomaji.some(variant => variant === romajiInput);
         }
         
