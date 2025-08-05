@@ -138,14 +138,21 @@ export default function MiyaAssistant() {
 
     const newMessageId = messageIdCounter.current++;
     const userMessage: Message = { id: newMessageId, text: inputValue, sender: 'user' };
-    setMessages((prev) => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInputValue('');
     setIsLoading(true);
+
+    const history = newMessages.slice(0, -1).map(msg => ({
+        role: msg.sender,
+        message: msg.text,
+      }));
 
     try {
       const response: MiyaOutput = await askMiya({
         question: inputValue,
         currentContext: getContextFromPath(),
+        history: history,
       });
 
       if (response.affectionMode) {
