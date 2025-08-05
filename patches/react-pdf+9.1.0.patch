@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-pdf/package.json b/node_modules/react-pdf/package.json
+index 3b3810f..5381a1a 100644
+--- a/node_modules/react-pdf/package.json
++++ b/node_modules/react-pdf/package.json
+@@ -62,6 +62,6 @@
+   },
+   "peerDependencies": {
+     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-0",
+-    "pdfjs-dist": "4.4.188"
++    "pdfjs-dist": "4.2.67"
+   }
+ }
