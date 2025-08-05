@@ -23,6 +23,13 @@ const flattenKana = (data: (KanaCharacter | null)[][]): KanaCharacter[] => {
     return data.flat().filter((c): c is KanaCharacter => c !== null);
 }
 
+interface AnswerRecord {
+    question: string;
+    answer: string;
+    correctAnswer: string;
+    isCorrect: boolean;
+}
+
 export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType }: KanaQuizProps) {
   const allChars = useMemo(() => {
     if (kanaSet === 'hiragana') return flattenKana(hiraganaData);
@@ -34,17 +41,22 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState<string[]>([]);
   const [score, setScore] = useState(0);
-  const [incorrectAnswers, setIncorrectAnswers] = useState<KanaCharacter[]>([]);
   const [isFinished, setIsFinished] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
 
   const generateQuestions = (retryIncorrect = false) => {
-    let questionPool = retryIncorrect ? incorrectAnswers : allChars;
+    const incorrectChars = answerHistory.filter(a => !a.isCorrect).map(a => {
+        const questionChar = allChars.find(c => c.kana === a.question || c.romaji === a.question);
+        return questionChar!;
+    });
+    let questionPool = retryIncorrect ? incorrectChars : allChars;
+
     questionPool = shuffleArray(questionPool);
     
-    if (quizLength === '25') {
+    if (quizLength === '25' && !retryIncorrect) {
       questionPool = questionPool.slice(0, 25);
-    } else if (quizLength === '50') {
+    } else if (quizLength === '50' && !retryIncorrect) {
       questionPool = questionPool.slice(0, 50);
     }
 
@@ -52,9 +64,9 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
     setQuestions(questionPool);
     setCurrentQuestionIndex(0);
     setScore(0);
-    setIncorrectAnswers([]);
     setIsFinished(false);
     setFeedback(null);
+    setAnswerHistory([]);
   };
   
   useEffect(() => {
@@ -87,15 +99,22 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
     if (feedback) return;
 
     const correctAnswer = questions[currentQuestionIndex];
-    const isCorrect = questionType === 'kana-to-romaji' 
-        ? selectedOption === correctAnswer.romaji 
-        : selectedOption === correctAnswer.kana;
+    const isKanaToRomaji = questionType === 'kana-to-romaji';
+    const correctOption = isKanaToRomaji ? correctAnswer.romaji : correctAnswer.kana;
+
+    const isCorrect = selectedOption === correctOption;
+
+    setAnswerHistory(prev => [...prev, {
+        question: isKanaToRomaji ? correctAnswer.kana : correctAnswer.romaji,
+        answer: selectedOption,
+        correctAnswer: correctOption,
+        isCorrect
+    }]);
 
     if (isCorrect) {
       setScore(score + 1);
       setFeedback('correct');
     } else {
-      setIncorrectAnswers([...incorrectAnswers, correctAnswer]);
       setFeedback('incorrect');
     }
 
@@ -104,7 +123,43 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }, 1200);
   };
+
+  const downloadReport = () => {
+    const incorrectAnswers = answerHistory.filter(a => !a.isCorrect);
+    let report = `Отчёт по тесту: Кана (${kanaSet})\n`;
+    report += `=====================================\n\n`;
+    report += `Результат: ${score} из ${questions.length} (${Math.round((score/questions.length)*100)}%)\n`;
+    report += `Дата: ${new Date().toLocaleString('ru-RU')}\n\n`;
+    
+    report += `--- Все ответы ---\n`;
+    answerHistory.forEach((rec, index) => {
+        report += `${index + 1}. Вопрос: ${rec.question}\n`;
+        report += `   Ваш ответ: ${rec.answer} (${rec.isCorrect ? 'Верно' : 'Ошибка'})\n`;
+        if(!rec.isCorrect) {
+            report += `   Правильный ответ: ${rec.correctAnswer}\n`;
+        }
+    });
+
+    if (incorrectAnswers.length > 0) {
+        report += `\n--- Список ошибок ---\n`;
+        incorrectAnswers.forEach(rec => {
+            report += `- ${rec.question} (правильно: ${rec.correctAnswer})\n`;
+        });
+    }
+
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kana_quiz_report_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
   
+  const incorrectAnswers = answerHistory.filter(a => !a.isCorrect);
+
   if (isFinished) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
@@ -120,15 +175,16 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
               <div className="mb-4">
                 <h3 className="font-bold">Ошибки:</h3>
                 <div className="flex flex-wrap justify-center gap-2 mt-2">
-                  {incorrectAnswers.map((char, i) => (
-                    <span key={i} className="text-lg text-destructive">{char.kana} ({char.romaji})</span>
+                  {incorrectAnswers.map((rec, i) => (
+                    <span key={i} className="text-lg text-destructive">{rec.question} ({rec.correctAnswer})</span>
                   ))}
                 </div>
               </div>
             )}
             <div className="flex flex-col sm:flex-row gap-2 mt-4 justify-center">
+              <Button onClick={downloadReport}>Скачать отчёт</Button>
               {incorrectAnswers.length > 0 && (
-                 <Button onClick={() => generateQuestions(true)} className="btn-gradient">Повторить ошибки</Button>
+                 <Button onClick={() => generateQuestions(true)}>Повторить ошибки</Button>
               )}
               <Button onClick={() => generateQuestions()} className="btn-gradient">Начать заново</Button>
               <Button variant="outline" onClick={onQuizEnd}>

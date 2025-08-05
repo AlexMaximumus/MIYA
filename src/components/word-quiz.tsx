@@ -21,32 +21,39 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return [...array].sort(() => Math.random() - 0.5);
 };
 
+interface AnswerRecord {
+    question: Word;
+    answer: string;
+    isCorrect: boolean;
+}
 
 export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, vocabSet }: WordQuizProps) {
   const [questions, setQuestions] = useState<Word[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [options, setOptions] = useState<string[]>([]);
   const [score, setScore] = useState(0);
-  const [incorrectAnswers, setIncorrectAnswers] = useState<Word[]>([]);
   const [isFinished, setIsFinished] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
 
   const generateQuestions = (retryIncorrect = false) => {
-    let questionPool = retryIncorrect ? incorrectAnswers : words;
+    const incorrectWords = answerHistory.filter(a => !a.isCorrect).map(a => a.question);
+    let questionPool = retryIncorrect ? incorrectWords : words;
+    
     questionPool = shuffleArray(questionPool);
     
-    if (quizLength === '25') {
+    if (quizLength === '25' && !retryIncorrect) {
       questionPool = questionPool.slice(0, 25);
-    } else if (quizLength === '50') {
+    } else if (quizLength === '50' && !retryIncorrect) {
         questionPool = questionPool.slice(0, 50);
     }
 
     setQuestions(questionPool);
     setCurrentQuestionIndex(0);
     setScore(0);
-    setIncorrectAnswers([]);
     setIsFinished(false);
     setFeedback(null);
+    setAnswerHistory([]);
   };
   
   useEffect(() => {
@@ -83,11 +90,16 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
         ? selectedOption === correctAnswer.translation 
         : selectedOption === correctAnswer.word;
 
+    setAnswerHistory(prev => [...prev, {
+        question: correctAnswer,
+        answer: selectedOption,
+        isCorrect
+    }]);
+
     if (isCorrect) {
       setScore(score + 1);
       setFeedback('correct');
     } else {
-      setIncorrectAnswers([...incorrectAnswers, correctAnswer]);
       setFeedback('incorrect');
     }
 
@@ -96,7 +108,45 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }, 1200);
   };
+
+  const downloadReport = () => {
+    const incorrectAnswers = answerHistory.filter(a => !a.isCorrect);
+    let report = `Отчёт по тесту: Словарь ${vocabSet}\n`;
+    report += `=====================================\n\n`;
+    report += `Результат: ${score} из ${questions.length} (${Math.round((score/questions.length)*100)}%)\n`;
+    report += `Дата: ${new Date().toLocaleString('ru-RU')}\n\n`;
+    
+    report += `--- Все ответы ---\n`;
+    answerHistory.forEach((rec, index) => {
+        const questionText = questionType === 'jp_to_ru' ? rec.question.word : rec.question.translation;
+        const correctAnswerText = questionType === 'jp_to_ru' ? rec.question.translation : rec.question.word;
+        report += `${index + 1}. Вопрос: ${questionText}\n`;
+        report += `   Ваш ответ: ${rec.answer} (${rec.isCorrect ? 'Верно' : 'Ошибка'})\n`;
+        if(!rec.isCorrect) {
+            report += `   Правильный ответ: ${correctAnswerText}\n`;
+        }
+    });
+
+    if (incorrectAnswers.length > 0) {
+        report += `\n--- Список ошибок ---\n`;
+        incorrectAnswers.forEach(rec => {
+            report += `- ${rec.question.word} (${rec.question.translation})\n`;
+        });
+    }
+
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `word_quiz_report_${vocabSet}_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
   
+  const incorrectAnswers = answerHistory.filter(a => !a.isCorrect).map(a => a.question);
+
   if (isFinished) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
@@ -119,8 +169,9 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
               </div>
             )}
             <div className="flex flex-col sm:flex-row gap-2 mt-4 justify-center">
+              <Button onClick={downloadReport}>Скачать отчёт</Button>
               {incorrectAnswers.length > 0 && (
-                 <Button onClick={() => generateQuestions(true)} className="btn-gradient">Повторить ошибки</Button>
+                 <Button onClick={() => generateQuestions(true)}>Повторить ошибки</Button>
               )}
               <Button onClick={() => generateQuestions()} className="btn-gradient">Начать заново</Button>
               <Button variant="outline" onClick={onQuizEnd}>
@@ -202,5 +253,3 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
     </div>
   );
 }
-
-    
