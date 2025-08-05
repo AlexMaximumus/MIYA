@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -13,6 +13,7 @@ import { useWordProgress } from '@/hooks/use-word-progress';
 import { useTeacherMode } from '@/hooks/use-teacher-mode';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 
 const floatingWords = [
@@ -46,7 +47,7 @@ export default function MainScreen() {
   const [grammarProgress, setGrammarProgress] = useState<number | null>(null);
   const [wordFormationProgress, setWordFormationProgress] = useState<number | null>(null);
 
-  const { isTeacherMode, isNewTeacher } = useTeacherMode();
+  const { isTeacherMode, isNewTeacher, disableTeacherMode } = useTeacherMode();
 
 
   useEffect(() => {
@@ -153,15 +154,24 @@ export default function MainScreen() {
       </div>
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {isTeacherMode ? (
-            <Link href="/homework-generator" className="relative group md:col-span-2 lg:col-span-3">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-400 to-primary rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
-                <CategoryCard
-                    icon={<GraduationCap className="w-10 h-10 md:w-12 md:h-12" />}
-                    title="Конструктор Д/З"
-                    description="Создавайте кастомные тесты и делитесь ими с учениками"
-                    isSpecial
-                />
-            </Link>
+            <>
+                <Link href="/homework-generator" className="relative group md:col-span-2">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-400 to-primary rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
+                    <CategoryCard
+                        icon={<GraduationCap className="w-10 h-10 md:w-12 md:h-12" />}
+                        title="Конструктор Д/З"
+                        description="Создавайте кастомные тесты и делитесь ими с учениками"
+                        isSpecial
+                    />
+                </Link>
+                 <div onClick={disableTeacherMode} className="cursor-pointer">
+                    <CategoryCard
+                        icon={<School className="w-10 h-10 md:w-12 md:h-12" />}
+                        title="Стать балбесом"
+                        description="Вернуться в режим ученика и проходить уроки"
+                    />
+                </div>
+            </>
         ) : (
             <Link href="/training" className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
