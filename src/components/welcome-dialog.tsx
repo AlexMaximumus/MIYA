@@ -53,7 +53,7 @@ export default function WelcomeDialog() {
                     <b className="text-foreground">ИИ-Ассистент (Я!):</b> Нажми на иконку со мной в правом нижнем углу. Я всегда готова ответить на твои вопросы по японскому, объяснить грамматику, подсказать перевод или просто поболтать, пон.
                 </li>
             </ul>
-            <p className="pt-2">Кстати, в приложении есть <Badge variant="destructive">секретный режим учителя</Badge> и много других пасхалок. Попробуй их найти!</p>
+            <div className="pt-2">Кстати, в приложении есть <Badge variant="destructive">секретный режим учителя</Badge> и много других пасхалок. Попробуй их найти!</div>
         </div>
         <AlertDialogFooter>
           <AlertDialogAction onClick={handleClose} className="w-full">Понятно, начинаем!</AlertDialogAction>
