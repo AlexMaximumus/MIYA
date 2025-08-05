@@ -3,8 +3,9 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clipboard, Send } from 'lucide-react';
+import { ArrowLeft, Clipboard, Send, BookOpen } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,6 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+  } from "@/components/ui/dialog"
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
@@ -23,8 +32,15 @@ import { Label } from '@/components/ui/label';
 
 type QuizType = 'dictionary' | 'kana' | 'grammar' | 'word-formation' | 'textbook';
 
+const TOTAL_TEXTBOOK_PAGES = 339;
+
+const formatPageNumber = (num: number): string => {
+    return num.toString().padStart(4, '0');
+};
+
+
 export default function HomeworkGeneratorPage() {
-    const [quizType, setQuizType] = useState<QuizType>('dictionary');
+    const [quizType, setQuizType] = useState<QuizType>('textbook');
     
     // Dictionary state
     const [vocabSet, setVocabSet] = useState<VocabSet>('N5');
@@ -41,6 +57,7 @@ export default function HomeworkGeneratorPage() {
 
     // Textbook state
     const [pages, setPages] = useState('');
+    const [viewerCurrentPage, setViewerCurrentPage] = useState(1);
 
     const [generatedUrl, setGeneratedUrl] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
@@ -58,6 +75,20 @@ export default function HomeworkGeneratorPage() {
              router.push('/');
         }
     }, [isTeacherMode, router]);
+
+    const addPageToSelection = (pageNumber: number) => {
+        const currentPages = pages.split(',').filter(p => p.trim() !== '');
+        const pageStr = String(pageNumber);
+        if (!currentPages.includes(pageStr)) {
+            const newPages = [...currentPages, pageStr];
+            // Sort pages numerically
+            newPages.sort((a, b) => Number(a) - Number(b));
+            setPages(newPages.join(', '));
+            toast({ title: `Страница ${pageNumber} добавлена!`})
+        } else {
+            toast({ title: `Страница ${pageNumber} уже добавлена.`, variant: "destructive"})
+        }
+    }
 
 
     const generateLink = () => {
@@ -200,15 +231,43 @@ export default function HomeworkGeneratorPage() {
                 );
             case 'textbook':
                 return (
-                    <div className="md:col-span-2">
-                        <Label htmlFor="pages">Номера страниц (через запятую)</Label>
-                        <Input
-                            id="pages"
-                            placeholder="Например: 5, 8, 12-15"
-                            value={pages}
-                            onChange={(e) => setPages(e.target.value)}
-                            className="mt-2"
-                        />
+                    <div className="md:col-span-2 space-y-2">
+                        <Label htmlFor="pages">Номера страниц (через запятую или диапазоны)</Label>
+                        <div className="flex gap-2">
+                            <Input
+                                id="pages"
+                                placeholder="Например: 5, 8, 12-15"
+                                value={pages}
+                                onChange={(e) => setPages(e.target.value)}
+                            />
+                             <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline"><BookOpen className="mr-2 h-4 w-4" />Просмотр</Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+                                    <DialogHeader>
+                                    <DialogTitle>Просмотр учебника</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="flex-grow rounded-lg overflow-hidden border">
+                                        <Image
+                                            src={`/textbook/textbook_page-${formatPageNumber(viewerCurrentPage)}.jpg`}
+                                            alt={`Страница учебника ${viewerCurrentPage}`}
+                                            width={800}
+                                            height={1131}
+                                            className="w-full h-full object-contain"
+                                        />
+                                    </div>
+                                    <DialogFooter className="flex-row justify-between items-center">
+                                        <div className="flex gap-2 items-center">
+                                            <Button variant="outline" onClick={() => setViewerCurrentPage(p => Math.max(1, p - 1))}>Назад</Button>
+                                            <span>Страница {viewerCurrentPage} из {TOTAL_TEXTBOOK_PAGES}</span>
+                                            <Button variant="outline" onClick={() => setViewerCurrentPage(p => Math.min(TOTAL_TEXTBOOK_PAGES, p + 1))}>Вперед</Button>
+                                        </div>
+                                        <Button onClick={() => addPageToSelection(viewerCurrentPage)}>Добавить страницу в Д/З</Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 )
             default: return null;
@@ -288,3 +347,5 @@ export default function HomeworkGeneratorPage() {
         </div>
     );
 }
+
+    
