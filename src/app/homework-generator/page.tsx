@@ -282,19 +282,32 @@ export default function HomeworkGeneratorPage() {
                                             {textbookPages.map(pageNumber => (
                                                 <CarouselItem key={pageNumber}>
                                                     <div className="p-1">
-                                                        <Card className="border-none shadow-none">
-                                                            <CardContent className="flex aspect-square items-center justify-center p-0 relative">
+                                                        <Dialog>
+                                                            <DialogTrigger asChild>
+                                                                <Card className="border-none shadow-none cursor-zoom-in">
+                                                                    <CardContent className="flex aspect-square items-center justify-center p-0 relative">
+                                                                        <Image
+                                                                            src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`}
+                                                                            alt={`Страница учебника ${pageNumber}`}
+                                                                            width={800}
+                                                                            height={1131}
+                                                                            className={cn("w-full h-full object-contain transition-transform duration-300",
+                                                                                currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50"
+                                                                            )}
+                                                                        />
+                                                                    </CardContent>
+                                                                </Card>
+                                                            </DialogTrigger>
+                                                            <DialogContent className="max-w-5xl h-[95vh] p-2">
                                                                 <Image
                                                                     src={`/textbook/textbook_page-${formatPageNumber(pageNumber)}.jpg`}
-                                                                    alt={`Страница учебника ${pageNumber}`}
-                                                                    width={800}
-                                                                    height={1131}
-                                                                    className={cn("w-full h-full object-contain transition-transform duration-300",
-                                                                        currentSlide + 1 === pageNumber ? "scale-105" : "scale-75 opacity-50"
-                                                                    )}
+                                                                    alt={`Страница учебника ${pageNumber} - увеличено`}
+                                                                    width={1200}
+                                                                    height={1697}
+                                                                    className="w-full h-full object-contain"
                                                                 />
-                                                            </CardContent>
-                                                        </Card>
+                                                            </DialogContent>
+                                                        </Dialog>
                                                     </div>
                                                 </CarouselItem>
                                             ))}
@@ -391,4 +404,3 @@ export default function HomeworkGeneratorPage() {
         </div>
     );
 }
-
