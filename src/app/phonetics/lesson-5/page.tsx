@@ -51,14 +51,17 @@ const kanjiList = [
     { kanji: '写', kun: 'うつす', on: 'シャ', meaning: 'фотография' },
     { kanji: '新', kun: 'あたらしい', on: 'シン', meaning: 'новый' },
     { kanji: '聞', kun: 'きく', on: 'ブン, モン', meaning: 'слушать, газета' },
+    { kanji: '先', kun: 'せんせい', on: 'セン', meaning: 'преподаватель, учитель' },
     { kanji: '電', kun: '—', on: 'デン', meaning: 'электричество' },
     { kanji: '話', kun: 'はなし', on: 'ワ', meaning: 'разговор, телефон' },
+    { kanji: '日', kun: 'にほん', on: 'ニチ', meaning: 'Япония' },
     { kanji: '例', kun: 'れい', on: 'レイ', meaning: 'пример, образец' },
     { kanji: '授', kun: '—', on: 'ジュ', meaning: 'преподавать, занятие' },
     { kanji: '全', kun: 'みんな', on: 'ゼン', meaning: 'все, всё' },
     { kanji: '片', kun: 'かたかな', on: 'ヘン', meaning: 'одна сторона, катакана' },
     { kanji: '字', kun: '—', on: 'ジ', meaning: 'иероглиф' },
     { kanji: '平', kun: 'ひらがな', on: 'ヘイ, ビョウ', meaning: 'плоский, хирагана' },
+    { kanji: '本', kun: 'ほん', on: 'ホン', meaning: 'книга' },
 ];
 
 const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer }: {
@@ -67,10 +70,20 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
     handleConstructAnswer: (wordId: string, char: string) => void,
     resetConstructAnswer: (wordId: string) => void
 }) => {
+    const [shuffledCharsMap, setShuffledCharsMap] = useState<Record<string, string[]>>({});
+
+    useEffect(() => {
+        const newMap: Record<string, string[]> = {};
+        for (const word in exercise.words) {
+            newMap[word] = [...exercise.words[word]].sort(() => Math.random() - 0.5);
+        }
+        setShuffledCharsMap(newMap);
+    }, [exercise.words]);
+
     return (
         <div className="space-y-6">
             {Object.entries(exercise.words).map(([word, chars]) => {
-                const shuffledChars = [...chars].sort(() => Math.random() - 0.5);
+                const shuffledChars = shuffledCharsMap[word] || [];
                 const wordId = `${exercise.id}-${word}`;
                 return (
                     <div key={wordId} className="space-y-2">
@@ -93,6 +106,14 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
     );
 };
 
+const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
+    <div className='flex flex-wrap gap-4 mt-2 justify-center'>
+       {rowData.map(char => (
+           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
+       ))}
+   </div>
+);
+
 
 export default function PhoneticsLesson5Page() {
     const [progress, setProgress] = useState(0);
@@ -104,11 +125,17 @@ export default function PhoneticsLesson5Page() {
     const exercises = [
         { id: 'q1', type: 'reading', title: 'Упражнение 1', description: 'Прочтите, обращая внимание на произношение ん.', wordsA: ['ongaku', 'bungaku', 'tenki', 'genki', 'genkan', 'ningen', 'tangutsu'], wordsB: ['ammari', 'semmon', 'ummei', 'sampo', 'shimpo', 'shinpai', 'zembu', 'shimbun'], wordsC: ['kantan', 'unten', 'kondo', 'benri', 'kenri', 'danchi', 'anzen', 'kanji', 'onna'] },
         { id: 'q2', type: 'construct', title: 'Упражнение 2', description: 'Напишите хираганой слова из упражнения 1.', words: { 'おんがく': ['お','ん','が','く'], 'しんぶん': ['し','ん','ぶ','ん'], 'かんたん': ['か','ん','た','ん'] } },
-        { id: 'q3', type: 'reading-table', title: 'Упражнение 3 и 4', description: 'Прочтите, обращая внимание на произношение ん и удвоенных звуков.', words: ['tennen', 'tenno:', 'annai', 'ammin', 'banno:', 'fummatsu', 'fumman', 'hon\'nin', 'kannen', 'onna', 'semmon', 'sen\'nyu:'] },
-        { id: 'q4', type: 'fill-in-the-blank', title: 'Упражнение 5', description: 'Напишите слово "аннай" (информация, ведение) хираганой.', correctAnswer: 'あんない' },
-        { id: 'q5', type: 'reading-table', title: 'Упражнение 7', description: 'Прочтите примеры, обращая внимание на ассимиляцию звуков.', words: ['deguchi', 'monozuki', 'hakko', 'bumppo', 'ninzu', 'ippo'] },
-        { id: 'q6', type: 'multiple-choice', title: 'Упражнение 7 (проверка)', description: 'Что происходит в слове "発行" (хацу + ко: → хакко:)?', options: ['Прогрессивная ассимиляция', 'Регрессивная ассимиляция', 'Взаимная ассимиляция'], correctAnswer: 'Регрессивная ассимиляция' },
-        { id: 'q7', type: 'reading-table', title: 'Упражнение 8', description: 'Отработайте чтение слов с различными видами тонизации.', wordsA: ['raichaku', 'raiharu', 'raihin', 'rakkan', 'riken', 'rikin', 'rikiten', 'ruigo', 'reigai', 'renzoku', 'ro:do:', 'ronjutsu', 'ro:nin', 'ryakuden', 'ryu:ko:', 'ryu:gaku', 'ryo:gawa', 'wadai', 'warai', 'washi', 'wasureru'], wordsB: ['rai', 'raigetsu', 'raika', 'richi', 'rieki', 'rikai', 'rusu', 'rei', 'renga', 'ro:chin', 'ronke', 'ryakki', 'ryu:ki', 'ryo:bun', 'ryo:ri', 'wani', 'wake', 'ware'], wordsC: ['raku', 'rashii', 'rashingi', 'rijikai', 'rikagaku', 'rekigan', 'roku', 'rokubu', 'ryogakuki', 'wata', 'warui', 'waku', 'waki'] }
+        { id: 'q3', type: 'reading', title: 'Упражнение 3', description: 'Прочтите вслух слова, обращая внимание на произношение ん в зависимости от позиции в слове. (Самостоятельная практика)' },
+        { id: 'q4', type: 'reading-table', title: 'Упражнение 4', description: 'Прочтите, обращая внимание на произношение удвоенных звуков [н] и [м].', words: ['tennen', 'tenno:', 'annai', 'ammin', 'banno:', 'fummatsu', 'fumman', 'hon\'nin', 'kannen', 'onna', 'semmon', 'sen\'nyu:'] },
+        { id: 'q5', type: 'construct', title: 'Упражнение 5', description: 'Напишите слова из упражнения 4 хираганой.', words: {'てんねん': ['て', 'ん', 'ね', 'ん'], 'あんない': ['あ', 'ん', 'な', 'い'], 'せんもん': ['せ', 'ん', 'も', 'ん']} },
+        { id: 'q6', type: 'reading', title: 'Упражнение 6', description: 'Прочтите вслух слова, обращая внимание на произношение и написание удвоенных звуков [н] и [м]. (Самостоятельная практика)'},
+        { id: 'q7', type: 'reading-table', title: 'Упражнение 7', description: 'Прочтите примеры, обращая внимание на ассимиляцию звуков.', words: ['deguchi', 'monozuki', 'hakko', 'bumppo', 'ninzu', 'ippo'] },
+        { id: 'q8', type: 'reading-table', title: 'Упражнение 8', description: 'Отработайте чтение слов с различными видами тонизации.', wordsA: ['raichaku', 'raiharu', 'raihin', 'rakkan', 'riken', 'rikin', 'rikiten', 'ruigo', 'reigai', 'renzoku', 'ro:do:', 'ronjutsu', 'ro:nin', 'ryakuden', 'ryu:ko:', 'ryu:gaku', 'ryo:gawa', 'wadai', 'warai', 'washi', 'wasureru'], wordsB: ['rai', 'raigetsu', 'raika', 'richi', 'rieki', 'rikai', 'rusu', 'rei', 'renga', 'ro:chin', 'ronke', 'ryakki', 'ryu:ki', 'ryo:bun', 'ryo:ri', 'wani', 'wake', 'ware'], wordsC: ['raku', 'rashii', 'rashingi', 'rijikai', 'rikagaku', 'rekigan', 'roku', 'rokubu', 'ryogakuki', 'wata', 'warui', 'waku', 'waki'] },
+        { id: 'q9', type: 'reading', title: 'Упражнение 9', description: 'Напишите слова из упражнения 8 хираганой. (Самостоятельная практика)'},
+        { id: 'q10', type: 'fill-in-the-blank', title: 'Упражнение 10', description: 'Напишите слово わらい латиницей.', correctAnswer: 'warai'},
+        { id: 'q11', type: 'reading-table', title: 'Упражнение 11', description: 'Прочтите слова, записанные латиницей, и попробуйте представить их написание каной.', words: ['raicho:', 'raiden', 'rakkan', 'rakuchaku', 'rakuda', 'ran\'un', 'ranma', 'reibo:', 'reikin', 'reigu:', 'reika', 'reinen', 'rengo:', 'renzoku', 'rentai', 'riko:na', 'rimen', 'riyu:', 'rongi', 'ruikei', 'ryakugo', 'ryo:in', 'ryu:gi', 'ryu:sui', 'wari', 'wadai', 'wago', 'wani', 'waku', 'ware', 'warau', 'wataru', 'wasuremono', 'wata']},
+        { id: 'q12', type: 'reading', title: 'Упражнение 12', description: 'Прочтите следующие слова. (Самостоятельная практика)'},
+        { id: 'q13', type: 'construct', title: 'Упражнение 13', description: 'Напишите слова из упражнения 11 хираганой.', words: {'わだい': ['わ','だ','い'], 'わに':['わ','に'], 'わらう':['わ','ら','う']} },
     ];
 
     useEffect(() => {
@@ -209,26 +236,27 @@ export default function PhoneticsLesson5Page() {
     
         switch (type) {
             case 'reading':
-                const ex1 = exercise as { wordsA: string[], wordsB: string[], wordsC: string[] };
+                const ex1 = exercise as { wordsA?: string[], wordsB?: string[], wordsC?: string[] };
                 return baseCard(
                     <div className="space-y-4">
-                        <div>
+                        {ex1.wordsA && <div>
                             <h4 className="font-semibold">а) ん перед [к] и [г]:</h4>
                             <div className="flex flex-wrap gap-2 mt-2">{ex1.wordsA.map((word, i) => <InteractiveText key={i} analysis={phoneticsAnalyses[word as keyof typeof phoneticsAnalyses]} />)}</div>
-                        </div>
-                         <div>
+                        </div>}
+                        {ex1.wordsB && <div>
                             <h4 className="font-semibold">б) ん ([м]) перед [м], [п], [б]:</h4>
                             <div className="flex flex-wrap gap-2 mt-2">{ex1.wordsB.map((word, i) => <InteractiveText key={i} analysis={phoneticsAnalyses[word as keyof typeof phoneticsAnalyses]} />)}</div>
-                        </div>
-                        <div>
+                        </div>}
+                        {ex1.wordsC && <div>
                             <h4 className="font-semibold">в) ん ([н]) в остальных случаях:</h4>
                             <div className="flex flex-wrap gap-2 mt-2">{ex1.wordsC.map((word, i) => <InteractiveText key={i} analysis={phoneticsAnalyses[word as keyof typeof phoneticsAnalyses]} />)}</div>
-                        </div>
+                        </div>}
+                         {!ex1.wordsA && <p className="text-muted-foreground">Выполните это упражнение на чтение самостоятельно.</p>}
                     </div>
                 );
             case 'reading-table':
-                const exWords = 'words' in exercise ? exercise.words : ('wordsA' in exercise ? [...exercise.wordsA, ...exercise.wordsB, ...exercise.wordsC] : []);
-                return baseCard(
+                 const exWords = 'words' in exercise ? exercise.words : ('wordsA' in exercise ? [...exercise.wordsA, ...exercise.wordsB, ...exercise.wordsC] : []);
+                 return baseCard(
                     <div className="flex flex-wrap gap-2">
                         {exWords.map((word, index) => (
                             <InteractiveText key={index} analysis={phoneticsAnalyses[word.toLowerCase().replace(':', '').replace('\'', '') as keyof typeof phoneticsAnalyses] || { sentence: [{ word, furigana: '', translation: '...', partOfSpeech: '...' }], fullTranslation: '...' }} />
@@ -250,12 +278,12 @@ export default function PhoneticsLesson5Page() {
                 }
                 return null;
             case 'fill-in-the-blank':
-                return baseCard(
+                 return baseCard(
                     <Input
                         value={answers[id] || ''}
                         onChange={(e) => handleAnswer(id, e.target.value)}
                         className="font-japanese text-lg"
-                        placeholder="Введите ответ хираганой"
+                        placeholder="Введите ответ латиницей"
                     />, footerContent
                 );
             case 'construct':
@@ -427,6 +455,3 @@ export default function PhoneticsLesson5Page() {
         </div>
     );
 }
-
-    
-
