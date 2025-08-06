@@ -67,11 +67,11 @@ const ExerciseCard = ({ title, description, children, result, onCheck, canCheck 
     </Card>
 );
 
+const shuffleArray = (array: string[]) => [...array].sort(() => Math.random() - 0.5);
+
 const ReorderableSentence = ({ id, words, onComplete }: { id: string, words: string[], onComplete: (id: string, constructed: string[]) => void }) => {
     const [items, setItems] = useState(() => shuffleArray(words));
     const [constructed, setConstructed] = useState<string[]>([]);
-
-    const shuffleArray = (array: string[]) => [...array].sort(() => Math.random() - 0.5);
 
     const handleConstruct = (word: string) => {
         setConstructed(prev => {
@@ -382,7 +382,7 @@ export default function GrammarLesson1Page() {
                                     <KanaRowDisplay rowData={katakanaRows.na} />
                                     <KanaRowDisplay rowData={katakanaRows.ta} />
                                     <KanaRowDisplay rowData={katakanaRows.ha} />
-                                    <p className="text-sm mt-2 text-muted-foreground">В заимстворованных словах долгота гласных передаётся знаком ー.</p>
+                                    <p className="text-sm mt-2 text-muted-foreground">В заимствованных словах долгота гласных передаётся знаком ー.</p>
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="w-2">
@@ -522,8 +522,8 @@ export default function GrammarLesson1Page() {
                         })}
                      </div>
                 </ExerciseCard>
-
-                <ExerciseCard title="Упражнение 7: Ответы на вопросы" description="Ответьте на вопросы, используя слово в скобках. Пример: だれが学生ですか。(田中) → 田中さんが学生です。">
+                
+                 <ExerciseCard title="Упражнение 7: Ответы на вопросы" description="Ответьте на вопросы, используя слово в скобках. Пример: だれが学生ですか。(田中) → 田中さんが学生です。">
                     <div className="space-y-4">
                         {Object.entries(correctAnswersEx7).map(([key, correctAnswer]) => {
                             const [questionText, name] = {
@@ -550,12 +550,12 @@ export default function GrammarLesson1Page() {
                      <p>Это упражнение для самостоятельной практики перевода.</p>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 9: Задайте вопросы" canCheck={false}>
-                    <p>Представьте, что видите человека. Задайте вопрос: "あのかたはだれですか。"</p>
+                <ExerciseCard title="Упражнение 9: Задайте вопросы" canCheck={false} description="Задание по рисункам. Задайте вопрос: あのかたはだれですか。">
+                    <p className='text-sm text-muted-foreground'>Представьте, что видите человека. Задайте вопрос.</p>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 10: Альтернативные вопросы" canCheck={false}>
-                     <p>Представьте, что выбираете между двумя профессиями. Задайте вопрос: "あのかたは先生ですか、学生ですか。"</p>
+                <ExerciseCard title="Упражнение 10: Альтернативные вопросы" canCheck={false} description="Задание по рисункам. Задайте вопрос: あのかたは先生ですか、学生ですか。">
+                     <p className='text-sm text-muted-foreground'>Представьте, что выбираете между двумя профессиями. Задайте вопрос.</p>
                 </ExerciseCard>
 
                 <ExerciseCard title="Упражнение 11: Альтернативные вопросы" description="Дополните предложения, превратив их в альтернативные вопросы.">
@@ -583,7 +583,7 @@ export default function GrammarLesson1Page() {
                 <ExerciseCard title="Упражнение 12: Перевод" canCheck={false}>
                     <p>Это упражнение для самостоятельной практики перевода.</p>
                 </ExerciseCard>
-                
+
                 <ExerciseCard title="Упражнение 13: Частицы и связки" description="Заполните пропуски соответствующими словами или грамматическими показателями.">
                     <div className="space-y-4">
                         {Object.entries(correctAnswersEx13).map(([key, correctAnswer]) => {
@@ -711,3 +711,4 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
+

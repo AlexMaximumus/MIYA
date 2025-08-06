@@ -59,7 +59,7 @@ export default function GrammarLesson2Page() { // Changed name
             </Card>
 
             <div className="mt-12 text-center flex flex-col items-center gap-4">
-                <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
+                <Button size="lg" asChild className="btn-gradient w-full max-w-xs" disabled>
                     <Link href="/grammar/lesson-3">Перейти к Уроку 3 →</Link>
                 </Button>
             </div>
