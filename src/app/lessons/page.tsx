@@ -66,7 +66,7 @@ export default function LessonsHubPage() {
                                 {cat.icon}
                             </div>
                             <div>
-                                <CardTitle className="text-xl">{cat.title}</CardTitle>
+                                <CardTitle className="text-xl break-words">{cat.title}</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="flex-grow flex flex-col justify-between">

@@ -24,9 +24,9 @@ export default function WordFormationHubPage() {
       <div className="w-full max-w-4xl">
         <div className="flex justify-between items-center mb-4">
           <Button asChild variant="ghost">
-            <Link href="/">
+            <Link href="/lessons">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Назад на главную
+              Назад к списку разделов
             </Link>
           </Button>
         </div>

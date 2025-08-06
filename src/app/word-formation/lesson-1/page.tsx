@@ -157,7 +157,7 @@ export default function WordFormationLesson1Page() {
         updateProgress(newResults);
         try {
              localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
-        } catch (error) {
+        } catch (error) => {
             console.error("Failed to save answers to localStorage", error);
         }
     };
@@ -362,5 +362,3 @@ export default function WordFormationLesson1Page() {
         </div>
     );
 }
-
-    
