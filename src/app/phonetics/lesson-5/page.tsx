@@ -16,6 +16,7 @@ import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import InteractiveText from '@/components/interactive-text';
 import { phoneticsAnalyses, dialogueAnalyses } from '@/ai/precomputed-analysis';
+import { cn } from '@/lib/utils';
 
 const LESSON_ID = 'phonetics-lesson-5';
 
@@ -60,27 +61,6 @@ const kanjiList = [
     { kanji: '平', kun: 'ひらがな', on: 'ヘイ, ビョウ', meaning: 'плоский, хирагана' },
 ];
 
-const exercises = [
-    { id: 'q1', type: 'reading', title: 'Упражнение 1: Чтение слов с ん (часть 1)', description: 'Прочтите вслух, обращая внимание на произношение ん перед [к], [г].', words: ['ОНГАКУ', 'БУНГАКУ', 'ТЭНКИ', 'ГЭНКИ', 'ГЭНКАН', 'НИНГЭН', 'ТАНГУЦУ'] },
-    { id: 'q2', type: 'reading', title: 'Упражнение 1: Чтение слов с ん (часть 2)', description: 'Прочтите вслух, обращая внимание на произношение ん ([м]) перед [м], [п], [б].', words: ['АММАРИ', 'СЭММОН', 'УММЭЙ', 'САМПО', 'СИМПО', 'СИМПАЙ', 'ДЗЭМБУ', 'СИМБУН'] },
-    { id: 'q3', type: 'reading', title: 'Упражнение 1: Чтение слов с ん (часть 3)', description: 'Прочтите вслух, обращая внимание на произношение ん ([н]) в остальных случаях.', words: ['КАНТАН', 'УНТЭН', 'КОНДО', 'БЭНРИ', 'КЭНРИ', 'ДАНТИ', 'АНДЗЭН', 'КАНДЗИ', 'ОННА'] },
-    { id: 'q4', type: 'construct', title: 'Упражнение 2: Напишите хираганой', description: 'Соберите слова из упражнения 1, используя знаки хираганы.', words: { 'おんがく': ['お', 'ん', 'が', 'く'], 'しんぶん': ['し', 'ん', 'ぶ', 'ん'], 'かんたん': ['か', 'ん', 'た', 'ん'] } },
-    { id: 'q5', type: 'reading', title: 'Упражнение 4: Удвоенные ん и ㅁ', description: 'Прочтите вслух, обращая внимание на произношение удвоенных звуков.', words: ['ТЭННЭН', 'ТЭННО:', 'АННАЙ', 'АММИН', 'БАННО:', 'ФУММАЦУ', 'ФУММАН', 'ХОННИН', 'КАННЭН', 'ОННА', 'СЭММОН', 'СЭННЮ:'] },
-    { id: 'q6', type: 'fill-in-the-blank', title: 'Упражнение 5: Напишите хираганой', description: 'Напишите слово "аннай" (информация, ведение) хираганой.', correctAnswer: 'あんない' },
-    { id: 'q7', type: 'reading', title: 'Упражнение 7: Ассимиляция', description: 'Прочтите примеры, обращая внимание на изменение звуков.', words: ['ДЭГУТИ', 'МОНОДЗУКИ', 'ХАККО:', 'БУМПО:', 'НИНДЗУ:', 'ИППО'] },
-    { id: 'q8', type: 'multiple-choice', title: 'Упражнение 7: Проверка знаний ассимиляции', description: 'Что происходит в слове "発行" (хацу + ко: → хакко:)?', options: ['Прогрессивная ассимиляция', 'Регрессивная ассимиляция', 'Взаимная ассимиляция'], correctAnswer: 'Регрессивная ассимиляция' },
-];
-
-
-const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
-    <div className='flex flex-wrap gap-4 mt-2 justify-center'>
-       {rowData.map(char => (
-           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
-       ))}
-   </div>
-);
-
-
 const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer }: {
     exercise: { id: string, words: Record<string, string[]> },
     answers: Record<string, any>,
@@ -94,7 +74,7 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
                 const wordId = `${exercise.id}-${word}`;
                 return (
                     <div key={wordId} className="space-y-2">
-                        <Label className="text-lg font-japanese">{word}</Label>
+                        <Label className="text-lg">{word.toUpperCase()}</Label>
                         <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
                             {(answers[wordId] || []).join('')}
                         </div>
@@ -111,7 +91,8 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
             })}
         </div>
     );
-}
+};
+
 
 export default function PhoneticsLesson5Page() {
     const [progress, setProgress] = useState(0);
@@ -119,6 +100,16 @@ export default function PhoneticsLesson5Page() {
     const [results, setResults] = useState<Record<string, boolean | null>>({});
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
+
+    const exercises = [
+        { id: 'q1', type: 'reading', title: 'Упражнение 1', description: 'Прочтите, обращая внимание на произношение ん.', wordsA: ['ongaku', 'bungaku', 'tenki', 'genki', 'genkan', 'ningen', 'tangutsu'], wordsB: ['ammari', 'semmon', 'ummei', 'sampo', 'shimpo', 'shinpai', 'zembu', 'shimbun'], wordsC: ['kantan', 'unten', 'kondo', 'benri', 'kenri', 'danchi', 'anzen', 'kanji', 'onna'] },
+        { id: 'q2', type: 'construct', title: 'Упражнение 2', description: 'Напишите хираганой слова из упражнения 1.', words: { 'おんがく': ['お','ん','が','く'], 'しんぶん': ['し','ん','ぶ','ん'], 'かんたん': ['か','ん','た','ん'] } },
+        { id: 'q3', type: 'reading-table', title: 'Упражнение 3 и 4', description: 'Прочтите, обращая внимание на произношение ん и удвоенных звуков.', words: ['tennen', 'tenno:', 'annai', 'ammin', 'banno:', 'fummatsu', 'fumman', 'hon\'nin', 'kannen', 'onna', 'semmon', 'sen\'nyu:'] },
+        { id: 'q4', type: 'fill-in-the-blank', title: 'Упражнение 5', description: 'Напишите слово "аннай" (информация, ведение) хираганой.', correctAnswer: 'あんない' },
+        { id: 'q5', type: 'reading-table', title: 'Упражнение 7', description: 'Прочтите примеры, обращая внимание на ассимиляцию звуков.', words: ['deguchi', 'monozuki', 'hakko', 'bumppo', 'ninzu', 'ippo'] },
+        { id: 'q6', type: 'multiple-choice', title: 'Упражнение 7 (проверка)', description: 'Что происходит в слове "発行" (хацу + ко: → хакко:)?', options: ['Прогрессивная ассимиляция', 'Регрессивная ассимиляция', 'Взаимная ассимиляция'], correctAnswer: 'Регрессивная ассимиляция' },
+        { id: 'q7', type: 'reading-table', title: 'Упражнение 8', description: 'Отработайте чтение слов с различными видами тонизации.', wordsA: ['raichaku', 'raiharu', 'raihin', 'rakkan', 'riken', 'rikin', 'rikiten', 'ruigo', 'reigai', 'renzoku', 'ro:do:', 'ronjutsu', 'ro:nin', 'ryakuden', 'ryu:ko:', 'ryu:gaku', 'ryo:gawa', 'wadai', 'warai', 'washi', 'wasureru'], wordsB: ['rai', 'raigetsu', 'raika', 'richi', 'rieki', 'rikai', 'rusu', 'rei', 'renga', 'ro:chin', 'ronke', 'ryakki', 'ryu:ki', 'ryo:bun', 'ryo:ri', 'wani', 'wake', 'ware'], wordsC: ['raku', 'rashii', 'rashingi', 'rijikai', 'rikagaku', 'rekigan', 'roku', 'rokubu', 'ryogakuki', 'wata', 'warui', 'waku', 'waki'] }
+    ];
 
     useEffect(() => {
         try {
@@ -132,14 +123,15 @@ export default function PhoneticsLesson5Page() {
     }, []);
 
     const updateProgress = (newResults: Record<string, boolean | null>) => {
-        const answeredCorrectly = Object.values(newResults).filter(r => r === true).length;
-        const totalQuestions = exercises.length;
-        const newProgress = Math.floor((answeredCorrectly / totalQuestions) * 100);
+        const checkableExercises = exercises.filter(ex => ex.type !== 'reading' && ex.type !== 'reading-table');
+        const answeredCorrectly = checkableExercises.filter(ex => newResults[ex.id] === true).length;
+        const totalQuestions = checkableExercises.length;
+        const newProgress = totalQuestions > 0 ? Math.floor((answeredCorrectly / totalQuestions) * 100) : 0;
+        
         setProgress(newProgress);
         setResults(newResults);
         try {
             localStorage.setItem(`${LESSON_ID}-progress`, JSON.stringify(newProgress));
-            localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
         } catch (error) {
             console.error("Failed to save to localStorage", error);
         }
@@ -170,18 +162,18 @@ export default function PhoneticsLesson5Page() {
         const newResults: Record<string, boolean | null> = {};
         exercises.forEach(ex => {
             let isCorrect = false;
-            if (ex.type === 'construct') {
+            if (ex.type === 'construct' && 'words' in ex && typeof ex.words === 'object') {
                 isCorrect = Object.entries(ex.words).every(([word, _]) => {
                     const wordId = `${ex.id}-${word}`;
                     const userAnswer = (answers[wordId] || []).join('');
                     return userAnswer.trim() === word.trim();
                 });
-            } else if (ex.type === 'fill-in-the-blank') {
+            } else if (ex.type === 'fill-in-the-blank' && 'correctAnswer' in ex) {
                 isCorrect = (answers[ex.id] || '').toLowerCase() === ex.correctAnswer;
-            } else if (ex.type !== 'reading') {
+            } else if (ex.type === 'multiple-choice' && 'correctAnswer' in ex) {
                  isCorrect = answers[ex.id] === ex.correctAnswer;
             }
-            if(ex.type !== 'reading') {
+            if (ex.type !== 'reading' && ex.type !== 'reading-table') {
                  newResults[ex.id] = isCorrect;
             }
         });
@@ -194,47 +186,69 @@ export default function PhoneticsLesson5Page() {
         }
     };
 
-    const renderExercise = (exercise: typeof exercises[0]) => {
+    const renderExercise = (exercise: (typeof exercises)[0]) => {
         const { id, type, title, description } = exercise;
         const result = results[id];
-
+    
         const baseCard = (content: React.ReactNode, footer?: React.ReactNode) => (
              <Card key={id} className="w-full">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
-                    <CardDescription>{description}</CardDescription>
+                    {description && <CardDescription>{description}</CardDescription>}
                 </CardHeader>
                 <CardContent>{content}</CardContent>
                 {footer && <CardFooter>{footer}</CardFooter>}
             </Card>
         );
-
-        const footerContent = result !== null && (
+    
+        const footerContent = result !== null && result !== undefined && (
             result === true 
             ? <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>
             : <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>
         );
-
+    
         switch (type) {
-             case 'reading':
+            case 'reading':
+                const ex1 = exercise as { wordsA: string[], wordsB: string[], wordsC: string[] };
+                return baseCard(
+                    <div className="space-y-4">
+                        <div>
+                            <h4 className="font-semibold">а) ん перед [к] и [г]:</h4>
+                            <div className="flex flex-wrap gap-2 mt-2">{ex1.wordsA.map((word, i) => <InteractiveText key={i} analysis={phoneticsAnalyses[word as keyof typeof phoneticsAnalyses]} />)}</div>
+                        </div>
+                         <div>
+                            <h4 className="font-semibold">б) ん ([м]) перед [м], [п], [б]:</h4>
+                            <div className="flex flex-wrap gap-2 mt-2">{ex1.wordsB.map((word, i) => <InteractiveText key={i} analysis={phoneticsAnalyses[word as keyof typeof phoneticsAnalyses]} />)}</div>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold">в) ん ([н]) в остальных случаях:</h4>
+                            <div className="flex flex-wrap gap-2 mt-2">{ex1.wordsC.map((word, i) => <InteractiveText key={i} analysis={phoneticsAnalyses[word as keyof typeof phoneticsAnalyses]} />)}</div>
+                        </div>
+                    </div>
+                );
+            case 'reading-table':
+                const exWords = 'words' in exercise ? exercise.words : ('wordsA' in exercise ? [...exercise.wordsA, ...exercise.wordsB, ...exercise.wordsC] : []);
                 return baseCard(
                     <div className="flex flex-wrap gap-2">
-                        {exercise.words.map((word, index) => (
-                            <InteractiveText key={index} analysis={phoneticsAnalyses[word.toLowerCase().replace(':', '') as keyof typeof phoneticsAnalyses] || { sentence: [{ word, furigana: '', translation: '...', partOfSpeech: '...' }], fullTranslation: '...' }} />
+                        {exWords.map((word, index) => (
+                            <InteractiveText key={index} analysis={phoneticsAnalyses[word.toLowerCase().replace(':', '').replace('\'', '') as keyof typeof phoneticsAnalyses] || { sentence: [{ word, furigana: '', translation: '...', partOfSpeech: '...' }], fullTranslation: '...' }} />
                         ))}
                     </div>
                 );
             case 'multiple-choice':
-                return baseCard(
-                    <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
-                        {(exercise.options as string[]).map(option => (
-                            <div key={option} className="flex items-center space-x-2">
-                                <RadioGroupItem value={option} id={`${id}-${option}`} />
-                                <Label htmlFor={`${id}-${option}`}>{option}</Label>
-                            </div>
-                        ))}
-                    </RadioGroup>, footerContent
-                );
+                if ('options' in exercise) {
+                    return baseCard(
+                        <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
+                            {(exercise.options as string[]).map(option => (
+                                <div key={option} className="flex items-center space-x-2">
+                                    <RadioGroupItem value={option} id={`${id}-${option}`} />
+                                    <Label htmlFor={`${id}-${option}`}>{option}</Label>
+                                </div>
+                            ))}
+                        </RadioGroup>, footerContent
+                    );
+                }
+                return null;
             case 'fill-in-the-blank':
                 return baseCard(
                     <Input
@@ -245,18 +259,22 @@ export default function PhoneticsLesson5Page() {
                     />, footerContent
                 );
             case 'construct':
-                return baseCard(
-                    <ExerciseConstruct 
-                        exercise={exercise as { id: string; words: Record<string, string[]>; } }
-                        answers={answers}
-                        handleConstructAnswer={handleConstructAnswer}
-                        resetConstructAnswer={resetConstructAnswer}
-                    />, footerContent
-                );
+                if ('words' in exercise) {
+                     return baseCard(
+                        <ExerciseConstruct 
+                            exercise={exercise as { id: string; words: Record<string, string[]>; } }
+                            answers={answers}
+                            handleConstructAnswer={handleConstructAnswer}
+                            resetConstructAnswer={resetConstructAnswer}
+                        />, footerContent
+                    );
+                }
+                return null;
             default:
                 return null;
         }
     };
+
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
@@ -411,3 +429,4 @@ export default function PhoneticsLesson5Page() {
 }
 
     
+
