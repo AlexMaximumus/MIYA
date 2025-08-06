@@ -190,10 +190,10 @@ export default function PhoneticsLesson4Page() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-xl mt-4 mb-2">Слоги с мягкими согласными</h4>
-                                <p>Мягкие согласные могут сочетаться с йотированными гласными. На письме это обозначается сочетанием знака на -И (き, し, ち и т.д.) и маленького знака из ряда Я (ゃ, ゅ, ょ).</p>
+                                <div>Мягкие согласные могут сочетаться с йотированными гласными. На письме это обозначается сочетанием знака на -И (き, し, ち и т.д.) и маленького знака из ряда Я (ゃ, ゅ, ょ).</div>
                                 <KanaRowDisplay rowData={kanaRows.yotated} />
-                                <p className="mt-2">Долгота в таких слогах обозначается добавлением う. Например, <InteractiveText analysis={phoneticsAnalyses.kyou}/>, <InteractiveText analysis={phoneticsAnalyses.shu}/>.</p>
-                                <p className="mt-2">Если знак ряда Я пишется обычным размером, он читается отдельно: <InteractiveText analysis={phoneticsAnalyses.hiyamizu}/>.</p>
+                                <div className="mt-2">Долгота в таких слогах обозначается добавлением う. Например, <InteractiveText analysis={phoneticsAnalyses.kyou}/>, <InteractiveText analysis={phoneticsAnalyses.shu}/>.</div>
+                                <div className="mt-2">Если знак ряда Я пишется обычным размером, он читается отдельно: <InteractiveText analysis={phoneticsAnalyses.hiyamizu}/>.</div>
                             </div>
                         </AccordionContent>
                     </AccordionItem>
