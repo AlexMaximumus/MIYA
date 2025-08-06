@@ -264,6 +264,18 @@ const anokatawadonadesuka: JapaneseAnalysisOutput = {
     ],
     fullTranslation: 'Кто тот человек?'
 };
+
+const daregagakuseidesuka: JapaneseAnalysisOutput = {
+    sentence: [
+        { word: 'だれ', furigana: 'だれ', translation: 'кто', partOfSpeech: 'вопросительное местоимение' },
+        { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' },
+        { word: '学生', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+        { word: 'です', furigana: 'です', translation: 'есть', partOfSpeech: 'связка' },
+        { word: 'か', furigana: 'か', translation: 'вопрос', partOfSpeech: 'частица (вопрос)' }
+    ],
+    fullTranslation: 'Кто студент?'
+};
+
 const anokatawayamadasandesu: JapaneseAnalysisOutput = {
     sentence: [
         { word: 'あの', furigana: 'あの', translation: 'тот', partOfSpeech: 'указательное местоимение' },
@@ -303,6 +315,7 @@ export const grammarAnalyses = {
     watashiwasenseidehaarimasengakuseidesu: watashiwasenseidehaarimasengakuseidesu,
     anokatawadonadesuka: anokatawadonadesuka,
     anokatawayamadasandesu: anokatawayamadasandesu,
+    daregagakuseidesuka: daregagakuseidesuka,
     sorewanandesuka: {
         sentence: [
             { word: 'それ', furigana: 'それ', translation: 'это', partOfSpeech: 'местоимение' },
@@ -618,7 +631,6 @@ export const dialogueAnalyses = {
         sentence: [
             { word: 'わかります', furigana: 'わかります', translation: 'понимаете', partOfSpeech: 'глагол' },
             { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
-            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
         ],
         fullTranslation: 'Вам понятно?'
     },
@@ -643,3 +655,6 @@ export const dialogueAnalyses = {
 };
 
 
+
+
+    

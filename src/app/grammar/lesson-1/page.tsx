@@ -3,17 +3,20 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Share2, Volume2, BookOpen } from 'lucide-react';
+import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import InteractiveFormula from '@/components/interactive-formula';
 import { grammarAnalyses, dialogueAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 const LESSON_ID = 'lesson-1';
 
@@ -110,9 +113,9 @@ export default function GrammarLesson1Page() {
                             <AccordionItem value="g-2">
                                 <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                                    <p>У существительных нет рода и числа. Они изменяются по 11 падежам с помощью суффиксов.</p>
+                                    <p>У существительных нет рода и числа. Они изменяются по 11 падежам с помощью суффиксов. Основной падеж (бессуффиксальный) употребляется в нескольких случаях:</p>
                                     <Card className="bg-card/70 mt-4">
-                                        <CardHeader><CardTitle>Основной падеж (N)</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle>Функции основного падежа (N)</CardTitle></CardHeader>
                                         <CardContent className="space-y-4">
                                             <div><b>1. Обращение:</b> <InteractiveText analysis={grammarAnalyses.yamadasan} /></div>
                                             <div><b>2. Именная часть сказуемого:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
@@ -259,7 +262,7 @@ export default function GrammarLesson1Page() {
                                     <KanaRowDisplay rowData={katakanaRows.na} />
                                     <KanaRowDisplay rowData={katakanaRows.ta} />
                                     <KanaRowDisplay rowData={katakanaRows.ha} />
-                                    <p className="text-sm mt-2 text-muted-foreground">В заимствованных словах долгота гласных передаётся знаком ー.</p>
+                                    <p className="text-sm mt-2 text-muted-foreground">В заимстворованных словах долгота гласных передаётся знаком ー.</p>
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="w-2">
@@ -296,6 +299,24 @@ export default function GrammarLesson1Page() {
                 </AccordionItem>
             </Accordion>
             
+            <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
+            <div className="w-full max-w-4xl space-y-8 mt-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Упражнение 1: Интонация</CardTitle>
+                  <CardDescription>Прочтите вслух, обращая внимание на интонацию.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesu} />
+                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidehaarimasen} />
+                    <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} />
+                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} />
+                    <InteractiveText analysis={grammarAnalyses.anokata_wa_sensei_desuka_gakusei_desuka} />
+                </CardContent>
+              </Card>
+               {/* ... Other exercises will be added here ... */}
+            </div>
+
             <div className="mt-12 text-center">
                 <Button size="lg" asChild className="btn-gradient">
                     <Link href="/grammar/lesson-2">Перейти к Уроку 2 →</Link>
@@ -305,3 +326,5 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
+
+    

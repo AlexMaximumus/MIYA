@@ -341,7 +341,7 @@ export default function GrammarLesson2Page() {
                                     <div>
                                         <h4 className="font-semibold text-lg">1. С вопросительным словом (специальный вопрос)</h4>
                                         <div className="text-muted-foreground text-base">Такие вопросы требуют конкретного ответа (кто, что, где и т.д.).</div>
-                                        <div className="mt-2">Схема: <InteractiveFormula formula="N は QW です か 。" /></div>
+                                        <div className="mt-2">Схема: <InteractiveFormula formula="QW が N です か 。" /></div>
                                         <div className="my-4">
                                             <InteractiveText analysis={grammarAnalyses.anokatawadonadesuka} />
                                         </div>
