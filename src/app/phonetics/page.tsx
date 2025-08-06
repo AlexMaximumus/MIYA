@@ -15,6 +15,14 @@ const lessons = [
         href: '/phonetics/lesson-1',
         lessonNumber: 1,
         icon: <Mic2 className="w-8 h-8" />
+    },
+    {
+        id: 'phonetics-lesson-2',
+        title: 'Согласные и редукция гласных',
+        description: 'Особенности согласных звуков [с], [т], [дз] и их написание. Правила редукции гласных [и] и [у].',
+        href: '/phonetics/lesson-2',
+        lessonNumber: 2,
+        icon: <Mic2 className="w-8 h-8" />
     }
 ];
 
