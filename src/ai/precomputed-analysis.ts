@@ -569,7 +569,7 @@ export const grammarAnalyses = {
             { word: "中山さん", furigana: "なかやまさん", translation: "г-н Накаяма", partOfSpeech: "имя собственное" },
             { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
             { word: "医者", furigana: "いしゃ", translation: "врач", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Господин Накаяма — врач."
     },
@@ -578,7 +578,7 @@ export const grammarAnalyses = {
             { word: "山本さん", furigana: "やまもとさん", translation: "г-н Ямамото", partOfSpeech: "имя собственное" },
             { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
             { word: "技師", furigana: "ぎし", translation: "инженер", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Господин Ямамото — инженер."
     },
@@ -596,7 +596,7 @@ export const grammarAnalyses = {
             { word: "お名前", furigana: "おなまえ", translation: "имя", partOfSpeech: "существительное" },
             { word: "は", furigana: "は", translation: "частица (тема)", partOfSpeech: "частица (тема)" },
             { word: "アンナ", furigana: "アンナ", translation: "Анна", partOfSpeech: "имя собственное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Имя — Анна."
     }
@@ -786,6 +786,28 @@ export const dialogueAnalyses = {
             { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
             { word: 'よろしく', furigana: 'よろしく', translation: 'прошу любить', partOfSpeech: 'наречие' },
             { word: 'お願いします', furigana: 'おねがいします', translation: 'и жаловать', partOfSpeech: 'выражение' },
+        ],
+        fullTranslation: 'Мне тоже очень приятно, прошу любить и жаловать.'
+    },
+    anna_hajimemashite: {
+        sentence: [
+            { word: 'はじめまして', furigana: 'はじめまして', translation: 'приятно познакомиться', partOfSpeech: 'выражение' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+            { word: 'アンナです', furigana: 'アンナです', translation: 'Я Анна', partOfSpeech: 'выражение' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+            { word: 'よろしく', furigana: 'よろしく', translation: 'прошу любить', partOfSpeech: 'наречие' },
+            { word: 'お願いします', furigana: 'おねがいします', translation: 'и жаловать', partOfSpeech: 'выражение' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
+        ],
+        fullTranslation: 'Приятно познакомиться. Я Анна. Прошу любить и жаловать.'
+    },
+    tanaka_kochira_koso: {
+        sentence: [
+            { word: 'こちらこそ', furigana: 'こちらこそ', translation: 'мне тоже', partOfSpeech: 'выражение' },
+            { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+            { word: 'よろしく', furigana: 'よろしく', translation: 'прошу любить', partOfSpeech: 'наречие' },
+            { word: 'お願いします', furigana: 'おねがいします', translation: 'и жаловать', partOfSpeech: 'выражение' },
+            { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
         ],
         fullTranslation: 'Мне тоже очень приятно, прошу любить и жаловать.'
     }

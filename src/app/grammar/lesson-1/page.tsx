@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb, Check, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb, Check, HelpCircle, Repeat } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import InteractiveFormula from '@/components/interactive-formula';
@@ -84,7 +84,6 @@ export default function GrammarLesson1Page() {
 
     const handleInputChange = (id: string, value: string) => {
         setAnswers(prev => ({ ...prev, [id]: value }));
-        // Reset result on new input
         setResults(prev => ({...prev, [id]: null}));
     };
 
@@ -93,25 +92,61 @@ export default function GrammarLesson1Page() {
         const isCorrect = userAnswer === correctAnswer.replace(/[.\s。]/g, '');
         setResults(prev => ({ ...prev, [id]: isCorrect }));
     };
-
-    const checkMultiple = (idPrefix: string, correctAnswers: Record<string, string>) => {
+    
+    const checkAll = () => {
         const newResults: Record<string, boolean> = {};
-        let allCorrect = true;
-        for (const key in correctAnswers) {
-            const fullId = `${idPrefix}_${key}`;
-            const userAnswer = (answers[fullId] || '').trim().replace(/[.\s。]/g, '');
-            const isCorrect = userAnswer === correctAnswers[key].replace(/[.\s。]/g, '');
-            newResults[fullId] = isCorrect;
-            if (!isCorrect) allCorrect = false;
-        }
-        setResults(prev => ({ ...prev, ...newResults, [idPrefix]: allCorrect }));
-    };
+        
+        // Ex 2
+        Object.entries(correctAnswersEx2).forEach(([key, value]) => {
+            const id = `ex2_${key}`;
+            newResults[id] = (answers[id] || '').trim().replace(/[.\s。]/g, '') === value.replace(/[.\s。]/g, '');
+        });
+        
+        // Ex 4
+        Object.entries(correctAnswersEx4).forEach(([key, value]) => {
+            const id = `ex4_${key}`;
+            newResults[id] = (answers[id] || '').trim().replace(/[.\s。]/g, '') === value.replace(/[.\s。]/g, '');
+        });
+
+        // Ex 6
+        Object.entries(correctAnswersEx6).forEach(([key, value]) => {
+            const id = `ex6_${key}`;
+            newResults[id] = (answers[id] || '') === value;
+        });
+
+        // Ex 7
+         Object.entries(correctAnswersEx7).forEach(([key, value]) => {
+            const id = `ex7_${key}`;
+            newResults[id] = (answers[id] || '').trim().replace(/[.\s。]/g, '') === value.replace(/[.\s。]/g, '');
+        });
+
+        // Ex 11
+        Object.entries(correctAnswersEx11).forEach(([key, value]) => {
+            const id = `ex11_${key}`;
+            newResults[id] = (answers[id] || '').trim().replace(/[.\s。]/g, '') === value.replace(/[.\s。]/g, '');
+        });
+        
+        // Ex 13
+        Object.entries(correctAnswersEx13).forEach(([key, value]) => {
+            const id = `ex13_${key}`;
+            newResults[id] = (answers[id] || '') === value;
+        });
+
+        setResults(prev => ({...prev, ...newResults}));
+    }
 
     const correctAnswersEx2 = {
         '1': 'わたしは先生ではありません。学生です。',
         '2': '田中さんは医者ではありません。技師です。',
         '3': 'あのかたは学生ではありません。先生です。',
         '4': '山田さんは先生ではありません。学生です。'
+    };
+    
+    const correctAnswersEx4 = {
+        '1': 'わたしは先生ですか。はい、先生です。',
+        '2': '田中さんは医者ですか。はい、医者です。',
+        '3': 'あのかたは学生ですか。はい、学生です。',
+        '4': '山田さんは技師ですか。はい、技師です。',
     };
     
     const correctAnswersEx6 = {
@@ -166,7 +201,7 @@ export default function GrammarLesson1Page() {
              <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4" defaultValue={['item-grammar']}>
                 <AccordionItem value="item-grammar">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                         <Accordion type="single" collapsible className="w-full" defaultValue="g-1">
                             <AccordionItem value="g-1">
                                 <AccordionTrigger className="text-xl font-semibold">§1. Части речи</AccordionTrigger>
@@ -282,7 +317,7 @@ export default function GrammarLesson1Page() {
                 </AccordionItem>
                 <AccordionItem value="item-word-formation">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
-                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
+                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                         <p>В японском языке вежливость выражается специальными словами и грамматическими формами.</p>
                         <h4 className="font-semibold">Аффиксы вежливости:</h4>
                          <ul className="list-disc list-inside space-y-2">
@@ -294,7 +329,7 @@ export default function GrammarLesson1Page() {
                 </AccordionItem>
                 <AccordionItem value="item-intonation">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Интонация</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                        <ul className="list-disc list-inside space-y-2">
                             <li><b>Повествовательное предложение:</b> Логическое ударение на именной части сказуемого, тон понижается на связке です.</li>
                             <li><b>Вопрос без вопросительного слова:</b> Тон повышается на сказуемом и частице か.</li>
@@ -312,7 +347,7 @@ export default function GrammarLesson1Page() {
                 </AccordionItem>
                  <AccordionItem value="item-writing">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Письменность</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
+                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                         <Accordion type="single" collapsible>
                             <AccordionItem value="w-1">
                                 <AccordionTrigger className="text-xl font-semibold">§1. Катакана</AccordionTrigger>
@@ -374,7 +409,7 @@ export default function GrammarLesson1Page() {
                     </div>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 2: Отрицательная форма" onCheck={() => checkMultiple('ex2', correctAnswersEx2)} result={results['ex2']} description="Скажите предложения в отрицательной форме и добавьте правильный вариант. Пример: あのひとは学生ではありません。先生です。">
+                <ExerciseCard title="Упражнение 2: Отрицательная форма" onCheck={() => checkAll()} description="Скажите предложения в отрицательной форме и добавьте правильный вариант. Пример: あのひとは学生ではありません。先生です。">
                     <div className="space-y-4">
                         <div>
                             <Label>わたしは先生です。(学生)</Label>
@@ -403,7 +438,7 @@ export default function GrammarLesson1Page() {
                     </div>
                 </ExerciseCard>
 
-                <ExerciseCard title="Упражнение 6: Вопросительные местоимения" onCheck={() => checkMultiple('ex6', correctAnswersEx6)} result={results['ex6']} description="Заполните пропуски, вставив だれ, なに или なん.">
+                <ExerciseCard title="Упражнение 6: Вопросительные местоимения" onCheck={() => checkAll()} description="Заполните пропуски, вставив だれ, なに или なん.">
                      <div className="space-y-4">
                         <div>
                             <Label className="font-japanese text-lg">あのかたは（<b className="text-primary">?</b>）ですか。</Label>
@@ -455,36 +490,24 @@ export default function GrammarLesson1Page() {
                 
                 <ExerciseCard title="Упражнение 7: Ответы на вопросы" description="Ответьте на вопросы, используя слово в скобках. Пример: だれが学生ですか。(田中) → 田中さんが学生です。">
                     <div className="space-y-4">
-                        <div>
-                            <Label className="font-japanese">だれが先生ですか。(山田)</Label>
-                            <Input value={answers['ex7_1'] || ''} onChange={e => handleInputChange('ex7_1', e.target.value)} placeholder="Введите ответ..." className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex7_1', '山田さんが先生です。')}>Проверить</Button>
-                            {results['ex7_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex7_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
-                        <div>
-                            <Label className="font-japanese">だれが医者ですか。(中山)</Label>
-                            <Input value={answers['ex7_2'] || ''} onChange={e => handleInputChange('ex7_2', e.target.value)} placeholder="Введите ответ..." className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex7_2', '中山さんが医者です。')}>Проверить</Button>
-                            {results['ex7_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex7_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
-                         <div>
-                            <Label className="font-japanese">だれが技師ですか。(山本)</Label>
-                            <Input value={answers['ex7_3'] || ''} onChange={e => handleInputChange('ex7_3', e.target.value)} placeholder="Введите ответ..." className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex7_3', '山本さんが技師です。')}>Проверить</Button>
-                            {results['ex7_3'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex7_3'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
-                        <div>
-                            <Label className="font-japanese">ご専門はなんですか。(文学)</Label>
-                            <Input value={answers['ex7_4'] || ''} onChange={e => handleInputChange('ex7_4', e.target.value)} placeholder="Введите ответ..." className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex7_4', 'ご専門は文学です。')}>Проверить</Button>
-                            {results['ex7_4'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex7_4'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
-                         <div>
-                            <Label className="font-japanese">お名前はなんですか。(アンナ)</Label>
-                            <Input value={answers['ex7_5'] || ''} onChange={e => handleInputChange('ex7_5', e.target.value)} placeholder="Введите ответ..." className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex7_5', 'お名前はアンナです。')}>Проверить</Button>
-                            {results['ex7_5'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex7_5'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
+                        {Object.entries(correctAnswersEx7).map(([key, correctAnswer]) => {
+                            const [questionText, name] = {
+                                '1': ['だれが先生ですか。', '(山田)'],
+                                '2': ['だれが医者ですか。', '(中山)'],
+                                '3': ['だれが技師ですか。', '(山本)'],
+                                '4': ['ご専門はなんですか。', '(文学)'],
+                                '5': ['お名前はなんですか。', '(アンナ)'],
+                            }[key]!;
+                            const id = `ex7_${key}`;
+                            return (
+                                <div key={id}>
+                                    <Label className="font-japanese">{questionText} {name}</Label>
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} placeholder="Введите ответ..." className="font-japanese mt-1" />
+                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswer)}>Проверить</Button>
+                                    {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                                </div>
+                            );
+                        })}
                     </div>
                 </ExerciseCard>
 
@@ -505,7 +528,7 @@ export default function GrammarLesson1Page() {
                      </div>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 9 и 10: Вопросы" canCheck={false} description="Вместо рисунков используйте текстовые описания.">
+                <ExerciseCard title="Упражнение 9 и 10: Вопросы по ситуации" canCheck={false} description="Задайте вопросы к текстовым описаниям ситуаций.">
                     <div className="space-y-4">
                         <p><b>Ситуация 1:</b> Вы видите человека, который является студентом.</p>
                         <p><b>Ваш вопрос (Упр. 9):</b> あのかたはだれですか。</p>
@@ -519,18 +542,23 @@ export default function GrammarLesson1Page() {
 
                 <ExerciseCard title="Упражнение 11: Альтернативные вопросы" description="Дополните предложения, превратив их в альтернативные вопросы.">
                     <div className="space-y-4">
-                        <div>
-                            <Label className="font-japanese">わたしは医者です。</Label>
-                            <Input value={answers['ex11_1'] || ''} onChange={e => handleInputChange('ex11_1', e.target.value)} className="font-japanese mt-1" placeholder="わたしは医者ですか、..."/>
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex11_1', correctAnswersEx11['1'])}>Проверить</Button>
-                             {results['ex11_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex11_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
-                        <div>
-                            <Label className="font-japanese">田中さんは技師です。</Label>
-                            <Input value={answers['ex11_2'] || ''} onChange={e => handleInputChange('ex11_2', e.target.value)} className="font-japanese mt-1" placeholder="田中さんは技師ですか、..."/>
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex11_2', correctAnswersEx11['2'])}>Проверить</Button>
-                             {results['ex11_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex11_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
+                        {Object.entries(correctAnswersEx11).map(([key, correctAnswer]) => {
+                             const questionText = {
+                                '1': 'わたしは医者です。',
+                                '2': '田中さんは技師です。',
+                                '3': 'ご専門は文学です。',
+                                '4': '山田さんは先生です。',
+                            }[key]!;
+                             const id = `ex11_${key}`;
+                             return (
+                                <div key={id}>
+                                    <Label className="font-japanese">{questionText}</Label>
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} className="font-japanese mt-1" placeholder="Введите полный вопрос..."/>
+                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswer)}>Проверить</Button>
+                                    {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                                </div>
+                             )
+                        })}
                     </div>
                 </ExerciseCard>
 
@@ -551,69 +579,151 @@ export default function GrammarLesson1Page() {
                     </div>
                 </ExerciseCard>
 
-
-                 <ExerciseCard title="Упражнение 13: Частицы и связки" onCheck={() => checkMultiple('ex13', correctAnswersEx13)} result={results['ex13']} description="Заполните пропуски соответствующими словами или грамматическими показателями.">
+                 <ExerciseCard title="Упражнение 13: Частицы и связки" onCheck={() => checkAll()} description="Заполните пропуски соответствующими словами или грамматическими показателями.">
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 flex-wrap">
                             <label htmlFor="ex13-1" className="font-japanese text-lg">あのかた</label>
-                            <Input id="ex13-1" value={answers['ex13_1'] || ''} onChange={e => handleInputChange('ex13_1', e.target.value)} className="w-20 inline-block font-japanese" />
+                            <Input id="ex13_1" value={answers['ex13_1'] || ''} onChange={e => handleInputChange('ex13_1', e.target.value)} className="w-20 inline-block font-japanese" />
                              <label className="font-japanese text-lg">学生です。</label>
                              {results['ex13_1'] === false && <XCircle className="text-destructive"/>}
                         </div>
                          <div className="flex items-center gap-2 flex-wrap">
                             <label htmlFor="ex13-2" className="font-japanese text-lg">だれ</label>
-                            <Input id="ex13-2" value={answers['ex13_2'] || ''} onChange={e => handleInputChange('ex13_2', e.target.value)} className="w-20 inline-block font-japanese" />
+                            <Input id="ex13_2" value={answers['ex13_2'] || ''} onChange={e => handleInputChange('ex13_2', e.target.value)} className="w-20 inline-block font-japanese" />
                              <label className="font-japanese text-lg">先生ですか。</label>
                              {results['ex13_2'] === false && <XCircle className="text-destructive"/>}
                         </div>
                          <div className="flex items-center gap-2 flex-wrap">
                             <label htmlFor="ex13-3" className="font-japanese text-lg">わたし</label>
-                            <Input id="ex13-3" value={answers['ex13_3'] || ''} onChange={e => handleInputChange('ex13_3', e.target.value)} className="w-20 inline-block font-japanese" />
+                            <Input id="ex13_3" value={answers['ex13_3'] || ''} onChange={e => handleInputChange('ex13_3', e.target.value)} className="w-20 inline-block font-japanese" />
                              <label className="font-japanese text-lg">医者ではありません。</label>
                              {results['ex13_3'] === false && <XCircle className="text-destructive"/>}
                         </div>
                          <div className="flex items-center gap-2 flex-wrap">
                             <label htmlFor="ex13-4" className="font-japanese text-lg">田中さん</label>
-                            <Input id="ex13-4" value={answers['ex13_4'] || ''} onChange={e => handleInputChange('ex13_4', e.target.value)} className="w-20 inline-block font-japanese" />
+                            <Input id="ex13_4" value={answers['ex13_4'] || ''} onChange={e => handleInputChange('ex13_4', e.target.value)} className="w-20 inline-block font-japanese" />
                              <label className="font-japanese text-lg">技師ですか。</label>
                              {results['ex13_4'] === false && <XCircle className="text-destructive"/>}
                         </div>
                          <div className="flex items-center gap-2 flex-wrap">
                             <label htmlFor="ex13-5" className="font-japanese text-lg">ご専門</label>
-                            <Input id="ex13-5" value={answers['ex13_5'] || ''} onChange={e => handleInputChange('ex13_5', e.target.value)} className="w-20 inline-block font-japanese" />
+                            <Input id="ex13_5" value={answers['ex13_5'] || ''} onChange={e => handleInputChange('ex13_5', e.target.value)} className="w-20 inline-block font-japanese" />
                              <label className="font-japanese text-lg">なんですか。</label>
                              {results['ex13_5'] === false && <XCircle className="text-destructive"/>}
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
                             <label htmlFor="ex13-6" className="font-japanese text-lg">お名前</label>
-                            <Input id="ex13-6" value={answers['ex13_6'] || ''} onChange={e => handleInputChange('ex13_6', e.target.value)} className="w-20 inline-block font-japanese" />
+                            <Input id="ex13_6" value={answers['ex13_6'] || ''} onChange={e => handleInputChange('ex13_6', e.target.value)} className="w-20 inline-block font-japanese" />
                              <label className="font-japanese text-lg">なんですか。</label>
                              {results['ex13_6'] === false && <XCircle className="text-destructive"/>}
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
                             <label className="font-japanese text-lg">あのかたは学生</label>
-                            <Input value={answers['ex13_7a'] || ''} onChange={e => handleInputChange('ex13_7a', e.target.value)} className="w-24 inline-block font-japanese" />
+                            <Input id="ex13_7a" value={answers['ex13_7a'] || ''} onChange={e => handleInputChange('ex13_7a', e.target.value)} className="w-24 inline-block font-japanese" />
                              <label className="font-japanese text-lg">、先生</label>
-                             <Input value={answers['ex13_7b'] || ''} onChange={e => handleInputChange('ex13_7b', e.target.value)} className="w-24 inline-block font-japanese" />
+                             <Input id="ex13_7b" value={answers['ex13_7b'] || ''} onChange={e => handleInputChange('ex13_7b', e.target.value)} className="w-24 inline-block font-japanese" />
                              <label className="font-japanese text-lg">。</label>
                               {results['ex13_7a'] === false && <XCircle className="text-destructive"/>}
                               {results['ex13_7b'] === false && <XCircle className="text-destructive"/>}
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
-                            <Input value={answers['ex13_8'] || ''} onChange={e => handleInputChange('ex13_8', e.target.value)} className="w-24 inline-block font-japanese" />
+                            <Input id="ex13_8" value={answers['ex13_8'] || ''} onChange={e => handleInputChange('ex13_8', e.target.value)} className="w-24 inline-block font-japanese" />
                              <label className="font-japanese text-lg">、学生です。</label>
                              {results['ex13_8'] === false && <XCircle className="text-destructive"/>}
                         </div>
                     </div>
                  </ExerciseCard>
+                
+                 <ExerciseCard title="Упражнение 14: Составьте вопросы" description="Придумайте вопросы, ответами на которые будут служить данные предложения.">
+                    <div className="space-y-4">
+                       <div>
+                           <Label>Ответ: 田中さんが学生です。</Label>
+                           <Input placeholder="Ваш вопрос..." value={answers['ex14_1'] || ''} onChange={(e) => handleInputChange('ex14_1', e.target.value)} className="font-japanese mt-1" />
+                           <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex14_1', 'だれが学生ですか。')}>Проверить</Button>
+                            {results['ex14_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex14_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                       </div>
+                        <div>
+                           <Label>Ответ: ご専門は文学です。</Label>
+                           <Input placeholder="Ваш вопрос..." value={answers['ex14_2'] || ''} onChange={(e) => handleInputChange('ex14_2', e.target.value)} className="font-japanese mt-1" />
+                           <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex14_2', 'ご専門はなんですか。')}>Проверить</Button>
+                           {results['ex14_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex14_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                       </div>
+                        <div>
+                           <Label>Ответ: はい、先生です。</Label>
+                           <Input placeholder="Ваш вопрос..." value={answers['ex14_3'] || ''} onChange={(e) => handleInputChange('ex14_3', e.target.value)} className="font-japanese mt-1" />
+                           <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex14_3', 'あなたは先生ですか。')}>Проверить</Button>
+                           {results['ex14_3'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex14_3'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                       </div>
+                    </div>
+                 </ExerciseCard>
 
-                <Card>
+                <ExerciseCard title="Упражнение 15: Составьте предложения" description="Используйте все слова и частицы, чтобы составить грамматически верные предложения.">
+                     <div className="space-y-4">
+                       <div>
+                           <Label>Слова: あのかた、は、学生、です</Label>
+                           <Input placeholder="Составьте предложение..." value={answers['ex15_1'] || ''} onChange={(e) => handleInputChange('ex15_1', e.target.value)} className="font-japanese mt-1" />
+                           <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex15_1', 'あのかたは学生です。')}>Проверить</Button>
+                           {results['ex15_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex15_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                       </div>
+                         <div>
+                           <Label>Слова: だれ、が、先生、ですか</Label>
+                           <Input placeholder="Составьте предложение..." value={answers['ex15_2'] || ''} onChange={(e) => handleInputChange('ex15_2', e.target.value)} className="font-japanese mt-1" />
+                           <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex15_2', 'だれが先生ですか。')}>Проверить</Button>
+                           {results['ex15_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex15_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                       </div>
+                    </div>
+                </ExerciseCard>
+
+                <ExerciseCard title="Упражнение 16: Ответьте на вопросы" canCheck={false} description="Это упражнение для самостоятельной практики. Попробуйте ответить на вопросы устно или письменно.">
+                    <ul className="list-disc list-inside space-y-2 font-japanese text-lg">
+                        <li>あなたは学生ですか。</li>
+                        <li>ご専門はなんですか。</li>
+                        <li>お名前はなんですか。</li>
+                        <li>あのかたはだれですか。</li>
+                        <li>先生のお名前はなんですか。</li>
+                    </ul>
+                </ExerciseCard>
+
+                <ExerciseCard title="Упражнение 17: Перевод диалогов" description="Переведите диалоги на японский язык.">
+                     <div className="space-y-6">
+                        <div>
+                            <p className="font-semibold">Диалог 1:</p>
+                            <p>- Вы - студентка? - Да, студентка.</p>
+                            <p>- Какая у вас специальность? - Японский язык.</p>
+                            <Input placeholder="Введите перевод..." value={answers['ex17_1'] || ''} onChange={(e) => handleInputChange('ex17_1', e.target.value)} className="font-japanese mt-1" />
+                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex17_1', 'あなたは学生ですか。はい、学生です。ご専門はなんですか。日本語です。')}>Проверить</Button>
+                            {results['ex17_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex17_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                        </div>
+                         <div>
+                            <p className="font-semibold">Диалог 2:</p>
+                            <p>- Извините, вы - Анна? - Да, Анна.</p>
+                             <Input placeholder="Введите перевод..." value={answers['ex17_2'] || ''} onChange={(e) => handleInputChange('ex17_2', e.target.value)} className="font-japanese mt-1" />
+                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex17_2', 'すみません、アンナさんですか。はい、アンナです。')}>Проверить</Button>
+                             {results['ex17_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex17_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                        </div>
+                    </div>
+                </ExerciseCard>
+
+                 <ExerciseCard title="Упражнение 18: Диалог" canCheck={false} description="Прочитайте и разберите диалог. Попробуйте воспроизвести его с партнером.">
+                     <div className="space-y-2">
+                        <p className="font-japanese text-lg">А: <InteractiveText analysis={dialogueAnalyses.hajimemashite} /> <InteractiveText analysis={dialogueAnalyses.tanaka_yoroshiku} /></p>
+                        <p className="font-japanese text-lg">Б: <InteractiveText analysis={dialogueAnalyses.anna_hajimemashite} /></p>
+                        <p className="font-japanese text-lg">А: <InteractiveText analysis={dialogueAnalyses.tanaka_kochira_koso} /> <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} /></p>
+                        <p className="font-japanese text-lg">Б: <InteractiveText analysis={grammarAnalyses.hai_soudesu} /> <InteractiveText analysis={grammarAnalyses.sorewanandesuka} /></p>
+                     </div>
+                 </ExerciseCard>
+
+
+                 <Card>
                     <CardHeader>
-                        <CardTitle>Полный набор из 29 упражнений находится в разработке</CardTitle>
-                        <CardDescription>Остальные упражнения (3-5, 14-29) будут добавлены в следующем обновлении. Спасибо за терпение!</CardDescription>
+                        <CardTitle>Остальные упражнения (19-29) находятся в разработке</CardTitle>
+                        <CardDescription>Они будут добавлены в следующем обновлении. Спасибо за терпение!</CardDescription>
                     </CardHeader>
                 </Card>
 
+                <div className="mt-8 flex justify-center">
+                    <Button size="lg" onClick={checkAll}><Repeat className="mr-2"/>Проверить все задания</Button>
+                </div>
             </div>
 
             <div className="mt-12 text-center flex flex-col items-center gap-4">
