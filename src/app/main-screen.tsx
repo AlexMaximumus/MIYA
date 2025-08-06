@@ -154,10 +154,10 @@ export default function MainScreen() {
           </div>
         )}
       </div>
-      <div className="w-full max-w-5xl grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+      <div className="w-full max-w-2xl grid grid-cols-1 gap-6">
         {isTeacherMode ? (
             <>
-                <Link href="/homework-generator" className="relative group col-span-2 md:col-span-4">
+                <Link href="/homework-generator" className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-400 to-primary rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
                     <CategoryCard
                         icon={<GraduationCap className="w-10 h-10 md:w-12 md:h-12" />}
@@ -166,7 +166,7 @@ export default function MainScreen() {
                         isSpecial
                     />
                 </Link>
-                 <div onClick={disableTeacherMode} className="cursor-pointer col-span-2 md:col-span-4">
+                 <div onClick={disableTeacherMode} className="cursor-pointer">
                     <CategoryCard
                         icon={<School className="w-10 h-10 md:w-12 md:h-12" />}
                         title="Стать балбесом"
@@ -176,7 +176,7 @@ export default function MainScreen() {
             </>
         ) : (
             <>
-                <Link href="/training" className="relative group col-span-2 md:col-span-4">
+                <Link href="/training" className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
                     <CategoryCard
                     icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
@@ -190,7 +190,7 @@ export default function MainScreen() {
                     />
                 </Link>
                 
-                <Link href="/lessons" className="col-span-2">
+                <Link href="/lessons">
                     <CategoryCard
                       icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
                       title="Уроки"
@@ -214,7 +214,7 @@ export default function MainScreen() {
                   />
                 </Link>
 
-                <Link href="/sentence-scramble" className="col-span-2 md:col-span-4">
+                <Link href="/sentence-scramble">
                     <CategoryCard
                       icon={<Gamepad2 className="w-10 h-10 md:w-12 md:h-12" />}
                       title="Собери фразу"
@@ -228,5 +228,3 @@ export default function MainScreen() {
     </div>
   );
 }
-
-    
