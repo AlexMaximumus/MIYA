@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, CheckCircle, XCircle, Share2, Mic2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Share2, Mic2, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
@@ -61,12 +61,14 @@ const kanjiList = [
 ];
 
 const exercises = [
-    { id: 'q1', type: 'multiple-choice', title: 'Вопрос 1: Ассимиляция', description: 'Что происходит в слове "発行" (хакко:)?', options: ['Прогрессивная ассимиляция', 'Регрессивная ассимиляция', 'Взаимная ассимиляция'], correctAnswer: 'Регрессивная ассимиляция' },
-    { id: 'q2', type: 'select-correct', title: 'Вопрос 2: Письменность', description: 'Какой знак используется только для обозначения винительного падежа?', options: ['わ', 'を', 'ん'], correctAnswer: 'を' },
-    { id: 'q3', type: 'select-correct', title: 'Вопрос 3: Иероглифы', description: 'Какой иероглиф означает "новый"?', options: ['聞', '終', '新'], correctAnswer: '新' },
-    { id: 'q4', type: 'fill-in-the-blank', title: 'Упражнение 4: Напишите хираганой', description: 'Напишите слово "annai" (информация, ведение) хираганой.', correctAnswer: 'あんない' },
-    { id: 'q5', type: 'construct', title: 'Упражнение 5: Соберите слово', description: 'Соберите слово "ryokou" (путешествие)', options: ['りょ', 'こ', 'う'], correctAnswer: 'りょこう' },
-    { id: 'q6', type: 'multiple-choice', title: 'Вопрос 6: Произношение ん', description: 'Как произносится ん в слове 新聞 (しんぶん)?', options: ['Как [н]', 'Как [м]', 'Как носовой [ñ]'], correctAnswer: 'Как [м]' },
+    { id: 'q1', type: 'reading', title: 'Упражнение 1: Чтение слов с ん (часть 1)', description: 'Прочтите вслух, обращая внимание на произношение ん перед [к], [г].', words: ['ОНГАКУ', 'БУНГАКУ', 'ТЭНКИ', 'ГЭНКИ', 'ГЭНКАН', 'НИНГЭН', 'ТАНГУЦУ'] },
+    { id: 'q2', type: 'reading', title: 'Упражнение 1: Чтение слов с ん (часть 2)', description: 'Прочтите вслух, обращая внимание на произношение ん ([м]) перед [м], [п], [б].', words: ['АММАРИ', 'СЭММОН', 'УММЭЙ', 'САМПО', 'СИМПО', 'СИМПАЙ', 'ДЗЭМБУ', 'СИМБУН'] },
+    { id: 'q3', type: 'reading', title: 'Упражнение 1: Чтение слов с ん (часть 3)', description: 'Прочтите вслух, обращая внимание на произношение ん ([н]) в остальных случаях.', words: ['КАНТАН', 'УНТЭН', 'КОНДО', 'БЭНРИ', 'КЭНРИ', 'ДАНТИ', 'АНДЗЭН', 'КАНДЗИ', 'ОННА'] },
+    { id: 'q4', type: 'construct', title: 'Упражнение 2: Напишите хираганой', description: 'Соберите слова из упражнения 1, используя знаки хираганы.', words: { 'おんがく': ['お', 'ん', 'が', 'く'], 'しんぶん': ['し', 'ん', 'ぶ', 'ん'], 'かんたん': ['か', 'ん', 'た', 'ん'] } },
+    { id: 'q5', type: 'reading', title: 'Упражнение 4: Удвоенные ん и ㅁ', description: 'Прочтите вслух, обращая внимание на произношение удвоенных звуков.', words: ['ТЭННЭН', 'ТЭННО:', 'АННАЙ', 'АММИН', 'БАННО:', 'ФУММАЦУ', 'ФУММАН', 'ХОННИН', 'КАННЭН', 'ОННА', 'СЭММОН', 'СЭННЮ:'] },
+    { id: 'q6', type: 'fill-in-the-blank', title: 'Упражнение 5: Напишите хираганой', description: 'Напишите слово "аннай" (информация, ведение) хираганой.', correctAnswer: 'あんない' },
+    { id: 'q7', type: 'reading', title: 'Упражнение 7: Ассимиляция', description: 'Прочтите примеры, обращая внимание на изменение звуков.', words: ['ДЭГУТИ', 'МОНОДЗУКИ', 'ХАККО:', 'БУМПО:', 'НИНДЗУ:', 'ИППО'] },
+    { id: 'q8', type: 'multiple-choice', title: 'Упражнение 7: Проверка знаний ассимиляции', description: 'Что происходит в слове "発行" (хацу + ко: → хакко:)?', options: ['Прогрессивная ассимиляция', 'Регрессивная ассимиляция', 'Взаимная ассимиляция'], correctAnswer: 'Регрессивная ассимиляция' },
 ];
 
 
@@ -80,32 +82,33 @@ const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }
 
 
 const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer }: {
-    exercise: typeof exercises[0],
+    exercise: { id: string, words: Record<string, string[]> },
     answers: Record<string, any>,
-    handleConstructAnswer: (questionId: string, word: string) => void,
-    resetConstructAnswer: (questionId: string) => void
+    handleConstructAnswer: (wordId: string, char: string) => void,
+    resetConstructAnswer: (wordId: string) => void
 }) => {
-    const { id, options } = exercise;
-    const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
-
-    useEffect(() => {
-        const stringOptions = options.map(o => typeof o === 'string' ? o : o.word);
-        setShuffledOptions([...stringOptions].sort(() => Math.random() - 0.5));
-    }, [options]);
-
     return (
-        <div className="space-y-4">
-            <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
-                {(answers[id] || []).join('')}
-            </div>
-            <div className="flex flex-wrap gap-2">
-                {shuffledOptions.map((word, index) => (
-                    <Button key={index} variant="outline" onClick={() => handleConstructAnswer(id, word)}>
-                        {word}
-                    </Button>
-                ))}
-            </div>
-            <Button variant="ghost" size="sm" onClick={() => resetConstructAnswer(id)}>Сбросить</Button>
+        <div className="space-y-6">
+            {Object.entries(exercise.words).map(([word, chars]) => {
+                const shuffledChars = [...chars].sort(() => Math.random() - 0.5);
+                const wordId = `${exercise.id}-${word}`;
+                return (
+                    <div key={wordId} className="space-y-2">
+                        <Label className="text-lg font-japanese">{word}</Label>
+                        <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
+                            {(answers[wordId] || []).join('')}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {shuffledChars.map((char, index) => (
+                                <Button key={index} variant="outline" onClick={() => handleConstructAnswer(wordId, char)}>
+                                    {char}
+                                </Button>
+                            ))}
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => resetConstructAnswer(wordId)}>Сбросить</Button>
+                    </div>
+                );
+            })}
         </div>
     );
 }
@@ -152,15 +155,15 @@ export default function PhoneticsLesson5Page() {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
     };
     
-    const handleConstructAnswer = (questionId: string, word: string) => {
+    const handleConstructAnswer = (wordId: string, char: string) => {
         setAnswers(prev => {
-            const currentAnswer = prev[questionId] || [];
-            return { ...prev, [questionId]: [...currentAnswer, word] };
+            const currentAnswer = prev[wordId] || [];
+            return { ...prev, [wordId]: [...currentAnswer, char] };
         });
     }
 
-    const resetConstructAnswer = (questionId: string) => {
-        setAnswers(prev => ({ ...prev, [questionId]: [] }));
+    const resetConstructAnswer = (wordId: string) => {
+        setAnswers(prev => ({ ...prev, [wordId]: [] }));
     }
 
     const checkAnswers = () => {
@@ -168,49 +171,69 @@ export default function PhoneticsLesson5Page() {
         exercises.forEach(ex => {
             let isCorrect = false;
             if (ex.type === 'construct') {
-                const userAnswer = (answers[ex.id] || []).join('');
-                isCorrect = userAnswer.trim() === (ex.correctAnswer as string).trim();
+                isCorrect = Object.entries(ex.words).every(([word, _]) => {
+                    const wordId = `${ex.id}-${word}`;
+                    const userAnswer = (answers[wordId] || []).join('');
+                    return userAnswer.trim() === word.trim();
+                });
             } else if (ex.type === 'fill-in-the-blank') {
                 isCorrect = (answers[ex.id] || '').toLowerCase() === ex.correctAnswer;
-            } else {
+            } else if (ex.type !== 'reading') {
                  isCorrect = answers[ex.id] === ex.correctAnswer;
             }
-            newResults[ex.id] = isCorrect;
+            if(ex.type !== 'reading') {
+                 newResults[ex.id] = isCorrect;
+            }
         });
         setResults(newResults);
         updateProgress(newResults);
+         try {
+            localStorage.setItem(`${LESSON_ID}-answers`, JSON.stringify(answers));
+        } catch (error) {
+            console.error("Failed to save answers to localStorage", error);
+        }
     };
 
     const renderExercise = (exercise: typeof exercises[0]) => {
-        const { id, type, title, description, options } = exercise;
+        const { id, type, title, description } = exercise;
         const result = results[id];
 
-        const baseCard = (content: React.ReactNode) => (
+        const baseCard = (content: React.ReactNode, footer?: React.ReactNode) => (
              <Card key={id} className="w-full">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent>{content}</CardContent>
-                <CardFooter>
-                     {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
-                     {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
-                </CardFooter>
+                {footer && <CardFooter>{footer}</CardFooter>}
             </Card>
         );
 
+        const footerContent = result !== null && (
+            result === true 
+            ? <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>
+            : <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>
+        );
+
         switch (type) {
-            case 'select-correct':
+             case 'reading':
+                return baseCard(
+                    <div className="flex flex-wrap gap-2">
+                        {exercise.words.map((word, index) => (
+                            <InteractiveText key={index} analysis={phoneticsAnalyses[word.toLowerCase().replace(':', '') as keyof typeof phoneticsAnalyses] || { sentence: [{ word, furigana: '', translation: '...', partOfSpeech: '...' }], fullTranslation: '...' }} />
+                        ))}
+                    </div>
+                );
             case 'multiple-choice':
                 return baseCard(
                     <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
-                        {(options as string[]).map(option => (
+                        {(exercise.options as string[]).map(option => (
                             <div key={option} className="flex items-center space-x-2">
                                 <RadioGroupItem value={option} id={`${id}-${option}`} />
                                 <Label htmlFor={`${id}-${option}`}>{option}</Label>
                             </div>
                         ))}
-                    </RadioGroup>
+                    </RadioGroup>, footerContent
                 );
             case 'fill-in-the-blank':
                 return baseCard(
@@ -218,16 +241,17 @@ export default function PhoneticsLesson5Page() {
                         value={answers[id] || ''}
                         onChange={(e) => handleAnswer(id, e.target.value)}
                         className="font-japanese text-lg"
-                    />
+                        placeholder="Введите ответ хираганой"
+                    />, footerContent
                 );
             case 'construct':
                 return baseCard(
                     <ExerciseConstruct 
-                        exercise={exercise}
+                        exercise={exercise as { id: string; words: Record<string, string[]>; } }
                         answers={answers}
                         handleConstructAnswer={handleConstructAnswer}
                         resetConstructAnswer={resetConstructAnswer}
-                    />
+                    />, footerContent
                 );
             default:
                 return null;
@@ -357,15 +381,33 @@ export default function PhoneticsLesson5Page() {
 
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
                 <div className="w-full max-w-4xl space-y-8 mt-8">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Инструкция к упражнениям</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            <p>Ниже представлены упражнения по материалам урока. Выполняйте их последовательно.</p>
+                            <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg">
+                                <Lightbulb className="w-5 h-5 text-blue-500" />
+                                <p className="text-sm text-blue-800">
+                                    Упражнения на <b className="font-semibold">чтение</b> не оцениваются автоматически. Их цель — ваша самостоятельная практика произношения. Используйте интерактивные подсказки для самопроверки.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {exercises.map(renderExercise)}
+
                 </div>
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
-                    <Button size="lg" asChild className="btn-gradient" disabled>
-                        <Link href="#">Перейти к следующим урокам →</Link>
+                    <Button size="lg" variant="default" onClick={checkAnswers}>Проверить выполненные задания</Button>
+                    <Button size="lg" asChild className="btn-gradient">
+                        <Link href="/grammar">Перейти к урокам грамматики →</Link>
                     </Button>
                 </div>
             </div>
         </div>
     );
 }
+
+    
