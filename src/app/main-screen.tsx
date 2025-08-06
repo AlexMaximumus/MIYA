@@ -154,10 +154,10 @@ export default function MainScreen() {
           </div>
         )}
       </div>
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="w-full max-w-5xl grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
         {isTeacherMode ? (
             <>
-                <Link href="/homework-generator" className="relative group md:col-span-2">
+                <Link href="/homework-generator" className="relative group col-span-2 md:col-span-4">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-400 to-primary rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
                     <CategoryCard
                         icon={<GraduationCap className="w-10 h-10 md:w-12 md:h-12" />}
@@ -166,7 +166,7 @@ export default function MainScreen() {
                         isSpecial
                     />
                 </Link>
-                 <div onClick={disableTeacherMode} className="cursor-pointer">
+                 <div onClick={disableTeacherMode} className="cursor-pointer col-span-2 md:col-span-4">
                     <CategoryCard
                         icon={<School className="w-10 h-10 md:w-12 md:h-12" />}
                         title="Стать балбесом"
@@ -175,75 +175,58 @@ export default function MainScreen() {
                 </div>
             </>
         ) : (
-            <Link href="/training" className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
-                <CategoryCard
-                icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
-                title="Тренировка дня"
-                description="Изучайте слова по системе интервальных повторений"
-                stats={[
-                    { label: "Изучено слов", value: learnedWords },
-                    { label: "К повторению", value: reviewCount }
-                ]}
-                isSpecial
-                />
-            </Link>
+            <>
+                <Link href="/training" className="relative group col-span-2 md:col-span-4">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
+                    <CategoryCard
+                    icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
+                    title="Тренировка дня"
+                    description="Изучайте слова по системе интервальных повторений"
+                    stats={[
+                        { label: "Изучено слов", value: learnedWords },
+                        { label: "К повторению", value: reviewCount }
+                    ]}
+                    isSpecial
+                    />
+                </Link>
+                
+                <Link href="/lessons" className="col-span-2">
+                    <CategoryCard
+                      icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
+                      title="Уроки"
+                      description="Грамматика, лексика и правила"
+                      color="bg-sky-100/60"
+                    />
+                </Link>
+                <Link href="/dictionary">
+                    <CategoryCard
+                      icon={<BookText className="w-10 h-10 md:w-12 md:h-12" />}
+                      title="Словарь"
+                      description="Ищите слова и создавайте тесты"
+                      color="bg-teal-100/50"
+                    />
+                </Link>
+                <Link href="/kana">
+                  <CategoryCard
+                    icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
+                    title="Кана"
+                    description="Азбуки и тесты на знание"
+                  />
+                </Link>
+
+                <Link href="/sentence-scramble" className="col-span-2 md:col-span-4">
+                    <CategoryCard
+                      icon={<Gamepad2 className="w-10 h-10 md:w-12 md:h-12" />}
+                      title="Собери фразу"
+                      description="Мини-игра на составление предложений"
+                      isAnimated
+                    />
+                </Link>
+            </>
         )}
-        <Link href="/kana">
-          <CategoryCard
-            icon={<PenLine className="w-10 h-10 md:w-12 md:h-12" />}
-            title="Кана"
-            description="Изучите и проверьте знание японских азбук"
-          />
-        </Link>
-        <Link href="/dictionary">
-          <CategoryCard
-            icon={<BookText className="w-10 h-10 md:w-12 md:h-12" />}
-            title="Словарь и Тесты"
-            description="Ищите слова и проверяйте свои знания"
-          />
-        </Link>
-        <Link href="/grammar">
-            <CategoryCard
-              icon={<Puzzle className="w-10 h-10 md:w-12 md:h-12" />}
-              title="Грамматика"
-              description="Освойте правила и структуры"
-              progress={grammarProgress}
-            />
-        </Link>
-        <Link href="/word-formation">
-            <CategoryCard
-              icon={<CaseUpper className="w-10 h-10 md:w-12 md:h-12" />}
-              title="Словообразование"
-              description="Изучите строение слов"
-              progress={wordFormationProgress}
-            />
-        </Link>
-         <Link href="/vocabulary">
-          <CategoryCard
-            icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
-            title="Лексика по урокам"
-            description="Тематические подборки слов"
-          />
-        </Link>
-         <Link href="/sentence-scramble">
-            <CategoryCard
-              icon={<Gamepad2 className="w-10 h-10 md:w-12 md:h-12" />}
-              title="Собери фразу"
-              description="Мини-игра на составление предложений"
-            />
-        </Link>
-        <div className="relative group">
-            <CategoryCard
-              icon={<MessageSquare className="w-10 h-10 md:w-12 md:h-12" />}
-              title="Диалоги"
-              description="Практикуйте общение в реальных ситуациях"
-            />
-            <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-not-allowed">
-              <span className="text-white text-lg font-bold bg-black/60 px-4 py-2 rounded-md">СКОРО</span>
-            </div>
-        </div>
       </div>
     </div>
   );
 }
+
+    

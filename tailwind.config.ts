@@ -121,6 +121,10 @@ export default {
           'from': { 'background-position': '0 0' },
           'to': { 'background-position': '-200% 0' },
         },
+        'fall': {
+            '0%': { transform: 'translateY(-100%)', opacity: '1' },
+            '100%': { transform: 'translateY(100vh)', opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -132,6 +136,7 @@ export default {
         'flip': 'flip 1s ease-in-out',
         'grayscale-in': 'grayscale-in 1s ease-out forwards',
         'background-shine': 'background-shine 2s linear infinite',
+        'fall': 'fall linear infinite',
       },
       backgroundSize: {
         '200%': '200% 100%',
@@ -140,3 +145,5 @@ export default {
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+    
