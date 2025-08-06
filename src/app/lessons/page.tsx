@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, BookCheck, CaseUpper, BookOpen, MessageSquare, Puzzle } from 'lucide-react';
 import LessonCard from '@/components/lesson-card';
 
