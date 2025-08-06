@@ -65,11 +65,16 @@ const ExerciseCard = ({ title, description, children, result, onCheck, canCheck 
     </Card>
 );
 
-const shuffleArray = (array: string[]) => [...array].sort(() => Math.random() - 0.5);
-
 const ReorderableSentence = ({ id, words, onComplete }: { id: string, words: string[], onComplete: (id: string, constructed: string[]) => void }) => {
-    const [items, setItems] = useState(() => shuffleArray(words));
+    const shuffleArray = (array: string[]) => [...array].sort(() => Math.random() - 0.5);
+
+    const [items, setItems] = useState(words);
     const [constructed, setConstructed] = useState<string[]>([]);
+
+    useEffect(() => {
+        setItems(shuffleArray(words));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleConstruct = (word: string) => {
         setConstructed(prev => {
@@ -140,12 +145,36 @@ export default function GrammarLesson1Page() {
         '3': 'あのかたは学生ではありません。先生です。',
         '4': '山田さんは先生ではありません。学生です。'
     };
+    
+    const correctAnswersEx3 = {
+        '1': 'わたしは学生です。名前はエシンです。',
+        '2': 'ともだちは学生ではありません。技師です。',
+        '3': '名前は田中です。',
+        '4': '山田さんは先生です。',
+        '5': 'あのかたは技師です。',
+        '6': '医者は山本さんです。',
+        '7': 'あのかたは先生です。ご専門は日本語です。',
+        '8': 'カシンさんは技師ではありません。医者です。',
+    };
 
     const correctAnswersEx4 = {
         '1': ['はい、先生です。'],
         '2': ['はい、医者です。'],
         '3': ['はい、学生です。'],
         '4': ['はい、技師です。'],
+    };
+    
+    const correctAnswersEx5 = {
+        '1': ['あなたは先生ですか。はい、先生です。', 'あなたは先生ですか。はい。'],
+        '2': ['あなたは学生ですか。いいえ、学生ではありません。先生です。'],
+        '3': ['あなたは医者ですか。いいえ、医者ではありません。技師です。'],
+        '4': ['ご専門は文学ですか。はい、文学です。'],
+        '5': ['田中さんは技師ですか。いいえ、技師ではありません。学生です。'],
+        '6': ['あなたは技師ですか。はい。'],
+        '7': ['あなたは医者ですか。いいえ。'],
+        '8': ['あのかたは先生ですか。はい、先生です。'],
+        '9': ['田中さんは学生ですか。はい、学生です。ご専門は歴史です。'],
+        '10': ['あなたは田中さんですか。いいえ、田中ではありません。山田です。']
     };
 
     const correctAnswersEx6 = {
@@ -160,6 +189,15 @@ export default function GrammarLesson1Page() {
         '5': 'お名前はアンナです。',
     };
 
+    const correctAnswersEx8 = {
+        '1': 'ご専門はなんですか。日本語です。',
+        '2': 'あのかたはだれですか。カシンさんです。',
+        '3': '学生はだれですか。山本さんです。ご専門は経済です。',
+        '4': 'お名前はなんですか。アンナです。',
+        '5': 'あのかたはだれですか。田中さんです。',
+        '6': '先生はだれですか。山田先生です。',
+    };
+
     const correctAnswersEx11 = {
         '1': 'わたしは医者ですか、先生ですか。',
         '2': '田中さんは技師ですか、医者ですか。',
@@ -167,6 +205,15 @@ export default function GrammarLesson1Page() {
         '4': '山田さんは先生ですか、学生ですか。'
     };
     
+    const correctAnswersEx12 = {
+        '1': 'あのかたは学生ですか、先生ですか。',
+        '2': 'カシンさんは医者ですか、技師ですか。',
+        '3': '山田さんは先生ですか、学生ですか。先生です。',
+        '4': 'ご専門は文学ですか、歴史ですか。歴史です。',
+        '5': 'ご専門は日本語ですか、文学ですか。文学です。',
+        '6': '田中さんは学生ですか、先生ですか。学生です。'
+    };
+
     const correctAnswersEx13 = {
         '1': 'は', '2': 'が', '3': 'は', '4': 'は', '5': 'は', '6': 'は', '7a': 'ですか', '7b': 'ですか', '8': 'はい'
     };
@@ -180,17 +227,17 @@ export default function GrammarLesson1Page() {
     };
 
     const correctAnswersEx15 = {
-        '1': 'あのかたは学生です。',
-        '2': 'だれが先生ですか。',
-        '3': 'わたしは医者ではありません。',
-        '4': '田中さんは技師ですか、学生ですか。'
+        '1': 'あのかたは学生です',
+        '2': 'だれが先生ですか',
+        '3': 'わたしは医者ではありません',
+        '4': '田中さんは技師ですか、学生ですか'
     };
-    
+
     const correctAnswersEx17 = {
         '1': 'あなたは学生ですか。はい、学生です。ご専門はなんですか。日本語です。',
-        '2': 'すみません、アンナさんですか。はい、アンнаです。ご専門は歴史ですか、文学ですか。文学です。',
-        '3': 'すみません、お名前は。田中です。あなたは学生ですか。はい、学生です。先生はだれですか。先生は山田です。',
-        '4': 'インナです。よろしくお願いします。山田です。こちらこそよろしくお願いします。あなたは学生ですか。はい、学生です。ご専門は。日本語です。'
+        '2': 'すみません、アンナさんですか。はい、アンナです。ご専門は歴史ですか、文学ですか。文学です。',
+        '3': 'すみません、お名前は。田中です。あなたは学生ですか。はい、学生です。先生はだれですか。山田先生です。',
+        '4': 'わたしはインナです。どうぞよろしくお願いします。山田です。こちらこそよろしくお願いします。あなたは学生ですか。はい、学生です。ご専門は。日本語です。'
     };
 
 
@@ -211,10 +258,9 @@ export default function GrammarLesson1Page() {
             </div>
             <Card className="w-full mb-8">
                 <CardHeader>
-                    <p className="text-sm text-primary font-semibold">Урок 6 — Грамматика</p>
+                    <p className="text-sm text-primary font-semibold">Урок 1 (из учебника урок 6) — Грамматика</p>
                     <CardTitle className="text-2xl md:text-3xl">Части речи и грамматические основы</CardTitle>
-                    <CardDescription>Прогресс по теме (упражнения будут в следующем обновлении):</CardDescription>
-                    <Progress value={progress} className="mt-2" />
+                    <CardDescription>В этом уроке мы заложим фундамент: разберем части речи, структуру простого предложения, связку です и вопросительные частицы. Это основа, на которой строится весь японский язык.</CardDescription>
                 </CardHeader>
             </Card>
 
@@ -227,10 +273,10 @@ export default function GrammarLesson1Page() {
                              <AccordionItem value="g-1">
                                 <AccordionTrigger className="text-xl font-semibold">§1. Части речи</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                                    <p>В японском языке есть слова знаменательные и незнаменательные.</p>
+                                    <p>В японском языке слова делятся на <b>знаменательные</b> (самостоятельные) и <b>незнаменательные</b> (служебные).</p>
                                     <ul className="list-disc list-inside space-y-2">
                                         <li><b>Знаменательные:</b> существительные, глаголы, прилагательные, местоимения, числительные, наречия.</li>
-                                        <li><b>Незнаменательные (служебные):</b> послелоги, союзы, частицы, связки.</li>
+                                        <li><b>Незнаменательные:</b> послелоги, союзы, частицы, связки.</li>
                                         <li><b>Междометия</b> стоят особняком.</li>
                                     </ul>
                                 </AccordionContent>
@@ -454,18 +500,27 @@ export default function GrammarLesson1Page() {
 
                 <ExerciseCard title="Упражнение 3: Перевод на японский">
                      <div className="space-y-4">
-                        <div>
-                            <Label>Я студент. Фамилия - Есин.</Label>
-                            <Input value={answers['ex3_1'] || ''} onChange={e => handleInputChange('ex3_1', e.target.value)} className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex3_1', 'わたしは学生です。名前はエシンです。')}>Проверить</Button>
-                            {results['ex3_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex3_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
-                        <div>
-                            <Label>(Мой) товарищ не студент. Он инженер.</Label>
-                            <Input value={answers['ex3_2'] || ''} onChange={e => handleInputChange('ex3_2', e.target.value)} className="font-japanese mt-1" />
-                            <Button size="sm" className="mt-2" onClick={() => checkAnswer('ex3_2', 'ともだちは学生ではありません。技師です。')}>Проверить</Button>
-                            {results['ex3_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results['ex3_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
-                        </div>
+                        {Object.entries(correctAnswersEx3).map(([key, correctAnswer]) => {
+                             const questionText = {
+                                '1': 'Я студент. Фамилия - Есин.',
+                                '2': '(Мой) товарищ не студент. Он инженер.',
+                                '3': '(Его) фамилия - Танака.',
+                                '4': 'Ямада - преподаватель.',
+                                '5': 'Он инженер.',
+                                '6': 'Врач - Ямамото.',
+                                '7': 'Он преподаватель. Специальность - японский язык.',
+                                '8': 'Кашин не инженер. Он врач.',
+                            }[key]!;
+                            const id = `ex3_${key}`;
+                            return (
+                                <div key={id}>
+                                    <Label>{questionText}</Label>
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} className="font-japanese mt-1" />
+                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswer)}>Проверить</Button>
+                                    {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                                </div>
+                            )
+                        })}
                      </div>
                 </ExerciseCard>
                 
@@ -482,7 +537,7 @@ export default function GrammarLesson1Page() {
                             return (
                                 <div key={id}>
                                     <Label className="font-japanese">{questionText}</Label>
-                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} placeholder="Введите ответ (はい,...)" className="font-japanese mt-1" />
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} placeholder="Введите вопрос и ответ (はい,...)" className="font-japanese mt-1" />
                                     <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswers)}>Проверить</Button>
                                     {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
                                 </div>
@@ -492,7 +547,31 @@ export default function GrammarLesson1Page() {
                 </ExerciseCard>
 
                 <ExerciseCard title="Упражнение 5: Перевод вопросов и ответов">
-                    <p>Это упражнение для самостоятельной практики перевода.</p>
+                     <div className="space-y-4">
+                        {Object.entries(correctAnswersEx5).map(([key, correctAnswers]) => {
+                             const questionText = {
+                                '1': '(Вы) преподаватель? - Да, я преподаватель.',
+                                '2': '(Вы) студент? - Нет, я не студент. Я преподаватель.',
+                                '3': '(Вы) врач? - Нет, я не врач. Я инженер.',
+                                '4': '(Ваша) специальность литература? - Да, литература.',
+                                '5': 'Танака - инженер? - Нет, Танака не инженер. Он студент.',
+                                '6': '(Вы) инженер? - Да.',
+                                '7': '(Вы) врач? - Нет.',
+                                '8': 'Он преподаватель? - Да, преподаватель.',
+                                '9': 'Танака - студент? - Да, студент. Специальность - история.',
+                                '10': '(Вы) Танака? - Нет, я не Танака. Я - Ямада.',
+                            }[key]!;
+                            const id = `ex5_${key}`;
+                            return (
+                                <div key={id}>
+                                    <Label>{questionText}</Label>
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} className="font-japanese mt-1" />
+                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswers)}>Проверить</Button>
+                                    {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                                </div>
+                            )
+                        })}
+                     </div>
                 </ExerciseCard>
 
                 <ExerciseCard title="Упражнение 6: Вопросительные местоимения" description="Заполните пропуски, вставив だれ, なに или なん.">
@@ -521,7 +600,7 @@ export default function GrammarLesson1Page() {
                         })}
                      </div>
                 </ExerciseCard>
-
+                
                 <ExerciseCard title="Упражнение 7: Ответы на вопросы" description="Ответьте на вопросы, используя слово в скобках. Пример: だれが学生ですか。(田中) → 田中さんが学生です。">
                     <div className="space-y-4">
                         {Object.entries(correctAnswersEx7).map(([key, correctAnswer]) => {
@@ -546,15 +625,35 @@ export default function GrammarLesson1Page() {
                 </ExerciseCard>
 
                 <ExerciseCard title="Упражнение 8: Перевод" canCheck={false}>
-                     <p>Это упражнение для самостоятельной практики перевода.</p>
+                    <div className="space-y-4">
+                        {Object.entries(correctAnswersEx8).map(([key, correctAnswer]) => {
+                             const questionText = {
+                                '1': '(У вас) какая специальность? - Японский язык.',
+                                '2': 'Он кто? - Он - Кашин.',
+                                '3': 'Студент - кто? - Студент - Ямамото. Специальность - экономика.',
+                                '4': 'Как вас зовут? - Я - Анна.',
+                                '5': 'Он кто (по фамилии)? - Он - Танака.',
+                                '6': 'Преподаватель - кто? - Преподаватель - Ямада.',
+                            }[key]!;
+                            const id = `ex8_${key}`;
+                            return (
+                                <div key={id}>
+                                    <Label>{questionText}</Label>
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} className="font-japanese mt-1" />
+                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswer)}>Проверить</Button>
+                                    {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                                </div>
+                            )
+                        })}
+                     </div>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 9: Задайте вопросы" canCheck={false} description="Это упражнение подразумевает работу с рисунками. Задайте вопрос к воображаемому рисунку человека: あのかたはだれですか。">
-                    <p className='text-sm text-muted-foreground'>Представьте, что видите человека. Задайте вопрос.</p>
+                <ExerciseCard title="Упражнение 9: Задайте вопросы" canCheck={false} description="Вместо рисунка представьте ситуацию: вы видите незнакомого вам человека. Задайте вопрос о том, кто это.">
+                    <p className='text-sm text-muted-foreground'>Правильный ответ: <InteractiveText analysis={{sentence: [{word: 'あのかた', furigana:'あのかた', translation: 'тот человек', partOfSpeech: 'местоимение'}, {word: 'は', furigana:'は', translation: 'частица', partOfSpeech: 'частица'}, {word: 'だれ', furigana:'だれ', translation: 'кто', partOfSpeech: 'местоимение'}, {word: 'ですか', furigana:'ですか', translation: '?', partOfSpeech: 'связка'}], fullTranslation: 'Кто тот человек?'}} /></p>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 10: Альтернативные вопросы" canCheck={false} description="Это упражнение подразумевает работу с рисунками. Задайте альтернативный вопрос к воображаемому рисунку: あのかたは先生ですか、学生ですか。">
-                     <p className='text-sm text-muted-foreground'>Представьте, что выбираете между двумя профессиями. Задайте вопрос.</p>
+                <ExerciseCard title="Упражнение 10: Альтернативные вопросы" canCheck={false} description="Вместо рисунка представьте ситуацию: вы не уверены, является ли человек преподавателем или студентом. Задайте альтернативный вопрос.">
+                     <p className='text-sm text-muted-foreground'>Правильный ответ: <InteractiveText analysis={grammarAnalyses.anokata_wa_sensei_desuka_gakusei_desuka} /></p>
                 </ExerciseCard>
 
                 <ExerciseCard title="Упражнение 11: Альтернативные вопросы" description="Дополните предложения, превратив их в альтернативные вопросы.">
@@ -580,9 +679,29 @@ export default function GrammarLesson1Page() {
                 </ExerciseCard>
 
                 <ExerciseCard title="Упражнение 12: Перевод" canCheck={false}>
-                    <p>Это упражнение для самостоятельной практики перевода.</p>
+                    <div className="space-y-4">
+                        {Object.entries(correctAnswersEx12).map(([key, correctAnswer]) => {
+                             const questionText = {
+                                '1': 'Он студент или преподаватель?',
+                                '2': 'Кашин - врач или инженер?',
+                                '3': 'Ямада - преподаватель или студент? - Преподаватель.',
+                                '4': '(Ваша) специальность литература или история? - История.',
+                                '5': '(Его) специальность японский язык или литература? - Литература.',
+                                '6': 'Танака - студент или преподаватель? - Студент.',
+                            }[key]!;
+                            const id = `ex12_${key}`;
+                            return (
+                                <div key={id}>
+                                    <Label>{questionText}</Label>
+                                    <Input value={answers[id] || ''} onChange={e => handleInputChange(id, e.target.value)} className="font-japanese mt-1" />
+                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(id, correctAnswer)}>Проверить</Button>
+                                    {results[id] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>} {results[id] === false && <XCircle className="text-destructive inline-block ml-2"/>}
+                                </div>
+                            )
+                        })}
+                     </div>
                 </ExerciseCard>
-                
+
                 <ExerciseCard title="Упражнение 13: Частицы и связки" description="Заполните пропуски соответствующими словами или грамматическими показателями.">
                     <div className="space-y-4">
                         {Object.entries(correctAnswersEx13).map(([key, correctAnswer]) => {
@@ -710,5 +829,6 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
+
 
 

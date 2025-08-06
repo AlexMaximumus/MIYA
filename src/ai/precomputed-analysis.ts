@@ -560,7 +560,7 @@ export const grammarAnalyses = {
             { word: "山田さん", furigana: "やまださん", translation: "г-н Ямада", partOfSpeech: "имя собственное" },
             { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
             { word: "先生", furigana: "せんせい", translation: "учитель", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Господин Ямада — учитель."
     },
@@ -569,7 +569,7 @@ export const grammarAnalyses = {
             { word: "中山さん", furigana: "なかやまさん", translation: "г-н Накаяма", partOfSpeech: "имя собственное" },
             { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
             { word: "医者", furigana: "いしゃ", translation: "врач", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
+            { word: "です", furigana: "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Господин Накаяма — врач."
     },
@@ -578,25 +578,25 @@ export const grammarAnalyses = {
             { word: "山本さん", furigana: "やまもとさん", translation: "г-н Ямамото", partOfSpeech: "имя собственное" },
             { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
             { word: "技師", furigana: "ぎし", translation: "инженер", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
+            { word: "です", furigana: "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Господин Ямамото — инженер."
     },
     gosenmon_wa_bungaku_desu: {
         sentence: [
             { word: "ご専門", furigana: "ごせんもん", translation: "специальность", partOfSpeech: "существительное" },
-            { word: "は", furigana: "は", translation: "частица (тема)", partOfSpeech: "частица (тема)" },
+            { word: "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
             { word: "文学", furigana: "ぶんがく", translation: "литература", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+            { word: "です", furigana: "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Специальность — литература."
     },
     onamae_wa_anna_desu: {
         sentence: [
             { word: "お名前", furigana: "おなまえ", translation: "имя", partOfSpeech: "существительное" },
-            { word: "は", furigana: "は", translation: "частица (тема)", partOfSpeech: "частица (тема)" },
+            { word: "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
             { word: "アンナ", furigana: "アンナ", translation: "Анна", partOfSpeech: "имя собственное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
+            { word: "です", furigana: "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Имя — Анна."
     }
@@ -821,3 +821,4 @@ export const dialogueAnalyses = {
     
 
     
+

@@ -51,7 +51,7 @@ export default function GrammarLesson2Page() { // Changed name
             </div>
             <Card className="w-full mb-8">
                 <CardHeader>
-                    <p className="text-sm text-primary font-semibold">Урок 7 — Грамматика</p>
+                    <p className="text-sm text-primary font-semibold">Урок 2 — Грамматика</p>
                     <CardTitle className="text-2xl md:text-3xl">Тема в разработке...</CardTitle>
                     <CardDescription>Содержимое этого урока будет добавлено в следующих обновлениях.</CardDescription>
                     <Progress value={0} className="mt-2" />
@@ -67,4 +67,5 @@ export default function GrammarLesson2Page() { // Changed name
     </div>
   );
 }
+
 
