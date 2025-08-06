@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Reorder } from 'framer-motion';
 
 
 const LESSON_ID = 'grammar-lesson-1';
@@ -49,16 +50,17 @@ const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }
    </div>
 );
 
-const ExerciseCard = ({ title, description, children, result }: { title: string; description?: string; children: React.ReactNode; result?: boolean | null }) => (
+const ExerciseCard = ({ title, description, children, result, onCheck, canCheck = true }: { title: string; description?: React.ReactNode; children: React.ReactNode; result?: boolean | null; onCheck?: () => void, canCheck?: boolean }) => (
     <Card>
         <CardHeader>
             <CardTitle>{title}</CardTitle>
             {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
         <CardContent>{children}</CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col items-start gap-4">
+            {onCheck && canCheck && <Button onClick={onCheck}>Проверить</Button>}
             {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
-            {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
+            {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка. Попробуйте снова.</span>}
         </CardFooter>
     </Card>
 );
@@ -82,34 +84,41 @@ export default function GrammarLesson1Page() {
         setAnswers(prev => ({ ...prev, [id]: value }));
     };
 
-    const checkAnswers = () => {
-        const newResults: Record<string, boolean | null> = {};
-        
-        // Ex 2
-        newResults['ex2_1'] = answers['ex2_1'] === 'わたしは先生ではありません。学生です。';
-        newResults['ex2_2'] = answers['ex2_2'] === '田中さんは医者ではありません。技師です。';
-        newResults['ex2_3'] = answers['ex2_3'] === 'あのかたは学生ではありません。先生です。';
-        newResults['ex2_4'] = answers['ex2_4'] === '山田さんは先生ではありません。学生です。';
-        
-        // Ex 6
-        newResults['ex6_1'] = answers['ex6_1'] === 'だれ';
-        newResults['ex6_2'] = answers['ex6_2'] === 'なん';
-        newResults['ex6_3'] = answers['ex6_3'] === 'なん';
-        newResults['ex6_4'] = answers['ex6_4'] === 'だれ';
-        newResults['ex6_5'] = answers['ex6_5'] === 'なに';
+    const checkAnswer = (id: string, correctAnswer: string) => {
+        const userAnswer = (answers[id] || '').trim().replace(/。/g, '');
+        const isCorrect = userAnswer === correctAnswer.replace(/。/g, '');
+        setResults(prev => ({ ...prev, [id]: isCorrect }));
+    };
 
-        // Ex 13
-        newResults['ex13_1'] = answers['ex13_1'] === 'は';
-        newResults['ex13_2'] = answers['ex13_2'] === 'が';
-        newResults['ex13_3'] = answers['ex13_3'] === 'は';
-        newResults['ex13_4'] = answers['ex13_4'] === 'は';
-        newResults['ex13_5'] = answers['ex13_5'] === 'は';
-        newResults['ex13_6'] = answers['ex13_6'] === 'は';
-        newResults['ex13_7'] = answers['ex13_7'] === 'です' && answers['ex13_7b'] === 'か';
-        newResults['ex13_8'] = answers['ex13_8'] === 'はい';
+    const checkMultiple = (idPrefix: string, correctAnswers: Record<string, string>) => {
+        const newResults: Record<string, boolean> = {};
+        let allCorrect = true;
+        for (const key in correctAnswers) {
+            const fullId = `${idPrefix}_${key}`;
+            const isCorrect = (answers[fullId] || '').trim().replace(/。/g, '') === correctAnswers[key].replace(/。/g, '');
+            newResults[fullId] = isCorrect;
+            if (!isCorrect) allCorrect = false;
+        }
+        setResults(prev => ({ ...prev, ...newResults, [idPrefix]: allCorrect }));
+    };
 
-        setResults(newResults);
-        // ... progress calculation could be added here
+    const correctAnswersEx2 = {
+        '1': 'わたしは先生ではありません。学生です。',
+        '2': '田中さんは医者ではありません。技師です。',
+        '3': 'あのかたは学生ではありません。先生です。',
+        '4': '山田さんは先生ではありません。学生です。'
+    };
+    
+    const correctAnswersEx6 = {
+        '1': 'だれ',
+        '2': 'なん',
+        '3': 'なん',
+        '4': 'だれ',
+        '5': 'なに'
+    };
+
+     const correctAnswersEx13 = {
+        '1': 'は', '2': 'が', '3': 'は', '4': 'は', '5': 'は', '6': 'は', '7a': 'です', '7b': 'か', '8': 'はい'
     };
 
   return (
@@ -137,9 +146,7 @@ export default function GrammarLesson1Page() {
             </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
-            <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4" defaultValue={['item-grammar']}>
-                
-                {/* ГРАММАТИКА */}
+             <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4" defaultValue={['item-grammar']}>
                 <AccordionItem value="item-grammar">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
@@ -154,8 +161,8 @@ export default function GrammarLesson1Page() {
                                     </ul>
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="g-2">
-                                <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное</AccordionTrigger>
+                             <AccordionItem value="g-2">
+                                <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное и Основный падеж</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
                                     <p>У существительных нет рода и числа. Они изменяются по 11 падежам с помощью суффиксов. Основной падеж (бессуффиксальный) употребляется в нескольких случаях:</p>
                                     <Card className="bg-card/70 mt-4">
@@ -194,7 +201,7 @@ export default function GrammarLesson1Page() {
                                     </Card>
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="g-4">
+                           <AccordionItem value="g-4">
                                 <AccordionTrigger className="text-xl font-semibold">§4. Простое предложение и связка です</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
                                     <p>Связка です (desu) используется в настояще-будущем времени. Отрицательная форма: ではありません (dewa arimasen).</p>
@@ -256,8 +263,6 @@ export default function GrammarLesson1Page() {
                         </Accordion>
                     </AccordionContent>
                 </AccordionItem>
-
-                {/* СЛОВООБРАЗОВАНИЕ */}
                 <AccordionItem value="item-word-formation">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
                      <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
@@ -270,8 +275,6 @@ export default function GrammarLesson1Page() {
                         </ul>
                     </AccordionContent>
                 </AccordionItem>
-
-                {/* ИНТОНАЦИЯ */}
                 <AccordionItem value="item-intonation">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Интонация</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
@@ -290,8 +293,6 @@ export default function GrammarLesson1Page() {
                         </div>
                     </AccordionContent>
                 </AccordionItem>
-                
-                 {/* ПИСЬМЕННОСТЬ */}
                  <AccordionItem value="item-writing">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Письменность</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
@@ -345,8 +346,8 @@ export default function GrammarLesson1Page() {
             
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
             <div className="w-full max-w-4xl space-y-8 mt-8">
-                 {/* Упражнение 1 */}
-                <ExerciseCard title="Упражнение 1: Интонация" description="Прочтите вслух, обращая внимание на интонацию.">
+                
+                <ExerciseCard title="Упражнение 1: Интонация" canCheck={false} description="Прочтите вслух, обращая внимание на интонацию.">
                     <div className="space-y-4">
                         <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesu} />
                         <InteractiveText analysis={grammarAnalyses.anokatawagakuseidehaarimasen} />
@@ -356,95 +357,143 @@ export default function GrammarLesson1Page() {
                     </div>
                 </ExerciseCard>
                 
-                 {/* Упражнение 2 */}
-                <ExerciseCard title="Упражнение 2: Отрицательная форма" description="Скажите предложения в отрицательной форме и добавьте правильный вариант. Пример: あのひとは学生ではありません。先生です。" result={results['ex2_1'] && results['ex2_2'] && results['ex2_3'] && results['ex2_4']}>
+                <ExerciseCard title="Упражнение 2: Отрицательная форма" onCheck={() => checkMultiple('ex2', correctAnswersEx2)} result={results['ex2']} description="Скажите предложения в отрицательной форме и добавьте правильный вариант. Пример: あのひとは学生ではありません。先生です。">
                     <div className="space-y-4">
                         <div>
                             <Label>わたしは先生です。(学生)</Label>
-                            <Input value={answers['ex2_1'] || ''} onChange={e => handleInputChange('ex2_1', e.target.value)} placeholder="Введите ответ..." />
+                            <Input value={answers['ex2_1'] || ''} onChange={e => handleInputChange('ex2_1', e.target.value)} placeholder="Введите ответ..." className="font-japanese" />
+                            {results['ex2_1'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>}
+                            {results['ex2_1'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
                         </div>
                          <div>
                             <Label>田中さんは医者です。(技師)</Label>
-                            <Input value={answers['ex2_2'] || ''} onChange={e => handleInputChange('ex2_2', e.target.value)} placeholder="Введите ответ..." />
+                            <Input value={answers['ex2_2'] || ''} onChange={e => handleInputChange('ex2_2', e.target.value)} placeholder="Введите ответ..." className="font-japanese"/>
+                             {results['ex2_2'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>}
+                            {results['ex2_2'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
                         </div>
                          <div>
                             <Label>あのかたは学生です。(先生)</Label>
-                            <Input value={answers['ex2_3'] || ''} onChange={e => handleInputChange('ex2_3', e.target.value)} placeholder="Введите ответ..." />
+                            <Input value={answers['ex2_3'] || ''} onChange={e => handleInputChange('ex2_3', e.target.value)} placeholder="Введите ответ..." className="font-japanese"/>
+                             {results['ex2_3'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>}
+                            {results['ex2_3'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
                         </div>
                          <div>
                             <Label>山田さんは先生です。(学生)</Label>
-                            <Input value={answers['ex2_4'] || ''} onChange={e => handleInputChange('ex2_4', e.target.value)} placeholder="Введите ответ..." />
+                            <Input value={answers['ex2_4'] || ''} onChange={e => handleInputChange('ex2_4', e.target.value)} placeholder="Введите ответ..." className="font-japanese"/>
+                             {results['ex2_4'] === true && <CheckCircle className="text-green-500 inline-block ml-2"/>}
+                            {results['ex2_4'] === false && <XCircle className="text-destructive inline-block ml-2"/>}
                         </div>
                     </div>
                 </ExerciseCard>
 
-                {/* Упражнение 6 */}
-                <ExerciseCard title="Упражнение 6: Вопросительные местоимения" description="Заполните пропуски, вставив だれ, なに или なん.">
+                <ExerciseCard title="Упражнение 6: Вопросительные местоимения" onCheck={() => checkMultiple('ex6', correctAnswersEx6)} result={results['ex6']} description="Заполните пропуски, вставив だれ, なに или なん.">
                      <div className="space-y-4">
                         <div>
-                            <Label>あのかたは（<b className="text-primary">?</b>）ですか。</Label>
+                            <Label className="font-japanese text-lg">あのかたは（<b className="text-primary">?</b>）ですか。</Label>
                              <RadioGroup value={answers['ex6_1']} onValueChange={(val) => handleInputChange('ex6_1', val)} className="flex gap-4 mt-2">
                                 <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-1-1" /><Label htmlFor="q6-1-1">だれ</Label></div>
                                 <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-1-2" /><Label htmlFor="q6-1-2">なに</Label></div>
                                 <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-1-3" /><Label htmlFor="q6-1-3">なん</Label></div>
                             </RadioGroup>
+                            {results['ex6_1'] === false && <p className="text-destructive text-sm mt-1">Неверно.</p>}
                         </div>
                          <div>
-                            <Label>ご専門は（<b className="text-primary">?</b>）ですか。</Label>
+                            <Label className="font-japanese text-lg">ご専門は（<b className="text-primary">?</b>）ですか。</Label>
                              <RadioGroup value={answers['ex6_2']} onValueChange={(val) => handleInputChange('ex6_2', val)} className="flex gap-4 mt-2">
                                 <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-2-1" /><Label htmlFor="q6-2-1">だれ</Label></div>
                                 <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-2-2" /><Label htmlFor="q6-2-2">なに</Label></div>
                                 <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-2-3" /><Label htmlFor="q6-2-3">なん</Label></div>
                             </RadioGroup>
-                        </div>
-                        {/* ... more questions ... */}
-                     </div>
-                </ExerciseCard>
-
-                {/* Упражнение 13 */}
-                 <ExerciseCard title="Упражнение 13: Частицы и связки" description="Заполните пропуски соответствующими словами или грамматическими показателями.">
-                    <div className="space-y-2">
-                        <div>
-                            <Label className="font-japanese text-lg">あのかた（&nbsp;?&nbsp;）学生です。</Label>
-                            <Input value={answers['ex13_1'] || ''} onChange={e => handleInputChange('ex13_1', e.target.value)} className="w-24 inline-block mx-2" />
+                             {results['ex6_2'] === false && <p className="text-destructive text-sm mt-1">Неверно.</p>}
                         </div>
                         <div>
-                            <Label className="font-japanese text-lg">だれ（&nbsp;?&nbsp;）先生ですか。</Label>
-                             <Input value={answers['ex13_2'] || ''} onChange={e => handleInputChange('ex13_2', e.target.value)} className="w-24 inline-block mx-2" />
+                            <Label className="font-japanese text-lg">お名前は（<b className="text-primary">?</b>）ですか。</Label>
+                             <RadioGroup value={answers['ex6_3']} onValueChange={(val) => handleInputChange('ex6_3', val)} className="flex gap-4 mt-2">
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-3-1" /><Label htmlFor="q6-3-1">だれ</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-3-2" /><Label htmlFor="q6-3-2">なに</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-3-3" /><Label htmlFor="q6-3-3">なん</Label></div>
+                            </RadioGroup>
+                             {results['ex6_3'] === false && <p className="text-destructive text-sm mt-1">Неверно.</p>}
                         </div>
                         <div>
-                            <Label className="font-japanese text-lg">わたし（&nbsp;?&nbsp;）医者ではありません。</Label>
-                             <Input value={answers['ex13_3'] || ''} onChange={e => handleInputChange('ex13_3', e.target.value)} className="w-24 inline-block mx-2" />
+                            <Label className="font-japanese text-lg">（<b className="text-primary">?</b>）が学生ですか。</Label>
+                             <RadioGroup value={answers['ex6_4']} onValueChange={(val) => handleInputChange('ex6_4', val)} className="flex gap-4 mt-2">
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-4-1" /><Label htmlFor="q6-4-1">だれ</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-4-2" /><Label htmlFor="q6-4-2">なに</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-4-3" /><Label htmlFor="q6-4-3">なん</Label></div>
+                            </RadioGroup>
+                             {results['ex6_4'] === false && <p className="text-destructive text-sm mt-1">Неверно.</p>}
                         </div>
                          <div>
-                            <Label className="font-japanese text-lg">田中さん（&nbsp;?&nbsp;）技師ですか。</Label>
-                             <Input value={answers['ex13_4'] || ''} onChange={e => handleInputChange('ex13_4', e.target.value)} className="w-24 inline-block mx-2" />
+                            <Label className="font-japanese text-lg">これは（<b className="text-primary">?</b>）ですか。</Label>
+                             <RadioGroup value={answers['ex6_5']} onValueChange={(val) => handleInputChange('ex6_5', val)} className="flex gap-4 mt-2">
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-5-1" /><Label htmlFor="q6-5-1">だれ</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-5-2" /><Label htmlFor="q6-5-2">なに</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-5-3" /><Label htmlFor="q6-5-3">なん</Label></div>
+                            </RadioGroup>
+                             {results['ex6_5'] === false && <p className="text-destructive text-sm mt-1">Неверно.</p>}
                         </div>
-                        <div>
-                            <Label className="font-japanese text-lg">あのかたは学生（&nbsp;?&nbsp;）、先生（&nbsp;?&nbsp;）。</Label>
-                             <Input value={answers['ex13_7'] || ''} onChange={e => handleInputChange('ex13_7', e.target.value)} className="w-24 inline-block mx-2" />
-                             <Input value={answers['ex13_7b'] || ''} onChange={e => handleInputChange('ex13_7b', e.target.value)} className="w-24 inline-block mx-2" />
+                     </div>
+                </ExerciseCard>
+                
+                 <ExerciseCard title="Упражнение 13: Частицы и связки" onCheck={() => checkMultiple('ex13', correctAnswersEx13)} result={results['ex13']} description="Заполните пропуски соответствующими словами или грамматическими показателями.">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <label htmlFor="ex13-1" className="font-japanese text-lg">あのかた</label>
+                            <Input id="ex13-1" value={answers['ex13_1'] || ''} onChange={e => handleInputChange('ex13_1', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">学生です。</label>
+                             {results['ex13_1'] === false && <XCircle className="text-destructive"/>}
                         </div>
-                        <div>
-                            <Label className="font-japanese text-lg">（&nbsp;?&nbsp;）、学生です。</Label>
-                             <Input value={answers['ex13_8'] || ''} onChange={e => handleInputChange('ex13_8', e.target.value)} className="w-24 inline-block mx-2" />
+                         <div className="flex items-center gap-2 flex-wrap">
+                            <label htmlFor="ex13-2" className="font-japanese text-lg">だれ</label>
+                            <Input id="ex13-2" value={answers['ex13_2'] || ''} onChange={e => handleInputChange('ex13_2', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">先生ですか。</label>
+                             {results['ex13_2'] === false && <XCircle className="text-destructive"/>}
+                        </div>
+                         <div className="flex items-center gap-2 flex-wrap">
+                            <label htmlFor="ex13-3" className="font-japanese text-lg">わたし</label>
+                            <Input id="ex13-3" value={answers['ex13_3'] || ''} onChange={e => handleInputChange('ex13_3', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">医者ではありません。</label>
+                             {results['ex13_3'] === false && <XCircle className="text-destructive"/>}
+                        </div>
+                         <div className="flex items-center gap-2 flex-wrap">
+                            <label htmlFor="ex13-4" className="font-japanese text-lg">田中さん</label>
+                            <Input id="ex13-4" value={answers['ex13_4'] || ''} onChange={e => handleInputChange('ex13_4', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">技師ですか。</label>
+                             {results['ex13_4'] === false && <XCircle className="text-destructive"/>}
+                        </div>
+                         <div className="flex items-center gap-2 flex-wrap">
+                            <label htmlFor="ex13-5" className="font-japanese text-lg">ご専門</label>
+                            <Input id="ex13-5" value={answers['ex13_5'] || ''} onChange={e => handleInputChange('ex13_5', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">なんですか。</label>
+                             {results['ex13_5'] === false && <XCircle className="text-destructive"/>}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <label htmlFor="ex13-6" className="font-japanese text-lg">お名前</label>
+                            <Input id="ex13-6" value={answers['ex13_6'] || ''} onChange={e => handleInputChange('ex13_6', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">なんですか。</label>
+                             {results['ex13_6'] === false && <XCircle className="text-destructive"/>}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <label className="font-japanese text-lg">あのかたは学生</label>
+                            <Input value={answers['ex13_7a'] || ''} onChange={e => handleInputChange('ex13_7a', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">、先生</label>
+                             <Input value={answers['ex13_7b'] || ''} onChange={e => handleInputChange('ex13_7b', e.target.value)} className="w-20 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">。</label>
+                              {results['ex13_7a'] === false && <XCircle className="text-destructive"/>}
+                              {results['ex13_7b'] === false && <XCircle className="text-destructive"/>}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Input value={answers['ex13_8'] || ''} onChange={e => handleInputChange('ex13_8', e.target.value)} className="w-24 inline-block font-japanese" />
+                             <label className="font-japanese text-lg">、学生です。</label>
+                             {results['ex13_8'] === false && <XCircle className="text-destructive"/>}
                         </div>
                     </div>
                  </ExerciseCard>
 
-
-                {/* ... other exercises would be added here ... */}
             </div>
 
             <div className="mt-12 text-center flex flex-col items-center gap-4">
-                <Button size="lg" onClick={checkAnswers} className="w-full max-w-xs">Проверить</Button>
-                <div className="p-4 bg-yellow-100/50 border border-yellow-300 rounded-lg text-yellow-800 text-sm flex items-center gap-2">
-                    <Lightbulb className="w-5 h-5"/>
-                    <div>
-                        <p>Полный набор из 29 упражнений находится в разработке!</p>
-                        <p>Пока доступны только некоторые для демонстрации.</p>
-                    </div>
-                </div>
                 <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
                     <Link href="/grammar/lesson-2">Перейти к Уроку 2 →</Link>
                 </Button>
