@@ -18,8 +18,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Reorder } from 'framer-motion';
-
 
 const LESSON_ID = 'grammar-lesson-1';
 
@@ -94,8 +92,8 @@ const ReorderableSentence = ({ id, words, onComplete }: { id: string, words: str
                 {constructed.join(' ')}
             </div>
             <div className="flex flex-wrap gap-2 mb-2">
-                {items.map(item => (
-                    <Button key={item} variant="outline" onClick={() => handleConstruct(item)}>{item}</Button>
+                {items.map((item, index) => (
+                    <Button key={`${item}-${index}`} variant="outline" onClick={() => handleConstruct(item)}>{item}</Button>
                 ))}
             </div>
             <Button size="sm" variant="ghost" onClick={handleReset}>Сбросить</Button>
@@ -190,7 +188,7 @@ export default function GrammarLesson1Page() {
     
     const correctAnswersEx17 = {
         '1': 'あなたは学生ですか。はい、学生です。ご専門はなんですか。日本語です。',
-        '2': 'すみません、アンナさんですか。はい、アンナです。(ご)専門は歴史ですか、文学ですか。文学です。',
+        '2': 'すみません、アンナさんですか。はい、アンнаです。ご専門は歴史ですか、文学ですか。文学です。',
         '3': 'すみません、お名前は。田中です。あなたは学生ですか。はい、学生です。先生はだれですか。先生は山田です。',
         '4': 'インナです。よろしくお願いします。山田です。こちらこそよろしくお願いします。あなたは学生ですか。はい、学生です。ご専門は。日本語です。'
     };
@@ -229,23 +227,24 @@ export default function GrammarLesson1Page() {
                              <AccordionItem value="g-1">
                                 <AccordionTrigger className="text-xl font-semibold">§1. Части речи</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                                    <p>В японском языке есть слова знаменательные (несущие смысл) и служебные. Отдельно стоят междометия.</p>
-                                    <ul className="list-disc list-inside">
+                                    <p>В японском языке есть слова знаменательные и незнаменательные.</p>
+                                    <ul className="list-disc list-inside space-y-2">
                                         <li><b>Знаменательные:</b> существительные, глаголы, прилагательные, местоимения, числительные, наречия.</li>
-                                        <li><b>Служебные:</b> послелоги, союзы, частицы, связки.</li>
+                                        <li><b>Незнаменательные (служебные):</b> послелоги, союзы, частицы, связки.</li>
+                                        <li><b>Междометия</b> стоят особняком.</li>
                                     </ul>
                                 </AccordionContent>
                             </AccordionItem>
                              <AccordionItem value="g-2">
                                 <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное и Основный падеж</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                                    <p>У существительных нет рода и числа. Они изменяются по 11 падежам с помощью суффиксов. Основной падеж (бессуффиксальный) совпадает с основой слова (N) и употребляется в нескольких случаях:</p>
+                                    <p>У существительных нет рода и числа (за редкими исключениями). Они изменяются по 11 падежам. Основной падеж (бессуффиксальный) совпадает с основой слова (N).</p>
                                     <Card className="bg-card/70 mt-4">
                                         <CardHeader><CardTitle>Функции основного падежа (N)</CardTitle></CardHeader>
                                         <CardContent className="space-y-4">
-                                            <div><b>1. Обращение:</b> <InteractiveText analysis={grammarAnalyses.yamadasan} /></div>
+                                            <div><b>1. Обращение:</b> <InteractiveText analysis={grammarAnalyses.yamadasan} /> (с вежливым суффиксом さん).</div>
                                             <div><b>2. Именная часть сказуемого:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
-                                            <div><b>3. Подлежащее (тема) с частицей は:</b> <InteractiveText analysis={grammarAnalyses.tanakasan_wa_gakuseidesu} /></div>
+                                            <div><b>3. Тема с частицей は:</b> <InteractiveText analysis={grammarAnalyses.tanakasan_wa_gakuseidesu} /></div>
                                         </CardContent>
                                     </Card>
                                 </AccordionContent>
@@ -314,7 +313,7 @@ export default function GrammarLesson1Page() {
                                             <InteractiveFormula formula="N は N です か 。" />
                                             <div className="my-2"><InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka}/></div>
                                             <h4 className="font-semibold mt-4">Ответы:</h4>
-                                            <p><b>Да:</b> <InteractiveText analysis={dialogueAnalyses.annasan_wa_gakuseidesu} /> или <InteractiveText analysis={grammarAnalyses.hai_soudesu} /></p>
+                                            <p><b>Да:</b> <InteractiveText analysis={grammarAnalyses.hai_anokatawagakuseidesu} /> или <InteractiveText analysis={grammarAnalyses.hai_soudesu} /></p>
                                             <p><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.iie_anokatawagakuseidehaarimasen} /> или <InteractiveText analysis={grammarAnalyses.iie_anokatahasenseidesu} /></p>
                                         </CardContent>
                                     </Card>
@@ -522,8 +521,8 @@ export default function GrammarLesson1Page() {
                         })}
                      </div>
                 </ExerciseCard>
-                
-                 <ExerciseCard title="Упражнение 7: Ответы на вопросы" description="Ответьте на вопросы, используя слово в скобках. Пример: だれが学生ですか。(田中) → 田中さんが学生です。">
+
+                <ExerciseCard title="Упражнение 7: Ответы на вопросы" description="Ответьте на вопросы, используя слово в скобках. Пример: だれが学生ですか。(田中) → 田中さんが学生です。">
                     <div className="space-y-4">
                         {Object.entries(correctAnswersEx7).map(([key, correctAnswer]) => {
                             const [questionText, name] = {
@@ -545,16 +544,16 @@ export default function GrammarLesson1Page() {
                         })}
                     </div>
                 </ExerciseCard>
-                
+
                 <ExerciseCard title="Упражнение 8: Перевод" canCheck={false}>
                      <p>Это упражнение для самостоятельной практики перевода.</p>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 9: Задайте вопросы" canCheck={false} description="Задание по рисункам. Задайте вопрос: あのかたはだれですか。">
+                <ExerciseCard title="Упражнение 9: Задайте вопросы" canCheck={false} description="Это упражнение подразумевает работу с рисунками. Задайте вопрос к воображаемому рисунку человека: あのかたはだれですか。">
                     <p className='text-sm text-muted-foreground'>Представьте, что видите человека. Задайте вопрос.</p>
                 </ExerciseCard>
                 
-                <ExerciseCard title="Упражнение 10: Альтернативные вопросы" canCheck={false} description="Задание по рисункам. Задайте вопрос: あのかたは先生ですか、学生ですか。">
+                <ExerciseCard title="Упражнение 10: Альтернативные вопросы" canCheck={false} description="Это упражнение подразумевает работу с рисунками. Задайте альтернативный вопрос к воображаемому рисунку: あのかたは先生ですか、学生ですか。">
                      <p className='text-sm text-muted-foreground'>Представьте, что выбираете между двумя профессиями. Задайте вопрос.</p>
                 </ExerciseCard>
 
@@ -583,14 +582,14 @@ export default function GrammarLesson1Page() {
                 <ExerciseCard title="Упражнение 12: Перевод" canCheck={false}>
                     <p>Это упражнение для самостоятельной практики перевода.</p>
                 </ExerciseCard>
-
+                
                 <ExerciseCard title="Упражнение 13: Частицы и связки" description="Заполните пропуски соответствующими словами или грамматическими показателями.">
                     <div className="space-y-4">
                         {Object.entries(correctAnswersEx13).map(([key, correctAnswer]) => {
                             const [part1, part2] = {
                                 '1': ['あのかた', '学生です。'], '2': ['だれ', '先生ですか。'], '3': ['わたし', '医者ではありません。'],
                                 '4': ['田中さん', '技師ですか。'], '5': ['ご専門', 'なんですか。'], '6': ['お名前', 'なんですか。'],
-                                '7a': ['あのかたは学生', ', 先生ですか。'], '7b': ['あのかたは学生ですか, 先生', '。'],
+                                '7a': ['あのかたは学生', '、先生ですか。'], '7b': ['あのかたは学生ですか、先生', '。'],
                                 '8': ['', '、学生です。']
                             }[key]!;
                             const id = `ex13_${key}`;
@@ -652,7 +651,7 @@ export default function GrammarLesson1Page() {
                     </div>
                 </ExerciseCard>
 
-                 <ExerciseCard title="Упражнение 16: Ответьте на вопросы" canCheck={false} description="Это упражнение для самостоятельной практики. Попробуйте ответить на вопросы устно или письменно.">
+                <ExerciseCard title="Упражнение 16: Ответьте на вопросы" canCheck={false} description="Это упражнение для самостоятельной практики. Попробуйте ответить на вопросы устно или письменно.">
                     <ul className="list-disc list-inside space-y-2 font-japanese text-lg">
                         <li>あなたは学生ですか。</li>
                         <li>ご専門はなんですか。</li>
@@ -711,4 +710,5 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
+
 
