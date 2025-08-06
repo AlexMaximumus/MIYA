@@ -204,8 +204,9 @@ export default function PhoneticsLesson1Page() {
                              <h4 className="font-bold text-xl mb-2">Долгие гласные</h4>
                             <p>Долгие гласные отличаются от кратких только продолжительностью звучания. Это важно, так как долгота меняет смысл слова.</p>
                              <h4 className="font-bold text-xl mt-4 mb-2">Дифтонги</h4>
-                            <p>Дифтонги — это сочетания гласных. Основные: [ай], [уй]. Важно, что не все сочетания гласных образуют дифтонг. Например: <InteractiveText analysis={phoneticsAnalyses.kai1}/> (дифтонг) и <InteractiveText analysis={phoneticsAnalyses.kai2}/> (два отдельных слога).</p>
-                             <p className='mt-2'>Сочетание [э] + [и] (`えい`) в современном японском обычно произносится как долгое [э:].</p>
+                             <div>Дифтонги — это сочетания гласных. Основные: [ай], [уй]. Важно, что не все сочетания гласных образуют дифтонг. Например:</div>
+                             <div><InteractiveText analysis={phoneticsAnalyses.kai1}/> (дифтонг) и <InteractiveText analysis={phoneticsAnalyses.kai2}/> (два отдельных слога).</div>
+                             <div className='mt-2'>Сочетание [э] + [и] (`えい`) в современном японском обычно произносится как долгое [э:].</div>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-4">
@@ -213,7 +214,7 @@ export default function PhoneticsLesson1Page() {
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
                              <h4 className="font-bold text-xl mb-2">Ряды КА и ГА</h4>
                              <p>Согласный [к] произносится твердо в слогах КА, КУ, КЭ, КО, и мягко ([к']) в слоге КИ.</p>
-                             <p className='mt-2'>Слог ГА является "озвонченным" вариантом КА. Согласный [г] также произносится твердо (ГА, ГУ, ГЭ, ГО) или мягко (ГИ). В середине слова [г] может приобретать носовой оттенок, аналога которому нет в русском языке.</p>
+                             <div className='mt-2'>Слог ГА является "озвонченным" вариантом КА. Согласный [г] также произносится твердо (ГА, ГУ, ГЭ, ГО) или мягко (ГИ). В середине слова [г] может приобретать носовой оттенок, аналога которому нет в русском языке.</div>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-5">

@@ -35,33 +35,35 @@ export default function InteractiveText({ analysis }: InteractiveTextProps) {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className="flex flex-wrap items-end leading-loose cursor-pointer" lang="ja">
-        {analysis.sentence.map((word, index) => (
-          <Tooltip key={index}>
-            <TooltipTrigger asChild>
-              <span className="group inline-block transition-colors duration-200 hover:bg-primary/20 rounded-md px-1 py-2">
-                <ruby className="text-3xl">
-                  {word.word}
-                  {word.furigana && (
-                    <rt className="text-sm text-foreground/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      {word.furigana}
-                    </rt>
-                  )}
-                </ruby>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="font-bold">{word.translation}</p>
-              <div className="text-muted-foreground">
-                <TermTooltip term={word.partOfSpeech} />
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        ))}
+      <div>
+        <div className="flex flex-wrap items-end leading-loose cursor-pointer" lang="ja">
+            {analysis.sentence.map((word, index) => (
+            <Tooltip key={index}>
+                <TooltipTrigger asChild>
+                <span className="group inline-block transition-colors duration-200 hover:bg-primary/20 rounded-md px-1 py-2">
+                    <ruby className="text-3xl">
+                    {word.word}
+                    {word.furigana && (
+                        <rt className="text-sm text-foreground/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        {word.furigana}
+                        </rt>
+                    )}
+                    </ruby>
+                </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                <p className="font-bold">{word.translation}</p>
+                <div className="text-muted-foreground">
+                    <TermTooltip term={word.partOfSpeech} />
+                </div>
+                </TooltipContent>
+            </Tooltip>
+            ))}
+        </div>
+        <p className="text-muted-foreground mt-2 text-sm italic">
+            {analysis.fullTranslation}
+        </p>
       </div>
-      <p className="text-muted-foreground mt-2 text-sm italic">
-        {analysis.fullTranslation}
-      </p>
     </TooltipProvider>
   );
 }
