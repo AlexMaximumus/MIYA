@@ -99,11 +99,9 @@ export default function WordFormationLesson1Page() {
     useEffect(() => {
         try {
             const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
-            const storedResults = localStorage.getItem(`${LESSON_ID}-results`);
             const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
     
             if (storedProgress) setProgress(JSON.parse(storedProgress));
-            if (storedResults) setResults(JSON.parse(storedResults));
             if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
         } catch (error) {
             console.error("Failed to parse from localStorage", error);
@@ -364,3 +362,5 @@ export default function WordFormationLesson1Page() {
         </div>
     );
 }
+
+    
