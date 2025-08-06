@@ -23,13 +23,6 @@ const lessonCategories = [
         icon: <Puzzle className="w-8 h-8" />,
     },
     {
-        id: 'word-formation',
-        title: 'Словообразование',
-        description: 'Изучите, как строятся японские слова, разберитесь в аффиксах и принципах словосложения.',
-        href: '/word-formation',
-        icon: <CaseUpper className="w-8 h-8" />,
-    },
-    {
         id: 'vocabulary-by-topic',
         title: 'Лексика по урокам',
         description: 'Тематические подборки слов для расширения вашего словарного запаса в конкретных областях.',

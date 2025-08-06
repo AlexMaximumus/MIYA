@@ -23,6 +23,14 @@ const lessons = [
         href: '/phonetics/lesson-2',
         lessonNumber: 2,
         icon: <Mic2 className="w-8 h-8" />
+    },
+    {
+        id: 'phonetics-lesson-3',
+        title: 'Лексика, новые согласные и удвоение',
+        description: 'Слои лексики (ваго, канго, гайрайго). Согласные рядов НА, ХА, БА, ПА. Удвоение согласных.',
+        href: '/phonetics/lesson-3',
+        lessonNumber: 3,
+        icon: <Mic2 className="w-8 h-8" />
     }
 ];
 
