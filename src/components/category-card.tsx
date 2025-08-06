@@ -48,7 +48,7 @@ export default function CategoryCard({ icon, title, description, progress, stats
             <div className="text-primary bg-primary/20 p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
                 {icon}
             </div>
-            <CardTitle className="text-card-foreground text-xl md:text-2xl">{title}</CardTitle>
+            <CardTitle className="text-card-foreground text-xl md:text-2xl break-words">{title}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col justify-between flex-grow">
             <CardDescription className="text-card-foreground/80 mb-4">{description}</CardDescription>
@@ -74,5 +74,3 @@ export default function CategoryCard({ icon, title, description, progress, stats
     </div>
   );
 }
-
-    
