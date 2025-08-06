@@ -31,6 +31,14 @@ const lessons = [
         href: '/phonetics/lesson-3',
         lessonNumber: 3,
         icon: <Mic2 className="w-8 h-8" />
+    },
+    {
+        id: 'phonetics-lesson-4',
+        title: 'Йотированные гласные и иероглифы',
+        description: 'Слоги с мягкими согласными. Введение в иероглифику: онные и кунные чтения, ключи, правила написания.',
+        href: '/phonetics/lesson-4',
+        lessonNumber: 4,
+        icon: <Mic2 className="w-8 h-8" />
     }
 ];
 
