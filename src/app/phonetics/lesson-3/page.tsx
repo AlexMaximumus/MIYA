@@ -195,8 +195,8 @@ export default function PhoneticsLesson3Page() {
                      <AccordionItem value="item-3">
                         <AccordionTrigger className="text-xl font-semibold">§3. Удвоение согласных</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                            <p>Долгота согласных (удвоение) играет в японском смыслоразличительную роль. Например, <InteractiveText analysis={phoneticsAnalyses.dzikki}/> и <InteractiveText analysis={phoneticsAnalyses.dziki}/>.</p>
-                            <p>На письме долгота согласных [к], [с], [т], [п] обозначается маленьким знаком <b className="text-primary font-japanese">っ</b> (сокуон), который ставится перед удваиваемым слогом. Например, <InteractiveText analysis={phoneticsAnalyses.kokki}/> или <InteractiveText analysis={phoneticsAnalyses.ittai}/>.</p>
+                            <div className="inline-flex flex-wrap items-center gap-x-2">Долгота согласных (удвоение) играет в японском смыслоразличительную роль. Например, <InteractiveText analysis={phoneticsAnalyses.dzikki}/> и <InteractiveText analysis={phoneticsAnalyses.dziki}/>.</div>
+                            <div className="mt-2 inline-flex flex-wrap items-center gap-x-2">На письме долгота согласных [к], [с], [т], [п] обозначается маленьким знаком <b className="text-primary font-japanese">っ</b> (сокуон), который ставится перед удваиваемым слогом. Например, <InteractiveText analysis={phoneticsAnalyses.kokki}/> или <InteractiveText analysis={phoneticsAnalyses.ittai}/>.</div>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-4">
