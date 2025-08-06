@@ -292,14 +292,14 @@ const anokatawayamadasandesu: JapaneseAnalysisOutput = {
 export const grammarAnalyses = {
     yamadasan: {
         sentence: [
-            { word: 'やまだ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
+            { word: 'ヤマダ', furigana: 'やまだ', translation: 'Ямада', partOfSpeech: 'имя собственное' },
             { word: 'さん', furigana: 'さん', translation: 'г-н/г-жа', partOfSpeech: 'суффикс вежливости' },
         ],
         fullTranslation: 'Господин/госпожа Ямада'
     },
     tanakasan: {
         sentence: [
-            { word: 'たなか', furigana: 'たなか', translation: 'Танака', partOfSpeech: 'имя собственное' },
+            { word: '田中', furigana: 'たなか', translation: 'Танака', partOfSpeech: 'имя собственное' },
             { word: 'さん', furigana: 'さん', translation: 'г-н/г-жа', partOfSpeech: 'суффикс вежливости' },
         ],
         fullTranslation: 'Господин/госпожа Танака'
@@ -331,7 +331,7 @@ export const grammarAnalyses = {
             { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
             { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "先生", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
         ],
         "fullTranslation": "Тот человек — учитель."
@@ -370,14 +370,14 @@ export const grammarAnalyses = {
     },
     senseidesu: {
         sentence: [
-            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "先生", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
         ],
         "fullTranslation": "(Я/он/она) — учитель."
     },
     gakuseidesu: {
         sentence: [
-            { word: 'がくせい', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+            { word: '学生', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
             { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
         ],
         fullTranslation: '(Кто-то) студент.'
@@ -395,7 +395,7 @@ export const grammarAnalyses = {
         sentence: [
             { "word": "わたし", "furigana": "わたし", "translation": "я", "partOfSpeech": "местоимение" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "学生", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
             { "word": "では", "furigana": "では", "translation": "отрицательная частица", "partOfSpeech": "отрицательная частица" },
             { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" },
         ],
@@ -407,7 +407,7 @@ export const grammarAnalyses = {
             { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
             { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "学生", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
             { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" }
         ],
@@ -420,7 +420,7 @@ export const grammarAnalyses = {
             { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
             { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "学生", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
         ],
         "fullTranslation": "Да, он студент."
@@ -440,7 +440,7 @@ export const grammarAnalyses = {
             { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
             { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "学生", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
             { "word": "では", "furigana": "では", "translation": "отрицательная частица", "partOfSpeech": "отрицательная частица" },
             { "word": "ありません", "furigana": "ありません", "translation": "не является", "partOfSpeech": "вспомогательный глагол" }
         ],
@@ -453,7 +453,7 @@ export const grammarAnalyses = {
             { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
             { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "先生", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
         ],
         "fullTranslation": "Нет, он учитель."
@@ -462,7 +462,7 @@ export const grammarAnalyses = {
         sentence: [
             { "word": "いいえ", "furigana": "いいえ", "translation": "нет", "partOfSpeech": "междометие" },
             { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
-            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "先生", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" }
         ],
         "fullTranslation": "Нет, (он) учитель."
@@ -531,11 +531,11 @@ export const grammarAnalyses = {
             { "word": "あの", "furigana": "あの", "translation": "тот", "partOfSpeech": "указательное местоимение" },
             { "word": "かた", "furigana": "かた", "translation": "человек (вежл.)", "partOfSpeech": "существительное (вежл.)" },
             { "word": "は", "furigana": "は", "translation": "частица (тема)", "partOfSpeech": "частица (тема)" },
-            { "word": "せんせい", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
+            { "word": "先生", "furigana": "せんせい", "translation": "учитель", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
             { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
             { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
-            { "word": "がくせい", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
+            { "word": "学生", "furigana": "がくせい", "translation": "студент", "partOfSpeech": "существительное" },
             { "word": "です", "furigana": "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
             { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" },
         ],
@@ -554,6 +554,51 @@ export const grammarAnalyses = {
             { "word": "か", "furigana": "か", "translation": "вопросительная частица", "partOfSpeech": "вопросительная частица" }
         ],
         "fullTranslation": "Ямада — преподаватель или студент?"
+    },
+    yamadasan_ga_sensei_desu: {
+        sentence: [
+            { word: "山田さん", furigana: "やまださん", translation: "г-н Ямада", partOfSpeech: "имя собственное" },
+            { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
+            { word: "先生", furigana: "せんせい", translation: "учитель", partOfSpeech: "существительное" },
+            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+        ],
+        fullTranslation: "Господин Ямада — учитель."
+    },
+    nakayamasan_ga_isha_desu: {
+        sentence: [
+            { word: "中山さん", furigana: "なかやまさん", translation: "г-н Накаяма", partOfSpeech: "имя собственное" },
+            { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
+            { word: "医者", furigana: "いしゃ", translation: "врач", partOfSpeech: "существительное" },
+            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+        ],
+        fullTranslation: "Господин Накаяма — врач."
+    },
+    yamamotosan_ga_gishi_desu: {
+        sentence: [
+            { word: "山本さん", furigana: "やまもとさん", translation: "г-н Ямамото", partOfSpeech: "имя собственное" },
+            { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
+            { word: "技師", furigana: "ぎし", translation: "инженер", partOfSpeech: "существительное" },
+            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+        ],
+        fullTranslation: "Господин Ямамото — инженер."
+    },
+    gosenmon_wa_bungaku_desu: {
+        sentence: [
+            { word: "ご専門", furigana: "ごせんもん", translation: "специальность", partOfSpeech: "существительное" },
+            { word: "は", furigana: "は", translation: "частица (тема)", partOfSpeech: "частица (тема)" },
+            { word: "文学", furigana: "ぶんがく", translation: "литература", partOfSpeech: "существительное" },
+            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+        ],
+        fullTranslation: "Специальность — литература."
+    },
+    onamae_wa_anna_desu: {
+        sentence: [
+            { word: "お名前", furigana: "おなまえ", translation: "имя", partOfSpeech: "существительное" },
+            { word: "は", furigana: "は", translation: "частица (тема)", partOfSpeech: "частица (тема)" },
+            { word: "アンナ", furigana: "アンナ", translation: "Анна", partOfSpeech: "имя собственное" },
+            { word: "です", furigana: "です", translation: "есть (связка)", partOfSpeech: "связка" },
+        ],
+        fullTranslation: "Имя — Анна."
     }
 }
 
