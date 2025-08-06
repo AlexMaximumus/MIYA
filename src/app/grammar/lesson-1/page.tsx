@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb, Check, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import InteractiveFormula from '@/components/interactive-formula';
@@ -17,8 +17,10 @@ import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
-const LESSON_ID = 'lesson-1';
+
+const LESSON_ID = 'grammar-lesson-1';
 
 const katakanaRows = {
     a: [{ kana: 'ア', romaji: 'a' }, { kana: 'イ', romaji: 'i' }, { kana: 'ウ', romaji: 'u' }, { kana: 'エ', romaji: 'e' }, { kana: 'オ', romaji: 'o' }],
@@ -47,26 +49,68 @@ const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }
    </div>
 );
 
+const ExerciseCard = ({ title, description, children, result }: { title: string; description?: string; children: React.ReactNode; result?: boolean | null }) => (
+    <Card>
+        <CardHeader>
+            <CardTitle>{title}</CardTitle>
+            {description && <CardDescription>{description}</CardDescription>}
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+        <CardFooter>
+            {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
+            {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
+        </CardFooter>
+    </Card>
+);
+
 
 export default function GrammarLesson1Page() {
     const [progress, setProgress] = useState(0);
+    const [answers, setAnswers] = useState<Record<string, any>>({});
+    const [results, setResults] = useState<Record<string, boolean | null>>({});
+
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
-
-    useEffect(() => {
-        try {
-            const storedProgress = localStorage.getItem(`${LESSON_ID}-progress`);
-            if (storedProgress) setProgress(JSON.parse(storedProgress));
-        } catch (error) {
-            console.error("Failed to parse from localStorage", error);
-        }
-    }, []);
 
     const handleShare = () => {
         copy(window.location.href)
             .then(() => toast({ title: 'Ссылка скопирована!', description: 'Вы можете поделиться этим уроком с кем угодно.' }))
             .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
     }
+
+    const handleInputChange = (id: string, value: string) => {
+        setAnswers(prev => ({ ...prev, [id]: value }));
+    };
+
+    const checkAnswers = () => {
+        const newResults: Record<string, boolean | null> = {};
+        
+        // Ex 2
+        newResults['ex2_1'] = answers['ex2_1'] === 'わたしは先生ではありません。学生です。';
+        newResults['ex2_2'] = answers['ex2_2'] === '田中さんは医者ではありません。技師です。';
+        newResults['ex2_3'] = answers['ex2_3'] === 'あのかたは学生ではありません。先生です。';
+        newResults['ex2_4'] = answers['ex2_4'] === '山田さんは先生ではありません。学生です。';
+        
+        // Ex 6
+        newResults['ex6_1'] = answers['ex6_1'] === 'だれ';
+        newResults['ex6_2'] = answers['ex6_2'] === 'なん';
+        newResults['ex6_3'] = answers['ex6_3'] === 'なん';
+        newResults['ex6_4'] = answers['ex6_4'] === 'だれ';
+        newResults['ex6_5'] = answers['ex6_5'] === 'なに';
+
+        // Ex 13
+        newResults['ex13_1'] = answers['ex13_1'] === 'は';
+        newResults['ex13_2'] = answers['ex13_2'] === 'が';
+        newResults['ex13_3'] = answers['ex13_3'] === 'は';
+        newResults['ex13_4'] = answers['ex13_4'] === 'は';
+        newResults['ex13_5'] = answers['ex13_5'] === 'は';
+        newResults['ex13_6'] = answers['ex13_6'] === 'は';
+        newResults['ex13_7'] = answers['ex13_7'] === 'です' && answers['ex13_7b'] === 'か';
+        newResults['ex13_8'] = answers['ex13_8'] === 'はい';
+
+        setResults(newResults);
+        // ... progress calculation could be added here
+    };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
@@ -93,13 +137,13 @@ export default function GrammarLesson1Page() {
             </Card>
 
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
-            <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4">
+            <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4" defaultValue={['item-grammar']}>
                 
                 {/* ГРАММАТИКА */}
                 <AccordionItem value="item-grammar">
                     <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2 border border-t-0 rounded-b-lg">
-                        <Accordion type="single" collapsible>
+                        <Accordion type="single" collapsible className="w-full" defaultValue="g-1">
                             <AccordionItem value="g-1">
                                 <AccordionTrigger className="text-xl font-semibold">§1. Части речи</AccordionTrigger>
                                 <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
@@ -196,7 +240,7 @@ export default function GrammarLesson1Page() {
                                         <CardHeader><CardTitle>2. Специальный вопрос (с вопросительным словом)</CardTitle></CardHeader>
                                         <CardContent>
                                             <InteractiveFormula formula="QW が N です か 。" />
-                                            <div className="my-2"><InteractiveText analysis={grammarAnalyses.anokatawadonadesuka}/></div>
+                                            <div className="my-2"><InteractiveText analysis={grammarAnalyses.daregagakuseidesuka}/></div>
                                         </CardContent>
                                     </Card>
                                      <Card className="mt-4">
@@ -301,24 +345,107 @@ export default function GrammarLesson1Page() {
             
             <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
             <div className="w-full max-w-4xl space-y-8 mt-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Упражнение 1: Интонация</CardTitle>
-                  <CardDescription>Прочтите вслух, обращая внимание на интонацию.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesu} />
-                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidehaarimasen} />
-                    <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} />
-                    <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} />
-                    <InteractiveText analysis={grammarAnalyses.anokata_wa_sensei_desuka_gakusei_desuka} />
-                </CardContent>
-              </Card>
-               {/* ... Other exercises will be added here ... */}
+                 {/* Упражнение 1 */}
+                <ExerciseCard title="Упражнение 1: Интонация" description="Прочтите вслух, обращая внимание на интонацию.">
+                    <div className="space-y-4">
+                        <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesu} />
+                        <InteractiveText analysis={grammarAnalyses.anokatawagakuseidehaarimasen} />
+                        <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} />
+                        <InteractiveText analysis={grammarAnalyses.anokatawagakuseidesuka} />
+                        <InteractiveText analysis={grammarAnalyses.anokata_wa_sensei_desuka_gakusei_desuka} />
+                    </div>
+                </ExerciseCard>
+                
+                 {/* Упражнение 2 */}
+                <ExerciseCard title="Упражнение 2: Отрицательная форма" description="Скажите предложения в отрицательной форме и добавьте правильный вариант. Пример: あのひとは学生ではありません。先生です。" result={results['ex2_1'] && results['ex2_2'] && results['ex2_3'] && results['ex2_4']}>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>わたしは先生です。(学生)</Label>
+                            <Input value={answers['ex2_1'] || ''} onChange={e => handleInputChange('ex2_1', e.target.value)} placeholder="Введите ответ..." />
+                        </div>
+                         <div>
+                            <Label>田中さんは医者です。(技師)</Label>
+                            <Input value={answers['ex2_2'] || ''} onChange={e => handleInputChange('ex2_2', e.target.value)} placeholder="Введите ответ..." />
+                        </div>
+                         <div>
+                            <Label>あのかたは学生です。(先生)</Label>
+                            <Input value={answers['ex2_3'] || ''} onChange={e => handleInputChange('ex2_3', e.target.value)} placeholder="Введите ответ..." />
+                        </div>
+                         <div>
+                            <Label>山田さんは先生です。(学生)</Label>
+                            <Input value={answers['ex2_4'] || ''} onChange={e => handleInputChange('ex2_4', e.target.value)} placeholder="Введите ответ..." />
+                        </div>
+                    </div>
+                </ExerciseCard>
+
+                {/* Упражнение 6 */}
+                <ExerciseCard title="Упражнение 6: Вопросительные местоимения" description="Заполните пропуски, вставив だれ, なに или なん.">
+                     <div className="space-y-4">
+                        <div>
+                            <Label>あのかたは（<b className="text-primary">?</b>）ですか。</Label>
+                             <RadioGroup value={answers['ex6_1']} onValueChange={(val) => handleInputChange('ex6_1', val)} className="flex gap-4 mt-2">
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-1-1" /><Label htmlFor="q6-1-1">だれ</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-1-2" /><Label htmlFor="q6-1-2">なに</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-1-3" /><Label htmlFor="q6-1-3">なん</Label></div>
+                            </RadioGroup>
+                        </div>
+                         <div>
+                            <Label>ご専門は（<b className="text-primary">?</b>）ですか。</Label>
+                             <RadioGroup value={answers['ex6_2']} onValueChange={(val) => handleInputChange('ex6_2', val)} className="flex gap-4 mt-2">
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="だれ" id="q6-2-1" /><Label htmlFor="q6-2-1">だれ</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なに" id="q6-2-2" /><Label htmlFor="q6-2-2">なに</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="なん" id="q6-2-3" /><Label htmlFor="q6-2-3">なん</Label></div>
+                            </RadioGroup>
+                        </div>
+                        {/* ... more questions ... */}
+                     </div>
+                </ExerciseCard>
+
+                {/* Упражнение 13 */}
+                 <ExerciseCard title="Упражнение 13: Частицы и связки" description="Заполните пропуски соответствующими словами или грамматическими показателями.">
+                    <div className="space-y-2">
+                        <div>
+                            <Label className="font-japanese text-lg">あのかた（&nbsp;?&nbsp;）学生です。</Label>
+                            <Input value={answers['ex13_1'] || ''} onChange={e => handleInputChange('ex13_1', e.target.value)} className="w-24 inline-block mx-2" />
+                        </div>
+                        <div>
+                            <Label className="font-japanese text-lg">だれ（&nbsp;?&nbsp;）先生ですか。</Label>
+                             <Input value={answers['ex13_2'] || ''} onChange={e => handleInputChange('ex13_2', e.target.value)} className="w-24 inline-block mx-2" />
+                        </div>
+                        <div>
+                            <Label className="font-japanese text-lg">わたし（&nbsp;?&nbsp;）医者ではありません。</Label>
+                             <Input value={answers['ex13_3'] || ''} onChange={e => handleInputChange('ex13_3', e.target.value)} className="w-24 inline-block mx-2" />
+                        </div>
+                         <div>
+                            <Label className="font-japanese text-lg">田中さん（&nbsp;?&nbsp;）技師ですか。</Label>
+                             <Input value={answers['ex13_4'] || ''} onChange={e => handleInputChange('ex13_4', e.target.value)} className="w-24 inline-block mx-2" />
+                        </div>
+                        <div>
+                            <Label className="font-japanese text-lg">あのかたは学生（&nbsp;?&nbsp;）、先生（&nbsp;?&nbsp;）。</Label>
+                             <Input value={answers['ex13_7'] || ''} onChange={e => handleInputChange('ex13_7', e.target.value)} className="w-24 inline-block mx-2" />
+                             <Input value={answers['ex13_7b'] || ''} onChange={e => handleInputChange('ex13_7b', e.target.value)} className="w-24 inline-block mx-2" />
+                        </div>
+                        <div>
+                            <Label className="font-japanese text-lg">（&nbsp;?&nbsp;）、学生です。</Label>
+                             <Input value={answers['ex13_8'] || ''} onChange={e => handleInputChange('ex13_8', e.target.value)} className="w-24 inline-block mx-2" />
+                        </div>
+                    </div>
+                 </ExerciseCard>
+
+
+                {/* ... other exercises would be added here ... */}
             </div>
 
-            <div className="mt-12 text-center">
-                <Button size="lg" asChild className="btn-gradient">
+            <div className="mt-12 text-center flex flex-col items-center gap-4">
+                <Button size="lg" onClick={checkAnswers} className="w-full max-w-xs">Проверить</Button>
+                <div className="p-4 bg-yellow-100/50 border border-yellow-300 rounded-lg text-yellow-800 text-sm flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5"/>
+                    <div>
+                        <p>Полный набор из 29 упражнений находится в разработке!</p>
+                        <p>Пока доступны только некоторые для демонстрации.</p>
+                    </div>
+                </div>
+                <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
                     <Link href="/grammar/lesson-2">Перейти к Уроку 2 →</Link>
                 </Button>
             </div>

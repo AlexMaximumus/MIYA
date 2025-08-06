@@ -89,7 +89,7 @@ const exercises: Exercise[] = [
     }
 ];
 
-const LESSON_ID = 'lesson-2';
+const LESSON_ID = 'grammar-lesson-2';
 
 const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer }: {
     exercise: Exercise,
@@ -343,7 +343,7 @@ export default function GrammarLesson2Page() {
                                         <div className="text-muted-foreground text-base">Такие вопросы требуют конкретного ответа (кто, что, где и т.д.).</div>
                                         <div className="mt-2">Схема: <InteractiveFormula formula="QW が N です か 。" /></div>
                                         <div className="my-4">
-                                            <InteractiveText analysis={grammarAnalyses.anokatawadonadesuka} />
+                                            <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} />
                                         </div>
                                     </div>
                                     <div className="border-t pt-4">
@@ -428,5 +428,6 @@ export default function GrammarLesson2Page() {
         </div>
     );
 }
+
 
     
