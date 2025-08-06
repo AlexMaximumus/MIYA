@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School, Gamepad2 } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School, Gamepad2, Mic2 } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -194,7 +194,7 @@ export default function MainScreen() {
                     <CategoryCard
                       icon={<BookOpen className="w-10 h-10 md:w-12 md:h-12" />}
                       title="Уроки"
-                      description="Грамматика, лексика и правила"
+                      description="Фонетика, грамматика, лексика и правила"
                       color="bg-sky-100/60"
                     />
                 </Link>

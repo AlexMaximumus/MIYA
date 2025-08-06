@@ -4,17 +4,23 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, BookCheck, CaseUpper, BookOpen, MessageSquare, Puzzle } from 'lucide-react';
+import { ArrowLeft, BookCheck, CaseUpper, BookOpen, MessageSquare, Puzzle, Mic2 } from 'lucide-react';
 import LessonCard from '@/components/lesson-card';
 
 const lessonCategories = [
+    {
+        id: 'phonetics',
+        title: 'Фонетика',
+        description: 'Изучите звуковой строй японского языка, правильное произношение и акцентуацию.',
+        href: '/phonetics',
+        icon: <Mic2 className="w-8 h-8" />,
+    },
     {
         id: 'grammar',
         title: 'Грамматика',
         description: 'Освойте правила и структуры, от основ до сложных конструкций. Пройдите уроки и закрепите знания упражнениями.',
         href: '/grammar',
         icon: <Puzzle className="w-8 h-8" />,
-        lessonIdPrefix: 'lesson-'
     },
     {
         id: 'word-formation',
@@ -22,7 +28,6 @@ const lessonCategories = [
         description: 'Изучите, как строятся японские слова, разберитесь в аффиксах и принципах словосложения.',
         href: '/word-formation',
         icon: <CaseUpper className="w-8 h-8" />,
-        lessonIdPrefix: 'word-formation-lesson-'
     },
     {
         id: 'vocabulary-by-topic',
@@ -30,7 +35,6 @@ const lessonCategories = [
         description: 'Тематические подборки слов для расширения вашего словарного запаса в конкретных областях.',
         href: '/vocabulary',
         icon: <BookOpen className="w-8 h-8" />,
-        lessonIdPrefix: 'vocab-lesson-'
     },
 ];
 
