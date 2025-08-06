@@ -6,28 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, CheckCircle, XCircle, Share2, Mic2, ArrowRight } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Share2, Mic2 } from 'lucide-react';
 import Link from 'next/link';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import InteractiveText from '@/components/interactive-text';
-import { grammarAnalyses } from '@/ai/precomputed-analysis';
+import { phoneticsAnalyses, dialogueAnalyses } from '@/ai/precomputed-analysis';
 
-const phoneticsAnalyses = {
-    // Examples for assimilation
-    deguchi: { sentence: [{ word: '出口', furigana: 'でぐち', translation: 'выход', partOfSpeech: 'существительное' }], fullTranslation: 'дэ + кути -> дэгути' },
-    monozuki: { sentence: [{ word: '物好き', furigana: 'ものずき', translation: 'любопытство', partOfSpeech: 'существительное' }], fullTranslation: 'моно + суки -> монодзуки' },
-    hakko: { sentence: [{ word: '発行', furigana: 'はっこう', translation: 'издание', partOfSpeech: 'существительное' }], fullTranslation: 'хацу + ко: -> хакко:' },
-    bumppo: { sentence: [{ word: '文法', furigana: 'ぶんぽう', translation: 'грамматика', partOfSpeech: 'существительное' }], fullTranslation: 'бун + хо: -> бумпо:' },
-    ninzu: { sentence: [{ word: '人数', furigana: 'にんずう', translation: 'число людей', partOfSpeech: 'существительное' }], fullTranslation: 'нин + су: -> ниндзу:' },
-    ippo: { sentence: [{ word: '一歩', furigana: 'いっぽ', translation: 'один шаг', partOfSpeech: 'существительное' }], fullTranslation: 'ити + хо -> иппо' },
-    // Other
-    onna: { sentence: [{ word: '女', furigana: 'おんな', translation: 'женщина', partOfSpeech: 'существительное' }], fullTranslation: 'женщина' },
-    amma: { sentence: [{ word: '按摩', furigana: 'あんま', translation: 'массаж', partOfSpeech: 'существительное' }], fullTranslation: 'массаж' },
-};
+const LESSON_ID = 'phonetics-lesson-5';
 
 const kanaRows = {
     ra: [{ kana: 'ら', romaji: 'ra' }, { kana: 'り', romaji: 'ri' }, { kana: 'る', romaji: 'ru' }, { kana: 'れ', romaji: 're' }, { kana: 'ろ', romaji: 'ro' }],
@@ -74,9 +64,11 @@ const exercises = [
     { id: 'q1', type: 'multiple-choice', title: 'Вопрос 1: Ассимиляция', description: 'Что происходит в слове "発行" (хакко:)?', options: ['Прогрессивная ассимиляция', 'Регрессивная ассимиляция', 'Взаимная ассимиляция'], correctAnswer: 'Регрессивная ассимиляция' },
     { id: 'q2', type: 'select-correct', title: 'Вопрос 2: Письменность', description: 'Какой знак используется только для обозначения винительного падежа?', options: ['わ', 'を', 'ん'], correctAnswer: 'を' },
     { id: 'q3', type: 'select-correct', title: 'Вопрос 3: Иероглифы', description: 'Какой иероглиф означает "новый"?', options: ['聞', '終', '新'], correctAnswer: '新' },
+    { id: 'q4', type: 'fill-in-the-blank', title: 'Упражнение 4: Напишите хираганой', description: 'Напишите слово "annai" (информация, ведение) хираганой.', correctAnswer: 'あんない' },
+    { id: 'q5', type: 'construct', title: 'Упражнение 5: Соберите слово', description: 'Соберите слово "ryokou" (путешествие)', options: ['りょ', 'こ', 'う'], correctAnswer: 'りょこう' },
+    { id: 'q6', type: 'multiple-choice', title: 'Вопрос 6: Произношение ん', description: 'Как произносится ん в слове 新聞 (しんぶん)?', options: ['Как [н]', 'Как [м]', 'Как носовой [ñ]'], correctAnswer: 'Как [м]' },
 ];
 
-const LESSON_ID = 'phonetics-lesson-5';
 
 const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
     <div className='flex flex-wrap gap-4 mt-2 justify-center'>
@@ -86,6 +78,37 @@ const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }
    </div>
 );
 
+
+const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetConstructAnswer }: {
+    exercise: typeof exercises[0],
+    answers: Record<string, any>,
+    handleConstructAnswer: (questionId: string, word: string) => void,
+    resetConstructAnswer: (questionId: string) => void
+}) => {
+    const { id, options } = exercise;
+    const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
+
+    useEffect(() => {
+        const stringOptions = options.map(o => typeof o === 'string' ? o : o.word);
+        setShuffledOptions([...stringOptions].sort(() => Math.random() - 0.5));
+    }, [options]);
+
+    return (
+        <div className="space-y-4">
+            <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese">
+                {(answers[id] || []).join('')}
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {shuffledOptions.map((word, index) => (
+                    <Button key={index} variant="outline" onClick={() => handleConstructAnswer(id, word)}>
+                        {word}
+                    </Button>
+                ))}
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => resetConstructAnswer(id)}>Сбросить</Button>
+        </div>
+    );
+}
 
 export default function PhoneticsLesson5Page() {
     const [progress, setProgress] = useState(0);
@@ -128,27 +151,58 @@ export default function PhoneticsLesson5Page() {
     const handleAnswer = (questionId: string, answer: any) => {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
     };
+    
+    const handleConstructAnswer = (questionId: string, word: string) => {
+        setAnswers(prev => {
+            const currentAnswer = prev[questionId] || [];
+            return { ...prev, [questionId]: [...currentAnswer, word] };
+        });
+    }
+
+    const resetConstructAnswer = (questionId: string) => {
+        setAnswers(prev => ({ ...prev, [questionId]: [] }));
+    }
 
     const checkAnswers = () => {
         const newResults: Record<string, boolean | null> = {};
         exercises.forEach(ex => {
-            newResults[ex.id] = answers[ex.id] === ex.correctAnswer;
+            let isCorrect = false;
+            if (ex.type === 'construct') {
+                const userAnswer = (answers[ex.id] || []).join('');
+                isCorrect = userAnswer.trim() === (ex.correctAnswer as string).trim();
+            } else if (ex.type === 'fill-in-the-blank') {
+                isCorrect = (answers[ex.id] || '').toLowerCase() === ex.correctAnswer;
+            } else {
+                 isCorrect = answers[ex.id] === ex.correctAnswer;
+            }
+            newResults[ex.id] = isCorrect;
         });
         setResults(newResults);
         updateProgress(newResults);
     };
 
     const renderExercise = (exercise: typeof exercises[0]) => {
-        const { id, title, description, options } = exercise;
+        const { id, type, title, description, options } = exercise;
         const result = results[id];
 
-        return (
-            <Card key={id} className="w-full">
+        const baseCard = (content: React.ReactNode) => (
+             <Card key={id} className="w-full">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent>{content}</CardContent>
+                <CardFooter>
+                     {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
+                     {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
+                </CardFooter>
+            </Card>
+        );
+
+        switch (type) {
+            case 'select-correct':
+            case 'multiple-choice':
+                return baseCard(
                     <RadioGroup value={answers[id]} onValueChange={(val) => handleAnswer(id, val)} className="flex flex-col gap-4">
                         {(options as string[]).map(option => (
                             <div key={option} className="flex items-center space-x-2">
@@ -157,13 +211,27 @@ export default function PhoneticsLesson5Page() {
                             </div>
                         ))}
                     </RadioGroup>
-                </CardContent>
-                <CardFooter>
-                     {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
-                     {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка</span>}
-                </CardFooter>
-            </Card>
-        );
+                );
+            case 'fill-in-the-blank':
+                return baseCard(
+                    <Input
+                        value={answers[id] || ''}
+                        onChange={(e) => handleAnswer(id, e.target.value)}
+                        className="font-japanese text-lg"
+                    />
+                );
+            case 'construct':
+                return baseCard(
+                    <ExerciseConstruct 
+                        exercise={exercise}
+                        answers={answers}
+                        handleConstructAnswer={handleConstructAnswer}
+                        resetConstructAnswer={resetConstructAnswer}
+                    />
+                );
+            default:
+                return null;
+        }
     };
 
     return (
@@ -198,7 +266,7 @@ export default function PhoneticsLesson5Page() {
                            <ul className="list-disc list-inside space-y-3">
                                 <li><b>Согласный [р]:</b> Напоминает нечто среднее между русскими [р] и [л]. Кончик языка делает один быстрый мазок по верхнему нёбу.</li>
                                 <li><b>Согласный [в]:</b> Произносится как звук [ф], но с участием голоса (звонкий).</li>
-                                <li><b>Согласный [н]:</b> Перед большинством звуков произносится как носовой [ñ], аналога которому нет в русском. Воздух проходит одновременно через рот и нос.</li>
+                                <li><b>Согласный [н]:</b> Перед большинством звуков произносится как носовой [ñ], аналога которому в русском языке нет. Воздух проходит одновременно через рот и нос.</li>
                            </ul>
                         </AccordionContent>
                     </AccordionItem>
@@ -207,14 +275,14 @@ export default function PhoneticsLesson5Page() {
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
                            <p>Ассимиляция — это изменение звука под влиянием соседних. В японском она очень важна.</p>
                            <h4 className="font-bold text-lg mt-4 mb-2">1. Прогрессивная (влияние предыдущего звука)</h4>
-                           <div className="flex items-center gap-2"><InteractiveText analysis={phoneticsAnalyses.deguchi} /></div>
-                           <div className="flex items-center gap-2"><InteractiveText analysis={phoneticsAnalyses.monozuki} /></div>
+                           <div><InteractiveText analysis={phoneticsAnalyses.deguchi} /></div>
+                           <div><InteractiveText analysis={phoneticsAnalyses.monozuki} /></div>
                            <h4 className="font-bold text-lg mt-4 mb-2">2. Регрессивная (влияние последующего звука)</h4>
-                           <div className="flex items-center gap-2"><InteractiveText analysis={phoneticsAnalyses.hakko} /></div>
-                           <div className="flex items-center gap-2"><InteractiveText analysis={phoneticsAnalyses.bumppo} /></div>
+                           <div><InteractiveText analysis={phoneticsAnalyses.hakko} /></div>
+                           <div><InteractiveText analysis={phoneticsAnalyses.bumppo} /></div>
                            <h4 className="font-bold text-lg mt-4 mb-2">3. Взаимная (оба звука меняются)</h4>
-                           <div className="flex items-center gap-2"><InteractiveText analysis={phoneticsAnalyses.ninzu} /></div>
-                           <div className="flex items-center gap-2"><InteractiveText analysis={phoneticsAnalyses.ippo} /></div>
+                           <div><InteractiveText analysis={phoneticsAnalyses.ninzu} /></div>
+                           <div><InteractiveText analysis={phoneticsAnalyses.ippo} /></div>
                         </AccordionContent>
                     </AccordionItem>
                      <AccordionItem value="item-3">
@@ -239,7 +307,7 @@ export default function PhoneticsLesson5Page() {
                                          <TableRow key={rowIndex}>
                                              {row.map((char, charIndex) => (
                                                  <TableCell key={charIndex} className="font-japanese text-2xl text-center p-1">{char}</TableCell>
-                                             ))}
+                                             )).reverse()}
                                          </TableRow>
                                      ))}
                                  </TableBody>
@@ -274,6 +342,15 @@ export default function PhoneticsLesson5Page() {
                                     ))}
                                 </TableBody>
                             </Table>
+                        </AccordionContent>
+                    </AccordionItem>
+                     <AccordionItem value="item-6">
+                        <AccordionTrigger className="text-xl font-semibold">§6. Обиходные выражения</AccordionTrigger>
+                        <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                            <InteractiveText analysis={dialogueAnalyses.iiesoudewaarimasen} />
+                            <InteractiveText analysis={dialogueAnalyses.wakarimasuka} />
+                            <InteractiveText analysis={dialogueAnalyses.yondekudasai} />
+                            <InteractiveText analysis={dialogueAnalyses.nihongodeittekudasai} />
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
