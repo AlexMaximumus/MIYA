@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -38,6 +37,14 @@ const lessons = [
         description: 'Слоги с мягкими согласными. Введение в иероглифику: онные и кунные чтения, ключи, правила написания.',
         href: '/phonetics/lesson-4',
         lessonNumber: 4,
+        icon: <Mic2 className="w-8 h-8" />
+    },
+    {
+        id: 'phonetics-lesson-5',
+        title: 'Согласные, ассимиляция и годзюон',
+        description: 'Звуки [р], [в], [н]. Правила ассимиляции. Полная таблица годзюон и новые иероглифы.',
+        href: '/phonetics/lesson-5',
+        lessonNumber: 5,
         icon: <Mic2 className="w-8 h-8" />
     }
 ];
