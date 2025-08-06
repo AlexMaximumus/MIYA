@@ -17,7 +17,7 @@ const FallingWord = ({ word }: { word: string }) => {
       animationDuration: `${Math.random() * 3 + 2}s`, // 2s to 5s
       animationDelay: `${Math.random() * 5}s`,
     };
-    return <div className="absolute top-0 text-primary/50 animate-fall" style={style}>{word}</div>;
+    return <div className="absolute top-0 text-primary/50 animate-fall text-xl" style={style}>{word}</div>;
   };
 
 interface CategoryCardProps {
