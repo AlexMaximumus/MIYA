@@ -292,6 +292,12 @@ export const grammarAnalyses = {
         ],
         fullTranslation: 'Господин/госпожа Танака'
     },
+    gosenmon: {
+        sentence: [
+            { word: 'ご専門', furigana: 'ごせんもん', translation: 'Ваша специальность', partOfSpeech: 'существительное' },
+        ],
+        fullTranslation: 'Ваша специальность'
+    },
     watashiwagakuseidesu: watashiwagakuseidesu,
     anokatawagakuseidehaarimasen: anokatawagakuseidehaarimasen,
     watashiwasenseidehaarimasengakuseidesu: watashiwasenseidehaarimasengakuseidesu,
@@ -565,6 +571,12 @@ export const dialogueAnalyses = {
         ],
         fullTranslation: 'Как вас зовут?'
     },
+    onamae: {
+        sentence: [
+            { word: 'お名前', furigana: 'おなまえ', translation: 'Ваше имя', partOfSpeech: 'существительное' },
+        ],
+        fullTranslation: 'Ваше имя'
+    },
     hajimemashite_name: {
         sentence: [
             { word: '[name]', furigana: '[name]', translation: 'Имя пользователя', partOfSpeech: 'имя собственное' },
@@ -629,4 +641,5 @@ export const dialogueAnalyses = {
         fullTranslation: 'Скажите по-японски, пожалуйста.'
     }
 };
+
 

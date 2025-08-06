@@ -420,7 +420,7 @@ export default function GrammarLesson2Page() {
                 </div>
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
-                    <Button size="lg" asChild className="btn-gradient" disabled>
+                    <Button size="lg" asChild className="btn-gradient">
                         <Link href="/grammar/lesson-3">Перейти к Уроку 3 →</Link>
                     </Button>
                 </div>
