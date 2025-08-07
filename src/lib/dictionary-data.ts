@@ -511,7 +511,7 @@ const n4: Word[] = [
     { word: 'ほっとする', reading: 'ほっとする', translation: 'чувствовать облегчение', pos: 'глагол', jlpt: 'N4' },
     { word: '見学する', reading: 'けんがくする', translation: 'посещать (для осмотра)', pos: 'глагол', jlpt: 'N4' },
     { word: '素晴らしい', reading: 'すばらしい', translation: 'замечательный', pos: 'прилагательное', jlpt: 'N4' },
-    { word: 'ひどい', reading: 'ひどい', translation: 'ужасный, жестокий', pos: 'прилагательное', jlpt: 'N4' },
+    { word: '酷い', reading: 'ひどい', translation: 'ужасный, жестокий', pos: 'прилагательное', jlpt: 'N4' },
     { word: '柔らかい', reading: 'やわらかい', translation: 'мягкий', pos: 'прилагательное', jlpt: 'N4' },
     { word: '堅い', reading: 'かたい', translation: 'твердый', pos: 'прилагательное', jlpt: 'N4' },
     { word: '珍しい', reading: 'めずらしい', translation: 'редкий', pos: 'прилагательное', jlpt: 'N4' },

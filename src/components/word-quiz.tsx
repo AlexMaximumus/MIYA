@@ -27,10 +27,15 @@ interface AnswerRecord {
     isCorrect: boolean;
 }
 
+interface Option {
+    text: string; // The primary display text (e.g., kanji or translation)
+    reading?: string; // Furigana reading, if applicable
+}
+
 export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, vocabSet }: WordQuizProps) {
   const [questions, setQuestions] = useState<Word[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [options, setOptions] = useState<string[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
@@ -58,19 +63,27 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
   
   useEffect(() => {
     generateQuestions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [words, questionType, quizLength]);
 
   const generateOptions = (correctAnswer: Word) => {
     const isJpToRu = questionType === 'jp_to_ru';
-    const correctOption = isJpToRu ? correctAnswer.translation : correctAnswer.word;
     
-    let wrongOptions = words
-      .filter((char) => char.word !== correctAnswer.word)
-      .map((char) => isJpToRu ? char.translation : char.word);
-    
-    wrongOptions = shuffleArray(wrongOptions).slice(0, 3);
-    const allOptions = shuffleArray([...wrongOptions, correctOption]);
-    setOptions(allOptions);
+    if (isJpToRu) {
+        const correctOption: Option = { text: correctAnswer.translation };
+        let wrongOptions = words
+            .filter(w => w.word !== correctAnswer.word)
+            .map(w => ({ text: w.translation }));
+        const allOptions = shuffleArray([...wrongOptions.slice(0, 3), correctOption]);
+        setOptions(allOptions);
+    } else { // ru_to_jp
+        const correctOption: Option = { text: correctAnswer.word, reading: correctAnswer.reading };
+        let wrongOptions = words
+            .filter(w => w.word !== correctAnswer.word)
+            .map(w => ({ text: w.word, reading: w.reading }));
+        const allOptions = shuffleArray([...wrongOptions.slice(0, 3), correctOption]);
+        setOptions(allOptions);
+    }
   };
 
   useEffect(() => {
@@ -79,20 +92,21 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
     } else if (questions.length > 0 && currentQuestionIndex >= questions.length) {
         setIsFinished(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex, questions]);
 
 
-  const handleAnswer = (selectedOption: string) => {
+  const handleAnswer = (selectedOption: Option) => {
     if (feedback) return;
 
     const correctAnswer = questions[currentQuestionIndex];
     const isCorrect = questionType === 'jp_to_ru' 
-        ? selectedOption === correctAnswer.translation 
-        : selectedOption === correctAnswer.word;
+        ? selectedOption.text === correctAnswer.translation 
+        : selectedOption.text === correctAnswer.word;
 
     setAnswerHistory(prev => [...prev, {
         question: correctAnswer,
-        answer: selectedOption,
+        answer: selectedOption.text,
         isCorrect
     }]);
 
@@ -226,23 +240,24 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
           <div className="grid grid-cols-2 gap-4 w-full">
             {options.map((option) => {
               const isCorrectOption = isJpToRu
-                ? option === currentQuestion.translation
-                : option === currentQuestion.word;
+                ? option.text === currentQuestion.translation
+                : option.text === currentQuestion.word;
 
               return (
-              <Button
-                key={option}
-                onClick={() => handleAnswer(option)}
-                className={cn(`h-16 text-xl transition-all duration-300 transform`,
-                !isJpToRu && 'font-japanese text-2xl',
-                feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
-                feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : '',
-                feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
-                )}
-                disabled={!!feedback}
-              >
-                {option}
-              </Button>
+                <Button
+                    key={option.text}
+                    onClick={() => handleAnswer(option)}
+                    className={cn(`h-auto min-h-16 text-xl transition-all duration-300 transform p-2 flex flex-col`,
+                    !isJpToRu && 'font-japanese text-2xl',
+                    feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
+                    feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : '',
+                    feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
+                    )}
+                    disabled={!!feedback}
+                >
+                    {!isJpToRu && option.reading && <span className="text-xs font-normal">{option.reading}</span>}
+                    <span className={cn(isJpToRu && 'font-normal')}>{option.text}</span>
+                </Button>
             )})}
           </div>
         </CardContent>
