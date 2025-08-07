@@ -51,23 +51,28 @@ export default function TrainingPage() {
     const totalInitialCount = useRef(0);
 
     const initializeSession = useCallback((forceNew = false) => {
-        // Only generate a new queue if it's forced or if the current one is empty
-        if (forceNew || activeQueue.length === 0) {
-            const queue = getReviewQueue(allWords, 10);
-            totalInitialCount.current = queue.length;
-            setActiveQueue(shuffleArray(queue));
-            setCompletedSessionWords([]); // Reset completed words for this session
-            setFeedback(null);
-        }
-    }, [getReviewQueue, activeQueue.length]);
+        const queue = getReviewQueue(allWords, 10);
+        totalInitialCount.current = queue.length;
+        setActiveQueue(shuffleArray(queue));
+        setCompletedSessionWords([]);
+        setFeedback(null);
+        setSelectedAnswer(null);
+    }, [getReviewQueue]);
     
     useEffect(() => {
         setIsClient(true);
         const map = new Map<string, Word>();
         allWords.forEach(word => map.set(word.word, word));
         setWordMap(map);
-        initializeSession();
-    }, []); // Removed initializeSession from dependency array to prevent re-initialization on state change
+    }, []);
+
+    // Effect to initialize the session only once or when forced
+    useEffect(() => {
+        if(isClient && activeQueue.length === 0 && completedSessionWords.length === 0) {
+            initializeSession();
+        }
+    }, [isClient, initializeSession, activeQueue.length, completedSessionWords.length]);
+
 
     const generateOptions = useCallback((correctWord: Word, type: QuestionType) => {
         if (type === 'jp_to_ru') {
@@ -194,7 +199,7 @@ export default function TrainingPage() {
 
     const currentQueueItem = activeQueue[0];
     const currentWord = currentQueueItem ? wordMap.get(currentQueueItem.word) : null;
-    const progress = (completedSessionWords.length / totalInitialCount.current) * 100;
+    const progress = totalInitialCount.current > 0 ? (completedSessionWords.length / totalInitialCount.current) * 100 : 0;
     
     const isJpToRu = questionType === 'jp_to_ru';
     const streak = currentWord ? getStreak(currentWord.word) : 0;
