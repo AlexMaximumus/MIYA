@@ -64,7 +64,7 @@ const LESSON_ID = 'phonetics-lesson-4';
 const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
     <div className='flex flex-wrap gap-4 mt-2 justify-center'>
        {rowData.map(char => (
-           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
+           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-3xl md:text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
        ))}
    </div>
 );
@@ -128,7 +128,7 @@ export default function PhoneticsLesson4Page() {
         return (
             <Card key={id} className="w-full">
                 <CardHeader>
-                    <CardTitle>{title}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -247,7 +247,7 @@ export default function PhoneticsLesson4Page() {
                                 <TableBody>
                                     {kanjiList.map(k => (
                                         <TableRow key={k.kanji}>
-                                            <TableCell className="font-japanese text-3xl">{k.kanji}</TableCell>
+                                            <TableCell className="font-japanese text-2xl md:text-3xl">{k.kanji}</TableCell>
                                             <TableCell className="font-japanese">{k.kun}</TableCell>
                                             <TableCell className="font-japanese">{k.on}</TableCell>
                                             <TableCell>{k.meaning}</TableCell>
@@ -274,11 +274,13 @@ export default function PhoneticsLesson4Page() {
                 </div>
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
-                    <Button size="lg" asChild className="btn-gradient" disabled>
-                        <Link href="#">Перейти к Уроку 5 →</Link>
+                    <Button size="lg" asChild className="btn-gradient">
+                        <Link href="/phonetics/lesson-5">Перейти к Уроку 5 →</Link>
                     </Button>
                 </div>
             </div>
         </div>
     );
 }
+
+    

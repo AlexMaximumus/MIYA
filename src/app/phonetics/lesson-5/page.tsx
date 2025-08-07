@@ -109,7 +109,7 @@ const ExerciseConstruct = ({ exercise, answers, handleConstructAnswer, resetCons
 const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
     <div className='flex flex-wrap gap-4 mt-2 justify-center'>
        {rowData.map(char => (
-           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
+           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-3xl md:text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
        ))}
    </div>
 );
@@ -220,7 +220,7 @@ export default function PhoneticsLesson5Page() {
         const baseCard = (content: React.ReactNode, footer?: React.ReactNode) => (
              <Card key={id} className="w-full">
                 <CardHeader>
-                    <CardTitle>{title}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
                     {description && <CardDescription>{description}</CardDescription>}
                 </CardHeader>
                 <CardContent>{content}</CardContent>
@@ -404,7 +404,7 @@ export default function PhoneticsLesson5Page() {
                                 <TableBody>
                                     {kanjiList.map(k => (
                                         <TableRow key={k.kanji}>
-                                            <TableCell className="font-japanese text-3xl">{k.kanji}</TableCell>
+                                            <TableCell className="font-japanese text-2xl md:text-3xl">{k.kanji}</TableCell>
                                             <TableCell className="font-japanese">{k.kun}</TableCell>
                                             <TableCell className="font-japanese">{k.on}</TableCell>
                                             <TableCell>{k.meaning}</TableCell>
@@ -429,7 +429,7 @@ export default function PhoneticsLesson5Page() {
                 <div className="w-full max-w-4xl space-y-8 mt-8">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Инструкция к упражнениям</CardTitle>
+                            <CardTitle className="text-xl md:text-2xl">Инструкция к упражнениям</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             <p>Ниже представлены упражнения по материалам урока. Выполняйте их последовательно.</p>
@@ -448,10 +448,12 @@ export default function PhoneticsLesson5Page() {
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" variant="default" onClick={checkAnswers}>Проверить выполненные задания</Button>
                     <Button size="lg" asChild className="btn-gradient">
-                        <Link href="/grammar">Перейти к урокам грамматики →</Link>
+                        <Link href="/grammar/lesson-1">Перейти к урокам грамматики →</Link>
                     </Button>
                 </div>
             </div>
         </div>
     );
 }
+
+    

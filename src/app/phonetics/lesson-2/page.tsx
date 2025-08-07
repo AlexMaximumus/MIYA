@@ -103,7 +103,7 @@ export default function PhoneticsLesson2Page() {
         return (
             <Card key={id} className="w-full">
                 <CardHeader>
-                    <CardTitle>{title}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -128,7 +128,7 @@ export default function PhoneticsLesson2Page() {
          <div className='flex flex-wrap gap-4 mt-2 justify-center'>
             {rowData.map(char => (
                 <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24">
-                    <span className="text-4xl font-japanese">{char.kana}</span>
+                    <span className="text-3xl md:text-4xl font-japanese">{char.kana}</span>
                     <span className="text-muted-foreground">{char.romaji}</span>
                 </Card>
             ))}
@@ -211,7 +211,7 @@ export default function PhoneticsLesson2Page() {
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
                  <Card className="w-full mb-8">
                     <CardHeader>
-                        <CardTitle className="text-center">Словарь к уроку</CardTitle>
+                        <CardTitle className="text-xl md:text-2xl text-center">Словарь к уроку</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -235,11 +235,13 @@ export default function PhoneticsLesson2Page() {
                 </div>
                 <div className="mt-12 text-center flex flex-col sm:flex-row justify-center items-center gap-4">
                     <Button size="lg" variant="default" onClick={checkAnswers}>Проверить все</Button>
-                    <Button size="lg" asChild className="btn-gradient" disabled>
-                        <Link href="#">Перейти к Уроку 3 →</Link>
+                    <Button size="lg" asChild className="btn-gradient">
+                        <Link href="/phonetics/lesson-3">Перейти к Уроку 3 →</Link>
                     </Button>
                 </div>
             </div>
         </div>
     );
 }
+
+    
