@@ -247,16 +247,17 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
                 <Button
                     key={option.text}
                     onClick={() => handleAnswer(option)}
-                    className={cn(`h-auto min-h-16 text-xl transition-all duration-300 transform p-2 flex flex-col`,
-                    !isJpToRu && 'font-japanese text-2xl',
-                    feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
-                    feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : '',
-                    feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
+                    className={cn(`h-auto min-h-16 text-lg transition-all duration-300 transform p-2 flex flex-col`,
+                        feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
+                        feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : '',
+                        feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
                     )}
                     disabled={!!feedback}
                 >
                     {!isJpToRu && option.reading && <span className="text-xs font-normal text-muted-foreground">{option.reading}</span>}
-                    <span className={cn(isJpToRu && 'font-normal')}>{option.text}</span>
+                    <span className={cn(
+                        isJpToRu ? 'font-normal' : 'font-japanese text-2xl'
+                    )}>{option.text}</span>
                 </Button>
             )})}
           </div>
@@ -268,3 +269,4 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
     </div>
   );
 }
+
