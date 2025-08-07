@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, BookCheck, CaseUpper, BookOpen, MessageSquare, Puzzle, Mic2 } from 'lucide-react';
+import { ArrowLeft, BookCheck, CaseUpper, BookOpen, MessageSquare, Puzzle, Mic2, BookMarked } from 'lucide-react';
 import LessonCard from '@/components/lesson-card';
 
 const lessonCategories = [
@@ -21,6 +21,13 @@ const lessonCategories = [
         description: 'Освойте правила и структуры, от основ до сложных конструкций. Пройдите уроки и закрепите знания упражнениями.',
         href: '/grammar',
         icon: <Puzzle className="w-8 h-8" />,
+    },
+    {
+        id: 'kanji',
+        title: 'Кандзи',
+        description: 'Изучение иероглифов: ключи, чтения, порядок черт и мнемоники для запоминания.',
+        href: '/kanji',
+        icon: <BookMarked className="w-8 h-8" />
     },
     {
         id: 'vocabulary-by-topic',
