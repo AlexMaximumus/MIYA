@@ -16,7 +16,7 @@ export interface Kanji {
 }
 
 const n5Kanji: Kanji[] = [
-    { kanji: '一', on: ['いち'], kun: ['ひと-'], translation: 'один', jlpt: 'N5' },
+    { kanji: '一', on: ['いち', 'いつ'], kun: ['ひと-'], translation: 'один', jlpt: 'N5' },
     { kanji: '二', on: ['に'], kun: ['ふた-'], translation: 'два', jlpt: 'N5' },
     { kanji: '三', on: ['さん'], kun: ['みっ-'], translation: 'три', jlpt: 'N5' },
     { kanji: '四', on: ['し'], kun: ['よん', 'よ'], translation: 'четыре', jlpt: 'N5' },
@@ -108,7 +108,20 @@ const n5Kanji: Kanji[] = [
     { kanji: '赤', on: ['せき'], kun: ['あか'], translation: 'красный', jlpt: 'N5' },
     { kanji: '青', on: ['せい'], kun: ['あお'], translation: 'синий', jlpt: 'N5' },
     { kanji: '好', on: ['こう'], kun: ['すき'], translation: 'любить, нравиться', jlpt: 'N5' },
-    { kanji: '元', on: ['げん', 'がん'], kun: ['もと'], translation: 'основа, происхождение', jlpt: 'N5' }
+    { kanji: '元', on: ['げん', 'がん'], kun: ['もと'], translation: 'основа, происхождение', jlpt: 'N5' },
+    { kanji: '山', on: ['さん'], kun: ['やま'], translation: 'гора', jlpt: 'N5' },
+    { kanji: '川', on: ['せん'], kun: ['かわ'], translation: 'река', jlpt: 'N5' },
+    { kanji: '田', on: ['でん'], kun: ['た'], translation: 'рисовое поле', jlpt: 'N5' },
+    { kanji: '国', on: ['こく'], kun: ['くに'], translation: 'страна', jlpt: 'N5' },
+    { kanji: '空', on: ['くう'], kun: ['そら', 'あく'], translation: 'небо, пустой', jlpt: 'N5' },
+    { kanji: '店', on: ['てん'], kun: ['みせ'], translation: 'магазин', jlpt: 'N5' },
+    { kanji: '毎', on: ['まい'], kun: ['-ごと'], translation: 'каждый', jlpt: 'N5' },
+    { kanji: '道', on: ['どう'], kun: ['みち'], translation: 'дорога, путь', jlpt: 'N5' },
+    { kanji: '花', on: ['か'], kun: ['はな'], translation: 'цветок', jlpt: 'N5' },
+    { kanji: '魚', on: ['ぎょ'], kun: ['さかな'], translation: 'рыба', jlpt: 'N5' },
+    { kanji: '肉', on: ['にく'], kun: [], translation: 'мясо', jlpt: 'N5' },
+    { kanji: '門', on: ['もん'], kun: ['かど'], translation: 'ворота', jlpt: 'N5' },
+    { kanji: '間', on: ['かん', 'けん'], kun: ['あいだ', 'ま'], translation: 'между, интервал', jlpt: 'N5' }
 ];
 
 const n5: Word[] = [
