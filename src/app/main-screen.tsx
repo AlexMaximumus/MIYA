@@ -40,13 +40,19 @@ export default function MainScreen() {
   const [randomAnalysis, setRandomAnalysis] = useState<JapaneseAnalysisOutput | null>(null);
 
   // Word Progress
-  const { getLearnedWordsCount, getTodaysReviewCount } = useWordProgress();
-  const [learnedWords, setLearnedWords] = useState(0);
-  const [reviewCount, setReviewCount] = useState(0);
+  const { 
+    getWordsForToday, 
+    getTotalMasteredCount,
+    getPoorlyLearnedCount,
+    getWellLearnedCount
+   } = useWordProgress();
 
-  // Lesson Progress
-  const [grammarProgress, setGrammarProgress] = useState<number | null>(null);
-  const [wordFormationProgress, setWordFormationProgress] = useState<number | null>(null);
+  const [stats, setStats] = useState({
+    today: 0,
+    total: 0,
+    poorly: 0,
+    well: 0,
+  });
 
   const { isTeacherMode, isNewTeacher, disableTeacherMode } = useTeacherMode();
 
@@ -54,26 +60,16 @@ export default function MainScreen() {
   useEffect(() => {
     // This runs only on the client, after hydration
     setRandomAnalysis(mainScreenAnalyses[Math.floor(Math.random() * mainScreenAnalyses.length)]);
+    
+    // Update stats on mount
+    setStats({
+      today: getWordsForToday(),
+      total: getTotalMasteredCount(),
+      poorly: getPoorlyLearnedCount(),
+      well: getWellLearnedCount()
+    });
 
-    // Calculate word progress
-    setLearnedWords(getLearnedWordsCount());
-    setReviewCount(getTodaysReviewCount());
-
-    // Calculate average grammar progress
-    const totalGrammarProgress = grammarLessons.reduce((acc, id) => {
-        const stored = localStorage.getItem(`${id}-progress`);
-        return acc + (stored ? JSON.parse(stored) : 0);
-    }, 0);
-    setGrammarProgress(Math.round(totalGrammarProgress / grammarLessons.length));
-
-     // Calculate average word formation progress
-    const totalWordFormationProgress = wordFormationLessons.reduce((acc, id) => {
-        const stored = localStorage.getItem(`${id}-progress`);
-        return acc + (stored ? JSON.parse(stored) : 0);
-    }, 0);
-    setWordFormationProgress(Math.round(totalWordFormationProgress / wordFormationLessons.length));
-
-  }, [getLearnedWordsCount, getTodaysReviewCount]);
+  }, [getWordsForToday, getTotalMasteredCount, getPoorlyLearnedCount, getWellLearnedCount]);
 
 
   const handleTitleClick = () => {
@@ -179,14 +175,16 @@ export default function MainScreen() {
                 <Link href="/training" className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-400 to-primary rounded-lg blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-background-shine"></div>
                     <CategoryCard
-                    icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
-                    title="Тренировка дня"
-                    description="Изучайте слова по системе интервальных повторений"
-                    stats={[
-                        { label: "Изучено слов", value: learnedWords },
-                        { label: "К повторению", value: reviewCount }
-                    ]}
-                    isSpecial
+                        icon={<BrainCircuit className="w-10 h-10 md:w-12 md:h-12" />}
+                        title="Тренировка дня"
+                        description="Изучайте слова по системе интервальных повторений"
+                        stats={[
+                            { label: 'К изучению сегодня', value: stats.today },
+                            { label: 'Изучено всего', value: stats.total },
+                            { label: 'Изучено плохо', value: stats.poorly },
+                            { label: 'Изучено отлично', value: stats.well },
+                        ]}
+                        isSpecial
                     />
                 </Link>
                 

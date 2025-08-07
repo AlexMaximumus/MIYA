@@ -36,8 +36,10 @@ interface WordProgressState {
     advanceSession: () => void;
     requeueIncorrectAnswer: () => void;
     getReviewQueue: (allWords: { word: string }[], newWordsPerDay?: number) => QueueItem[];
-    getLearnedWordsCount: () => number;
-    getTodaysReviewCount: () => number;
+    getWordsForToday: () => number;
+    getTotalMasteredCount: () => number;
+    getPoorlyLearnedCount: () => number;
+    getWellLearnedCount: () => number;
     resetProgress: () => void;
 }
 
@@ -184,13 +186,27 @@ export const useWordProgress = create<WordProgressState>()(
         return [...reviewPart, ...newWords];
       },
 
-      getLearnedWordsCount: () => {
+      getWordsForToday: () => {
+        return get().getReviewQueue(allWordsList).length;
+      },
+
+      getTotalMasteredCount: () => {
         const { progress } = get();
         return Object.values(progress).filter(p => p.status === 'mastered').length;
       },
 
-      getTodaysReviewCount: () => {
-        return get().getReviewQueue(allWordsList).length;
+      getPoorlyLearnedCount: () => {
+        const { progress } = get();
+        return Object.values(progress).filter(p => 
+            p.status !== 'new' && p.status !== 'mastered' && p.streak <= 1
+        ).length;
+      },
+
+      getWellLearnedCount: () => {
+        const { progress } = get();
+        return Object.values(progress).filter(p => 
+            p.status !== 'new' && p.status !== 'mastered' && p.streak > 1 && p.streak < MASTERED_STREAK
+        ).length;
       },
 
       resetProgress: () => {
