@@ -136,7 +136,7 @@ function DictionaryContent() {
                 <div className="flex items-center gap-4">
                     <BookText className="w-10 h-10 text-primary" />
                     <div>
-                        <CardTitle className="text-2xl md:text-3xl">Словарь ({allWords.length.toLocaleString('ru-RU')} слов)</CardTitle>
+                        <CardTitle className="text-xl md:text-3xl">Словарь ({allWords.length.toLocaleString('ru-RU')} слов)</CardTitle>
                         <CardDescription>Ищите слова, фильтруйте списки и проверяйте свои знания.</CardDescription>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ function DictionaryContent() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <Card className="w-full">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Filter className="w-5 h-5" /> Фильтры поиска</CardTitle>
+                    <CardTitle className="flex items-center gap-2 text-lg md:text-xl"><Filter className="w-5 h-5" /> Фильтры поиска</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                      <Input
@@ -182,7 +182,7 @@ function DictionaryContent() {
 
             <Card className="w-full">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><TestTubeDiagonal className="w-5 h-5" /> Тест по словарю</CardTitle>
+                    <CardTitle className="flex items-center gap-2 text-lg md:text-xl"><TestTubeDiagonal className="w-5 h-5" /> Тест по словарю</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Select value={quizJlptLevel} onValueChange={(v) => setQuizJlptLevel(v as VocabSet)}>
@@ -241,7 +241,7 @@ function DictionaryContent() {
                                 const status = getWordStatus(word.word);
                                 return (
                                     <TableRow key={`${word.word}-${word.translation}`}>
-                                        <TableCell className="w-[200px] font-japanese text-lg font-medium flex items-center gap-2">
+                                        <TableCell className="w-[200px] font-japanese text-base md:text-lg font-medium flex items-center gap-2">
                                             {status === 'mastered' && (
                                                 <TooltipProvider>
                                                     <Tooltip>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -48,7 +49,7 @@ export default function WelcomeScreen() {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-background text-foreground animate-fade-in p-4 overflow-hidden">
        <div className="relative">
-        <h1 className="text-3xl font-bold font-headline text-center relative z-10">
+        <h1 className="text-3xl md:text-4xl font-bold font-headline text-center relative z-10">
           <span
             onClick={handleTitleClick}
             className={`cursor-pointer select-none inline-block ${isVibrating ? 'animate-shake' : ''}`}
@@ -71,7 +72,7 @@ export default function WelcomeScreen() {
         ))}
         {showEasterEgg && (
             <div className="absolute inset-0 flex items-center justify-center z-20 animate-fade-in">
-                <span className="text-6xl text-destructive font-bold animate-pulse">
+                <span className="text-5xl md:text-6xl text-destructive font-bold animate-pulse">
                 ✨さねちか✨
                 </span>
             </div>
@@ -81,7 +82,7 @@ export default function WelcomeScreen() {
         <Cherry className="w-24 h-24 mb-6 text-primary animate-pulse" />
       </div>
 
-      <p className="mt-20 text-center text-lg max-w-md relative z-10">
+      <p className="mt-20 text-center text-base md:text-lg max-w-md relative z-10">
         Добро пожаловать в MIYA LINGO — ваш спутник в изучении японского языка
       </p>
     </div>

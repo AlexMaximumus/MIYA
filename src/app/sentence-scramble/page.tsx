@@ -122,8 +122,8 @@ export default function SentenceScramblePage() {
                 
                 <Card className="w-full shadow-lg">
                     <CardHeader>
-                        <CardTitle className="text-2xl text-center">Собери фразу!</CardTitle>
-                        <CardDescription className="text-center">
+                        <CardTitle className="text-xl md:text-2xl text-center">Собери фразу!</CardTitle>
+                        <CardDescription className="text-center text-base md:text-lg">
                             Переведите это предложение: <br/> <b className="text-foreground">{currentSentence.fullTranslation}</b>
                         </CardDescription>
                          <div className="flex justify-between items-center pt-2">
@@ -133,7 +133,7 @@ export default function SentenceScramblePage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className={cn(
-                            "flex items-center justify-center flex-wrap gap-2 border rounded-md p-4 min-h-[70px] text-2xl font-japanese bg-muted/30 transition-all duration-300",
+                            "flex items-center justify-center flex-wrap gap-2 border rounded-md p-4 min-h-[70px] text-xl md:text-2xl font-japanese bg-muted/30 transition-all duration-300",
                             feedback === 'correct' && 'border-green-500 bg-green-500/10',
                             feedback === 'incorrect' && 'border-destructive bg-destructive/10 animate-shake'
                         )}>
@@ -163,7 +163,7 @@ export default function SentenceScramblePage() {
                                         <Button
                                             variant="outline"
                                             size="lg"
-                                            className="font-japanese text-xl"
+                                            className="font-japanese text-lg md:text-xl"
                                             onClick={() => handleWordClick(word, index)}
                                             disabled={!!feedback}
                                         >

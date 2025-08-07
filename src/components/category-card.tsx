@@ -17,7 +17,7 @@ const FallingWord = ({ word }: { word: string }) => {
       animationDuration: `${Math.random() * 3 + 2}s`, // 2s to 5s
       animationDelay: `${Math.random() * 5}s`,
     };
-    return <div className="absolute top-0 text-primary/50 animate-fall text-xl" style={style}>{word}</div>;
+    return <div className="absolute top-0 text-primary/50 animate-fall text-lg md:text-xl" style={style}>{word}</div>;
   };
 
 interface CategoryCardProps {
@@ -51,7 +51,7 @@ export default function CategoryCard({ icon, title, description, progress, stats
             <CardTitle className="text-card-foreground text-xl md:text-2xl break-words">{title}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col justify-between flex-grow">
-            <CardDescription className="text-card-foreground/80 mb-4">{description}</CardDescription>
+            <CardDescription className="text-card-foreground/80 mb-4 text-sm md:text-base">{description}</CardDescription>
             {progress !== undefined && progress !== null && (
                 <div className="mt-auto">
                     <p className="text-xs text-muted-foreground mb-1">Общий прогресс:</p>
@@ -61,7 +61,7 @@ export default function CategoryCard({ icon, title, description, progress, stats
             {stats && stats.length > 0 && (
                 <div className="mt-auto space-y-2">
                     {stats.map((stat, index) => (
-                        <div key={index} className="flex justify-between items-center text-sm">
+                        <div key={index} className="flex justify-between items-center text-xs md:text-sm">
                             <p className="text-muted-foreground">{stat.label}</p>
                             <p className="font-bold">{stat.value}</p>
                         </div>

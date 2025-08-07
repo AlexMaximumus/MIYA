@@ -19,7 +19,7 @@ import {
       <Popover>
         <PopoverTrigger asChild>
           <div className="relative aspect-square flex flex-col items-center justify-center bg-card/80 rounded-lg p-2 cursor-pointer transition-all duration-200 hover:bg-primary/20 hover:shadow-md transform hover:-translate-y-1 group">
-            <span className="text-5xl md:text-6xl font-japanese">{kanji}</span>
+            <span className="text-4xl sm:text-5xl md:text-6xl font-japanese">{kanji}</span>
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-4">

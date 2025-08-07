@@ -215,10 +215,10 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
                 {isJpToRu ? (
                     <>
                         <p className="text-muted-foreground mb-1">{currentQuestion.reading}</p>
-                        <p className="text-6xl font-bold font-japanese">{currentQuestion.word}</p>
+                        <p className="text-5xl md:text-6xl font-bold font-japanese">{currentQuestion.word}</p>
                     </>
                 ) : (
-                    <p className="text-4xl font-bold">{currentQuestion.translation}</p>
+                    <p className="text-3xl md:text-4xl font-bold">{currentQuestion.translation}</p>
                 )}
             </div>
           <div className="grid grid-cols-2 gap-4 w-full">
@@ -230,7 +230,7 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
                     <Button
                         key={option.word}
                         onClick={() => handleAnswer(option)}
-                        className={cn(`h-auto min-h-16 text-lg transition-all duration-300 transform p-2 flex flex-col`,
+                        className={cn(`h-auto min-h-16 text-base md:text-lg transition-all duration-300 transform p-2 flex flex-col`,
                             feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
                             feedback === 'incorrect' && isSelectedOption ? 'bg-destructive/80' : '',
                             feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
@@ -242,7 +242,7 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
                        ) : (
                            <div>
                                <span className="text-xs font-normal text-muted-foreground">{option.reading}</span>
-                               <span className="block font-japanese text-2xl">{option.word}</span>
+                               <span className="block font-japanese text-xl md:text-2xl">{option.word}</span>
                            </div>
                        )}
                     </Button>

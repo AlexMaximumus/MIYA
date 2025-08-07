@@ -112,7 +112,7 @@ export default function MainScreen() {
         {animatedWords.map((word, index) => (
           <span
             key={index}
-            className={`absolute text-xl animate-float-up ${word.highlighted ? 'text-primary font-bold' : 'text-foreground/80'}`}
+            className={`absolute text-lg animate-float-up ${word.highlighted ? 'text-primary font-bold' : 'text-foreground/80'}`}
             style={{
                 top: `${Math.random() * 80 - 40}%`,
                 left: `${Math.random() * 80 + 10}%`,

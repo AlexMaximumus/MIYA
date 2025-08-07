@@ -43,7 +43,7 @@ const kanjiList = [
 const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
     <div className='flex flex-wrap gap-4 mt-2 justify-center'>
        {rowData.map(char => (
-           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
+           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-3xl md:text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
        ))}
    </div>
 );
@@ -51,7 +51,7 @@ const KanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }
 const ExerciseCard = ({ title, description, children, result, onCheck, canCheck = true }: { title: string; description?: React.ReactNode; children: React.ReactNode; result?: boolean | null; onCheck?: () => void, canCheck?: boolean }) => (
     <Card>
         <CardHeader>
-            <CardTitle>{title}</CardTitle>
+            <CardTitle className="text-lg md:text-xl">{title}</CardTitle>
             {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
         <CardContent>{children}</CardContent>
@@ -93,7 +93,7 @@ const ReorderableSentence = ({ id, words, onComplete }: { id: string, words: str
 
     return (
         <div>
-            <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-xl font-japanese mb-4">
+            <div className="border rounded-md p-4 min-h-[50px] bg-muted/50 text-lg md:text-xl font-japanese mb-4">
                 {constructed.join(' ')}
             </div>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -267,12 +267,12 @@ export default function GrammarLesson1Page() {
             <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
             <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4" defaultValue={['item-grammar']}>
                 <AccordionItem value="item-grammar">
-                    <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                    <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
+                    <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                         <Accordion type="single" collapsible className="w-full" defaultValue="g-1">
                              <AccordionItem value="g-1">
-                                <AccordionTrigger className="text-xl font-semibold">§1. Части речи</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§1. Части речи</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                     <p>В японском языке слова делятся на <b>знаменательные</b> (самостоятельные) и <b>незнаменательные</b> (служебные).</p>
                                     <ul className="list-disc list-inside space-y-2">
                                         <li><b>Знаменательные:</b> существительные, глаголы, прилагательные, местоимения, числительные, наречия.</li>
@@ -282,11 +282,11 @@ export default function GrammarLesson1Page() {
                                 </AccordionContent>
                             </AccordionItem>
                              <AccordionItem value="g-2">
-                                <AccordionTrigger className="text-xl font-semibold">§2. Имя существительное и Основный падеж</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§2. Имя существительное и Основный падеж</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                     <p>У существительных нет рода и числа (за редкими исключениями). Они изменяются по 11 падежам. Основной падеж (бессуффиксальный) совпадает с основой слова (N).</p>
                                     <Card className="bg-card/70 mt-4">
-                                        <CardHeader><CardTitle>Функции основного падежа (N)</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">Функции основного падежа (N)</CardTitle></CardHeader>
                                         <CardContent className="space-y-4">
                                             <div><b>1. Обращение:</b> <InteractiveText analysis={grammarAnalyses.yamadasan} /> (с вежливым суффиксом さん).</div>
                                             <div><b>2. Именная часть сказуемого:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
@@ -296,10 +296,10 @@ export default function GrammarLesson1Page() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="g-3">
-                                <AccordionTrigger className="text-xl font-semibold">§3. Местоимения</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§3. Местоимения</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                     <Card>
-                                        <CardHeader><CardTitle>Личные местоимения</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">Личные местоимения</CardTitle></CardHeader>
                                         <CardContent>
                                             <Table>
                                                 <TableHeader><TableRow><TableHead>Лицо</TableHead><TableHead>Местоимение (яп.)</TableHead><TableHead>Перевод</TableHead></TableRow></TableHeader>
@@ -313,7 +313,7 @@ export default function GrammarLesson1Page() {
                                         </CardContent>
                                     </Card>
                                      <Card className="mt-4">
-                                        <CardHeader><CardTitle>Вопросительные местоимения</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">Вопросительные местоимения</CardTitle></CardHeader>
                                         <CardContent>
                                             <p><b className="font-japanese">だれ (кто?)</b> / <b className="font-japanese text-primary">どなた (кто? вежл.)</b> — для людей.</p>
                                             <p><b className="font-japanese">なに (なん) (что?)</b> — для предметов. Чтение зависит от следующего звука.</p>
@@ -322,25 +322,25 @@ export default function GrammarLesson1Page() {
                                 </AccordionContent>
                             </AccordionItem>
                            <AccordionItem value="g-4">
-                                <AccordionTrigger className="text-xl font-semibold">§4. Простое предложение и связка です</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§4. Простое предложение и связка です</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                     <p>Связка です (desu) используется в настояще-будущем времени. Отрицательная форма: ではありません (dewa arimasen). В разговорной речи также используется じゃありません (ja arimasen).</p>
                                     <Card className="bg-card/70 mt-4">
-                                        <CardHeader><CardTitle>Структура утверждения</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">Структура утверждения</CardTitle></CardHeader>
                                         <CardContent>
                                             <InteractiveFormula formula="N は N です 。" />
                                             <div className="mt-2"><InteractiveText analysis={grammarAnalyses.anokatahasenseidesu} /></div>
                                         </CardContent>
                                     </Card>
                                     <Card className="bg-card/70 mt-4">
-                                        <CardHeader><CardTitle>Структура отрицания</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">Структура отрицания</CardTitle></CardHeader>
                                         <CardContent>
                                            <InteractiveFormula formula="N は N ではありません 。" />
                                             <div className="mt-2"><InteractiveText analysis={grammarAnalyses.anokatahasenseidehaarimasen} /></div>
                                         </CardContent>
                                     </Card>
                                     <Card className="bg-card/70 mt-4">
-                                        <CardHeader><CardTitle>Опускаемое подлежащее</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">Опускаемое подлежащее</CardTitle></CardHeader>
                                         <CardContent>
                                             <p>Подлежащее часто опускается, если оно понятно из контекста. Сказуемое же обязательно.</p>
                                             <div className="mt-2"><InteractiveText analysis={grammarAnalyses.senseidesu} /></div>
@@ -349,11 +349,11 @@ export default function GrammarLesson1Page() {
                                 </AccordionContent>
                             </AccordionItem>
                              <AccordionItem value="g-5">
-                                <AccordionTrigger className="text-xl font-semibold">§5. Вопросительные предложения</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§5. Вопросительные предложения</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                     <p>Вопрос образуется добавлением частицы <b className="font-japanese text-primary">か</b> в конце предложения и повышением интонации. Знак (?) обычно не ставится.</p>
                                     <Card className="mt-4">
-                                        <CardHeader><CardTitle>1. Общий вопрос (без вопросительного слова)</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">1. Общий вопрос (без вопросительного слова)</CardTitle></CardHeader>
                                         <CardContent>
                                             <p>Требует ответа "да/нет".</p>
                                             <InteractiveFormula formula="N は N です か 。" />
@@ -364,14 +364,14 @@ export default function GrammarLesson1Page() {
                                         </CardContent>
                                     </Card>
                                     <Card className="mt-4">
-                                        <CardHeader><CardTitle>2. Специальный вопрос (с вопросительным словом)</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">2. Специальный вопрос (с вопросительным словом)</CardTitle></CardHeader>
                                         <CardContent>
                                             <InteractiveFormula formula="QW が N です か 。" />
                                             <div className="my-2"><InteractiveText analysis={grammarAnalyses.daregagakuseidesuka}/></div>
                                         </CardContent>
                                     </Card>
                                      <Card className="mt-4">
-                                        <CardHeader><CardTitle>3. Альтернативный вопрос</CardTitle></CardHeader>
+                                        <CardHeader><CardTitle className="text-lg md:text-xl">3. Альтернативный вопрос</CardTitle></CardHeader>
                                         <CardContent>
                                             <p>Предлагает выбор между вариантами, каждый из которых заканчивается на か.</p>
                                             <InteractiveFormula formula="N は A です か、B です か。" />
@@ -384,8 +384,8 @@ export default function GrammarLesson1Page() {
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-word-formation">
-                    <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
-                     <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                    <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
+                     <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                         <p>В японском языке вежливость выражается специальными словами и грамматическими формами.</p>
                         <h4 className="font-semibold">Аффиксы вежливости:</h4>
                          <ul className="list-disc list-inside space-y-2">
@@ -396,8 +396,8 @@ export default function GrammarLesson1Page() {
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-intonation">
-                    <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Интонация</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                    <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Интонация</AccordionTrigger>
+                    <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                        <ul className="list-disc list-inside space-y-2">
                             <li><b>Повествовательное предложение:</b> Логическое ударение на именной части сказуемого, тон понижается на связке です.</li>
                             <li><b>Вопрос без вопросительного слова:</b> Тон повышается на сказуемом и частице か.</li>
@@ -414,12 +414,12 @@ export default function GrammarLesson1Page() {
                     </AccordionContent>
                 </AccordionItem>
                  <AccordionItem value="item-writing">
-                    <AccordionTrigger className="text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Письменность</AccordionTrigger>
-                    <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                    <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Письменность</AccordionTrigger>
+                    <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                         <Accordion type="single" collapsible>
                             <AccordionItem value="w-1">
-                                <AccordionTrigger className="text-xl font-semibold">§1. Катакана</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§1. Катакана</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                     <p>Катакана используется для написания заимствованных слов (гайрайго), иностранных имен, а также для выделения слов.</p>
                                     <KanaRowDisplay rowData={katakanaRows.a} />
                                     <KanaRowDisplay rowData={katakanaRows.ka} />
@@ -431,9 +431,9 @@ export default function GrammarLesson1Page() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="w-2">
-                                <AccordionTrigger className="text-xl font-semibold">§2. Иероглифы и правила написания</AccordionTrigger>
-                                <AccordionContent className="text-lg text-foreground/90 space-y-4 px-2">
-                                     <h4 className="font-bold text-xl mb-2">Правила написания:</h4>
+                                <AccordionTrigger className="text-base md:text-xl font-semibold">§2. Иероглифы и правила написания</AccordionTrigger>
+                                <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
+                                     <h4 className="font-bold text-lg md:text-xl mb-2">Правила написания:</h4>
                                     <ul className="list-decimal list-inside space-y-1 text-base">
                                         <li>Сверху вниз.</li>
                                         <li>Горизонтальные черты пишутся слева направо.</li>
@@ -443,13 +443,13 @@ export default function GrammarLesson1Page() {
                                         <li>Углы пишутся одной чертой.</li>
                                         <li>В замкнутых знаках сначала пишется внешняя часть, потом внутренняя, и в конце — нижняя замыкающая черта.</li>
                                     </ul>
-                                    <h4 className="font-bold text-xl mt-4 mb-2">Новые иероглифы:</h4>
+                                    <h4 className="font-bold text-lg md:text-xl mt-4 mb-2">Новые иероглифы:</h4>
                                     <Table>
                                         <TableHeader><TableRow><TableHead>Иероглиф</TableHead><TableHead>Кун</TableHead><TableHead>Он</TableHead><TableHead>Значение</TableHead></TableRow></TableHeader>
                                         <TableBody>
                                             {kanjiList.map(k => (
                                                 <TableRow key={k.kanji}>
-                                                    <TableCell className="font-japanese text-3xl">{k.kanji}</TableCell>
+                                                    <TableCell className="font-japanese text-2xl md:text-3xl">{k.kanji}</TableCell>
                                                     <TableCell className="font-japanese">{k.kun}</TableCell>
                                                     <TableCell className="font-japanese">{k.on}</TableCell>
                                                     <TableCell>{k.meaning}</TableCell>
@@ -813,7 +813,7 @@ export default function GrammarLesson1Page() {
                  
                  <Card>
                     <CardHeader>
-                        <CardTitle>Остальные упражнения (19-29)</CardTitle>
+                        <CardTitle className="text-lg md:text-xl">Остальные упражнения (19-29)</CardTitle>
                         <CardDescription>Эти задания требуют более сложного функционала (анализ иероглифов, работа с изображениями), который будет добавлен в будущих обновлениях.</CardDescription>
                     </CardHeader>
                 </Card>
@@ -829,6 +829,7 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
+
 
 
 

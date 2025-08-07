@@ -228,7 +228,7 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
            <Progress value={progress} className="mt-2" />
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8">
-          <div className={`rounded-lg bg-card-foreground/5 p-8 ${optionIsKana ? "text-6xl" : "text-8xl font-japanese"}`}>
+          <div className={`rounded-lg bg-card-foreground/5 p-8 ${optionIsKana ? "text-5xl md:text-6xl" : "text-7xl md:text-8xl font-japanese"}`}>
             {questionText}
           </div>
           <div className="grid grid-cols-2 gap-4 w-full">
@@ -241,8 +241,8 @@ export default function KanaQuiz({ onQuizEnd, kanaSet, quizLength, questionType 
               <Button
                 key={option}
                 onClick={() => handleAnswer(option)}
-                className={`h-16 text-2xl transition-all duration-300 transform 
-                ${optionIsKana ? 'font-japanese text-4xl' : ''}
+                className={`h-16 text-xl md:text-2xl transition-all duration-300 transform 
+                ${optionIsKana ? 'font-japanese text-3xl md:text-4xl' : ''}
                 ${feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : ''}
                 ${feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : ''}
                 ${feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''}
