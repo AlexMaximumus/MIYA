@@ -7,6 +7,111 @@ export interface Word {
     jlpt: 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
 }
 
+export interface Kanji {
+    kanji: string;
+    on: string[];
+    kun: string[];
+    translation: string;
+    jlpt: 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+}
+
+const n5Kanji: Kanji[] = [
+    { kanji: '一', on: ['いち'], kun: ['ひと-'], translation: 'один', jlpt: 'N5' },
+    { kanji: '二', on: ['に'], kun: ['ふた-'], translation: 'два', jlpt: 'N5' },
+    { kanji: '三', on: ['さん'], kun: ['みっ-'], translation: 'три', jlpt: 'N5' },
+    { kanji: '四', on: ['し'], kun: ['よん', 'よ'], translation: 'четыре', jlpt: 'N5' },
+    { kanji: '五', on: ['ご'], kun: ['いつ-'], translation: 'пять', jlpt: 'N5' },
+    { kanji: '六', on: ['ろく'], kun: ['むっ-'], translation: 'шесть', jlpt: 'N5' },
+    { kanji: '七', on: ['しち'], kun: ['なな-'], translation: 'семь', jlpt: 'N5' },
+    { kanji: '八', on: ['はち'], kun: ['やっ-'], translation: 'восемь', jlpt: 'N5' },
+    { kanji: '九', on: ['きゅう', 'く'], kun: ['ここの-'], translation: 'девять', jlpt: 'N5' },
+    { kanji: '十', on: ['じゅう'], kun: ['とお'], translation: 'десять', jlpt: 'N5' },
+    { kanji: '百', on: ['ひゃく'], kun: [], translation: 'сто', jlpt: 'N5' },
+    { kanji: '千', on: ['せん'], kun: ['ち'], translation: 'тысяча', jlpt: 'N5' },
+    { kanji: '万', on: ['まん'], kun: [], translation: 'десять тысяч', jlpt: 'N5' },
+    { kanji: '円', on: ['えん'], kun: ['まる'], translation: 'йена, круглый', jlpt: 'N5' },
+    { kanji: '日', on: ['にち', 'じつ'], kun: ['ひ', 'か'], translation: 'день, солнце', jlpt: 'N5' },
+    { kanji: '月', on: ['げつ', 'がつ'], kun: ['つき'], translation: 'луна, месяц', jlpt: 'N5' },
+    { kanji: '火', on: ['か'], kun: ['ひ'], translation: 'огонь', jlpt: 'N5' },
+    { kanji: '水', on: ['すい'], kun: ['みず'], translation: 'вода', jlpt: 'N5' },
+    { kanji: '木', on: ['もく', 'ぼく'], kun: ['き'], translation: 'дерево', jlpt: 'N5' },
+    { kanji: '金', on: ['きん'], kun: ['かね'], translation: 'золото, деньги', jlpt: 'N5' },
+    { kanji: '土', on: ['ど', 'と'], kun: ['つち'], translation: 'земля, почва', jlpt: 'N5' },
+    { kanji: '曜', on: ['よう'], kun: [], translation: 'день недели', jlpt: 'N5' },
+    { kanji: '人', on: ['じん', 'にん'], kun: ['ひと'], translation: 'человек', jlpt: 'N5' },
+    { kanji: '私', on: ['し'], kun: ['わたし'], translation: 'я, частный', jlpt: 'N5' },
+    { kanji: '男', on: ['だん', 'なん'], kun: ['おとこ'], translation: 'мужчина', jlpt: 'N5' },
+    { kanji: '女', on: ['じょ', 'にょ'], kun: ['おんな'], translation: 'женщина', jlpt: 'N5' },
+    { kanji: '子', on: ['し'], kun: ['こ'], translation: 'ребенок', jlpt: 'N5' },
+    { kanji: '父', on: ['ふ'], kun: ['ちち'], translation: 'отец', jlpt: 'N5' },
+    { kanji: '母', on: ['ぼ'], kun: ['はは'], translation: 'мать', jlpt: 'N5' },
+    { kanji: '友', on: ['ゆう'], kun: ['とも'], translation: 'друг', jlpt: 'N5' },
+    { kanji: '先', on: ['せん'], kun: ['さき'], translation: 'раньше, впереди', jlpt: 'N5' },
+    { kanji: '生', on: ['せい', 'しょう'], kun: ['いきる', 'うまれる'], translation: 'жизнь, рождаться', jlpt: 'N5' },
+    { kanji: '学', on: ['がく'], kun: ['まなぶ'], translation: 'учеба', jlpt: 'N5' },
+    { kanji: '校', on: ['こう'], kun: [], translation: 'школа', jlpt: 'N5' },
+    { kanji: '大', on: ['だい', 'たい'], kun: ['おおきい'], translation: 'большой', jlpt: 'N5' },
+    { kanji: '小', on: ['しょう'], kun: ['ちいさい', 'こ'], translation: 'маленький', jlpt: 'N5' },
+    { kanji: '中', on: ['ちゅう'], kun: ['なか'], translation: 'внутри, середина', jlpt: 'N5' },
+    { kanji: '上', on: ['じょう'], kun: ['うえ', 'あがる'], translation: 'верх, на', jlpt: 'N5' },
+    { kanji: '下', on: ['か', 'げ'], kun: ['した', 'さがる'], translation: 'низ, под', jlpt: 'N5' },
+    { kanji: '右', on: ['う', 'ゆう'], kun: ['みぎ'], translation: 'право', jlpt: 'N5' },
+    { kanji: '左', on: ['さ'], kun: ['ひだり'], translation: 'лево', jlpt: 'N5' },
+    { kanji: '前', on: ['ぜん'], kun: ['まえ'], translation: 'перед', jlpt: 'N5' },
+    { kanji: '後', on: ['ご', 'こう'], kun: ['うしろ', 'あと'], translation: 'сзади, после', jlpt: 'N5' },
+    { kanji: '外', on: ['がい', 'げ'], kun: ['そと'], translation: 'снаружи', jlpt: 'N5' },
+    { kanji: '東', on: ['とう'], kun: ['ひがし'], translation: 'восток', jlpt: 'N5' },
+    { kanji: '西', on: ['せい', 'さい'], kun: ['にし'], translation: 'запад', jlpt: 'N5' },
+    { kanji: '南', on: ['なん'], kun: ['みなみ'], translation: 'юг', jlpt: 'N5' },
+    { kanji: '北', on: ['ほく'], kun: ['きた'], translation: 'север', jlpt: 'N5' },
+    { kanji: '名', on: ['めい', 'みょう'], kun: ['な'], translation: 'имя', jlpt: 'N5' },
+    { kanji: '語', on: ['ご'], kun: ['かたる'], translation: 'язык, слово', jlpt: 'N5' },
+    { kanji: '本', on: ['ほん'], kun: ['もと'], translation: 'книга, основа', jlpt: 'N5' },
+    { kanji: '何', on: ['か'], kun: ['なに', 'なん'], translation: 'что', jlpt: 'N5' },
+    { kanji: '時', on: ['じ'], kun: ['とき'], translation: 'время, час', jlpt: 'N5' },
+    { kanji: '分', on: ['ぶん', 'ふん'], kun: ['わかる'], translation: 'минута, понимать, часть', jlpt: 'N5' },
+    { kanji: '半', on: ['はん'], kun: ['なかば'], translation: 'половина', jlpt: 'N5' },
+    { kanji: '午', on: ['ご'], kun: [], translation: 'полдень', jlpt: 'N5' },
+    { kanji: '年', on: ['ねん'], kun: ['とし'], translation: 'год', jlpt: 'N5' },
+    { kanji: '今', on: ['こん', 'きん'], kun: ['いま'], translation: 'сейчас', jlpt: 'N5' },
+    { kanji: '毎', on: ['まい'], kun: [], translation: 'каждый', jlpt: 'N5' },
+    { kanji: '週', on: ['しゅう'], kun: [], translation: 'неделя', jlpt: 'N5' },
+    { kanji: '休', on: ['きゅう'], kun: ['やすむ'], translation: 'отдыхать', jlpt: 'N5' },
+    { kanji: '見', on: ['けん'], kun: ['みる'], translation: 'смотреть', jlpt: 'N5' },
+    { kanji: '聞', on: ['ぶん', 'もん'], kun: ['きく'], translation: 'слушать, спрашивать', jlpt: 'N5' },
+    { kanji: '読', on: ['どく'], kun: ['よむ'], translation: 'читать', jlpt: 'N5' },
+    { kanji: '書', on: ['しょ'], kun: ['かく'], translation: 'писать', jlpt: 'N5' },
+    { kanji: '話', on: ['わ'], kun: ['はなす'], translation: 'говорить', jlpt: 'N5' },
+    { kanji: '食', on: ['しょく'], kun: ['たべる'], translation: 'есть', jlpt: 'N5' },
+    { kanji: '飲', on: ['いん'], kun: ['のむ'], translation: 'пить', jlpt: 'N5' },
+    { kanji: '買', on: ['ばい'], kun: ['かう'], translation: 'покупать', jlpt: 'N5' },
+    { kanji: '行', on: ['こう', 'ぎょう'], kun: ['いく'], translation: 'идти', jlpt: 'N5' },
+    { kanji: '来', on: ['らい'], kun: ['くる'], translation: 'приходить', jlpt: 'N5' },
+    { kanji: '出', on: ['しゅつ'], kun: ['でる', 'だす'], translation: 'выходить', jlpt: 'N5' },
+    { kanji: '入', on: ['にゅう'], kun: ['はいる', 'いる'], translation: 'входить', jlpt: 'N5' },
+    { kanji: '会', on: ['かい'], kun: ['あう'], translation: 'встречаться', jlpt: 'N5' },
+    { kanji: '車', on: ['しゃ'], kun: ['くるま'], translation: 'машина', jlpt: 'N5' },
+    { kanji: '駅', on: ['えき'], kun: [], translation: 'станция', jlpt: 'N5' },
+    { kanji: '電', on: ['でん'], kun: [], translation: 'электричество', jlpt: 'N5' },
+    { kanji: '話', on: ['わ'], kun: ['はなし'], translation: 'разговор', jlpt: 'N5' },
+    { kanji: '高', on: ['こう'], kun: ['たかい'], translation: 'высокий, дорогой', jlpt: 'N5' },
+    { kanji: '安', on: ['あん'], kun: ['やすい'], translation: 'дешевый, спокойный', jlpt: 'N5' },
+    { kanji: '新', on: ['しん'], kun: ['あたらしい'], translation: 'новый', jlpt: 'N5' },
+    { kanji: '古', on: ['こ'], kun: ['ふるい'], translation: 'старый', jlpt: 'N5' },
+    { kanji: '長', on: ['ちょう'], kun: ['ながい'], translation: 'длинный', jlpt: 'N5' },
+    { kanji: '多', on: ['た'], kun: ['おおい'], translation: 'много', jlpt: 'N5' },
+    { kanji: '少', on: ['しょう'], kun: ['すくない', 'すこし'], translation: 'мало', jlpt: 'N5' },
+    { kanji: '早', on: ['そう'], kun: ['はやい'], translation: 'ранний, быстрый', jlpt: 'N5' },
+    { kanji: '天', on: ['てん'], kun: ['あめ'], translation: 'небо', jlpt: 'N5' },
+    { kanji: '気', on: ['き', 'け'], kun: [], translation: 'дух, воздух', jlpt: 'N5' },
+    { kanji: '雨', on: ['う'], kun: ['あめ'], translation: 'дождь', jlpt: 'N5' },
+    { kanji: '白', on: ['はく'], kun: ['しろ'], translation: 'белый', jlpt: 'N5' },
+    { kanji: '赤', on: ['せき'], kun: ['あか'], translation: 'красный', jlpt: 'N5' },
+    { kanji: '青', on: ['せい'], kun: ['あお'], translation: 'синий', jlpt: 'N5' },
+    { kanji: '好', on: ['こう'], kun: ['すき'], translation: 'любить, нравиться', jlpt: 'N5' },
+    { kanji: '元', on: ['げん', 'がん'], kun: ['もと'], translation: 'основа, происхождение', jlpt: 'N5' }
+];
+
 const n5: Word[] = [
     { word: '人', reading: 'ひと', translation: 'человек', pos: 'существительное', jlpt: 'N5' },
     { word: '学生', reading: 'がくせい', translation: 'студент', pos: 'существительное', jlpt: 'N5' },
@@ -329,6 +434,7 @@ const n5: Word[] = [
     { word: '若い', reading: 'わかい', translation: 'молодой', pos: 'прилагательное', jlpt: 'N5' },
     { word: '明るい', reading: 'あかるい', translation: 'светлый, ясный', pos: 'прилагательное', jlpt: 'N5' },
     { word: '暗い', reading: 'くらい', translation: 'темный', pos: 'прилагательное', jlpt: 'N5' },
+    { word: '酷い', reading: 'ひどい', translation: 'ужасный, жестокий', pos: 'прилагательное', jlpt: 'N4' },
 ];
 
 const n4: Word[] = [
@@ -511,7 +617,6 @@ const n4: Word[] = [
     { word: 'ほっとする', reading: 'ほっとする', translation: 'чувствовать облегчение', pos: 'глагол', jlpt: 'N4' },
     { word: '見学する', reading: 'けんがくする', translation: 'посещать (для осмотра)', pos: 'глагол', jlpt: 'N4' },
     { word: '素晴らしい', reading: 'すばらしい', translation: 'замечательный', pos: 'прилагательное', jlpt: 'N4' },
-    { word: '酷い', reading: 'ひどい', translation: 'ужасный, жестокий', pos: 'прилагательное', jlpt: 'N4' },
     { word: '柔らかい', reading: 'やわらかい', translation: 'мягкий', pos: 'прилагательное', jlpt: 'N4' },
     { word: '堅い', reading: 'かたい', translation: 'твердый', pos: 'прилагательное', jlpt: 'N4' },
     { word: '珍しい', reading: 'めずらしい', translation: 'редкий', pos: 'прилагательное', jlpt: 'N4' },
@@ -779,4 +884,12 @@ export const vocabularyData = {
     n3,
     n2,
     n1
+};
+
+export const kanjiData = {
+    n5: n5Kanji,
+    n4: [],
+    n3: [],
+    n2: [],
+    n1: []
 };
