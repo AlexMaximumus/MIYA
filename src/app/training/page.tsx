@@ -38,7 +38,6 @@ const getStreakTextColor = (streak: number) => {
 
 export default function TrainingPage() {
     const { 
-        getReviewQueue, 
         updateWordProgress, 
         getStreak,
         startNewSession,
@@ -69,10 +68,10 @@ export default function TrainingPage() {
 
     // Initialize a new session if none is active on mount
     useEffect(() => {
-        if (isClient && totalInitialCount === 0) {
+        if (isClient && totalInitialCount === 0 && activeSessionQueue.length === 0) {
             startNewSession(allWords);
         }
-    }, [isClient, totalInitialCount, startNewSession]);
+    }, [isClient, totalInitialCount, activeSessionQueue, startNewSession]);
 
     const generateOptions = useCallback((correctWord: Word, type: QuestionType) => {
         if (type === 'jp_to_ru') {
@@ -170,7 +169,7 @@ export default function TrainingPage() {
         )
     }
 
-    if (totalInitialCount === 0 && activeSessionQueue.length === 0) {
+    if (totalInitialCount === 0 && activeSessionQueue.length === 0 && isClient) {
          return (
              <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
                 <Card className="w-full max-w-lg text-center p-6">
@@ -201,6 +200,14 @@ export default function TrainingPage() {
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 animate-fade-in pt-12">
+             <div className="w-full max-w-2xl mb-4">
+                <Button variant="link" asChild>
+                    <Link href="/">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Выйти из тренировки
+                    </Link>
+                </Button>
+            </div>
              <Card className="w-full max-w-2xl mb-8">
                 <CardHeader>
                     <div className="flex justify-between items-center">
@@ -292,13 +299,6 @@ export default function TrainingPage() {
                     </div>
                 </div>
             )}
-            
-            <Button variant="link" asChild className="mt-8">
-                <Link href="/">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Выйти из тренировки
-                </Link>
-            </Button>
         </div>
     );
 }
