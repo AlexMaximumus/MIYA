@@ -28,8 +28,8 @@ interface AnswerRecord {
 }
 
 interface Option {
-    text: string; // The primary display text (e.g., kanji or translation)
-    reading?: string; // Furigana reading, if applicable
+    text: string;
+    reading?: string;
 }
 
 export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, vocabSet }: WordQuizProps) {
@@ -255,7 +255,7 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
                     )}
                     disabled={!!feedback}
                 >
-                    {!isJpToRu && option.reading && <span className="text-xs font-normal">{option.reading}</span>}
+                    {!isJpToRu && option.reading && <span className="text-xs font-normal text-muted-foreground">{option.reading}</span>}
                     <span className={cn(isJpToRu && 'font-normal')}>{option.text}</span>
                 </Button>
             )})}

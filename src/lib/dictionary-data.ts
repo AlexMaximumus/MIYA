@@ -648,7 +648,6 @@ const n4: Word[] = [
     { word: 'ハンドバッグ', reading: 'ハンドバッグ', translation: 'дамская сумочка', pos: 'существительное', jlpt: 'N4' },
     { word: '返事', reading: 'へんじ', translation: 'ответ', pos: 'существительное', jlpt: 'N4' },
     { word: '火', reading: 'ひ', translation: 'огонь', pos: 'существительное', jlpt: 'N4' },
-    { word: '酷い', reading: 'ひどい', translation: 'жестокий, ужасный', pos: 'прилагательное', jlpt: 'N4' },
     { word: '開く', reading: 'ひらく', translation: 'открывать', pos: 'глагол', jlpt: 'N4' },
     { word: '昼間', reading: 'ひるま', translation: 'дневное время', pos: 'существительное', jlpt: 'N4' },
     { word: '昼休み', reading: 'ひるやすみ', translation: 'обеденный перерыв', pos: 'существительное', jlpt: 'N4' },
