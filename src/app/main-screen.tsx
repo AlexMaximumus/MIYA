@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import CategoryCard from '@/components/category-card';
 import InteractiveText from '@/components/interactive-text';
-import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School, Gamepad2, Mic2 } from 'lucide-react';
+import { PenLine, BookOpen, Puzzle, CaseUpper, BookText, BrainCircuit, MessageSquare, GraduationCap, School, Gamepad2, Mic2, BookMarked } from 'lucide-react';
 import Link from 'next/link';
 import { mainScreenAnalyses } from '@/ai/precomputed-analysis';
 import type { JapaneseAnalysisOutput } from '@/ai/precomputed-analysis';
@@ -13,7 +13,6 @@ import { useWordProgress } from '@/hooks/use-word-progress';
 import { useTeacherMode } from '@/hooks/use-teacher-mode';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import WelcomeDialog from '@/components/welcome-dialog';
 
 
@@ -203,6 +202,14 @@ export default function MainScreen() {
                       description="Ищите слова и создавайте тесты"
                       color="bg-teal-100/50"
                     />
+                </Link>
+                <Link href="/kanji">
+                  <CategoryCard
+                    icon={<BookMarked className="w-10 h-10 md:w-12 md:h-12" />}
+                    title="Кандзи"
+                    description="Изучение иероглифов, ключи и порядок черт"
+                    color="bg-red-100/50"
+                  />
                 </Link>
                 <Link href="/kana">
                   <CategoryCard
