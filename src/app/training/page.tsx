@@ -30,8 +30,7 @@ const getStreakColor = (streak: number) => {
     if (streak === 0) return 'bg-pink-100/60';
     if (streak === 1) return 'bg-yellow-100/60';
     if (streak <= 3) return 'bg-blue-100/60';
-    if (streak <= 5) return 'bg-teal-100/60';
-    if (streak > 5) return 'bg-green-200/60';
+    if (streak > 3) return 'bg-green-200/60';
     return 'bg-card';
 }
 
@@ -40,10 +39,11 @@ export default function TrainingPage() {
     
     const [wordMap, setWordMap] = useState<Map<string, Word>>(new Map());
     const [activeQueue, setActiveQueue] = useState<QueueItem[]>([]);
-    const [completedQueue, setCompletedQueue] = useState<QueueItem[]>([]);
+    const [completedSessionWords, setCompletedSessionWords] = useState<QueueItem[]>([]);
     
     const [options, setOptions] = useState<string[]>([]);
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [questionType, setQuestionType] = useState<QuestionType>('jp_to_ru');
     
     const [isClient, setIsClient] = useState(false);
@@ -56,7 +56,7 @@ export default function TrainingPage() {
             const queue = getReviewQueue(allWords, 10);
             totalInitialCount.current = queue.length;
             setActiveQueue(shuffleArray(queue));
-            setCompletedQueue([]); // Reset completed words only when starting a completely new session
+            setCompletedSessionWords([]); // Reset completed words for this session
             setFeedback(null);
         }
     }, [getReviewQueue, activeQueue.length]);
@@ -67,7 +67,7 @@ export default function TrainingPage() {
         allWords.forEach(word => map.set(word.word, word));
         setWordMap(map);
         initializeSession();
-    }, [initializeSession]);
+    }, []); // Removed initializeSession from dependency array to prevent re-initialization on state change
 
     const generateOptions = useCallback((correctWord: Word, type: QuestionType) => {
         if (type === 'jp_to_ru') {
@@ -104,6 +104,8 @@ export default function TrainingPage() {
         const currentQueueItem = activeQueue[0];
         const correctWord = wordMap.get(currentQueueItem.word);
         if (!correctWord) return;
+        
+        setSelectedAnswer(selectedOption);
 
         const isCorrect = questionType === 'jp_to_ru' 
             ? selectedOption === correctWord.translation
@@ -114,9 +116,10 @@ export default function TrainingPage() {
         if (isCorrect) {
             setFeedback('correct');
             setTimeout(() => {
-                setCompletedQueue(prev => [...prev, currentQueueItem]);
+                setCompletedSessionWords(prev => [...prev, currentQueueItem]);
                 setActiveQueue(prev => prev.slice(1));
                 setFeedback(null);
+                setSelectedAnswer(null);
             }, 1200);
         } else {
             setFeedback('incorrect');
@@ -128,6 +131,7 @@ export default function TrainingPage() {
                 remaining.splice(insertIndex, 0, incorrectCard);
                 setActiveQueue(remaining);
                 setFeedback(null);
+                setSelectedAnswer(null);
             }, 1200);
         }
     };
@@ -141,7 +145,7 @@ export default function TrainingPage() {
         );
     }
     
-    if (totalInitialCount.current > 0 && activeQueue.length === 0 && completedQueue.length === totalInitialCount.current) {
+    if (totalInitialCount.current > 0 && activeQueue.length === 0 && completedSessionWords.length === totalInitialCount.current) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8 animate-fade-in">
                  <Card className="w-full max-w-lg text-center p-6">
@@ -190,7 +194,7 @@ export default function TrainingPage() {
 
     const currentQueueItem = activeQueue[0];
     const currentWord = currentQueueItem ? wordMap.get(currentQueueItem.word) : null;
-    const progress = (completedQueue.length / totalInitialCount.current) * 100;
+    const progress = (completedSessionWords.length / totalInitialCount.current) * 100;
     
     const isJpToRu = questionType === 'jp_to_ru';
     const streak = currentWord ? getStreak(currentWord.word) : 0;
@@ -202,7 +206,7 @@ export default function TrainingPage() {
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-xl">Тренировка дня</CardTitle>
                         <span className="text-sm text-muted-foreground">
-                            {completedQueue.length} / {totalInitialCount.current}
+                            {completedSessionWords.length} / {totalInitialCount.current}
                         </span>
                     </div>
                     <Progress value={progress} className="mt-2" />
@@ -212,7 +216,7 @@ export default function TrainingPage() {
                         <>
                             <div className={cn("text-center p-4 rounded-lg w-full transition-colors duration-300 relative", getStreakColor(streak))}>
                                <span className="absolute top-2 left-2 text-xs font-bold text-muted-foreground bg-background/50 px-2 py-1 rounded-full">
-                                    {currentQueueItem.type === 'new' ? 'Новое слово' : 'На повторении'}
+                                    {currentQueueItem.type === 'new' ? 'Новое слово' : `На повторении (серия: ${streak})`}
                                 </span>
                                 {isJpToRu ? (
                                     <>
@@ -227,12 +231,13 @@ export default function TrainingPage() {
                                 {options.map((option, index) => {
                                     const correctAnswer = isJpToRu ? currentWord.translation : currentWord.word;
                                     const isCorrectAnswer = option === correctAnswer;
-                                    let buttonClass = '';
+                                    const isSelectedAnswer = option === selectedAnswer;
 
+                                    let buttonClass = '';
                                     if (feedback) {
                                         if (isCorrectAnswer) {
                                             buttonClass = 'bg-green-500 hover:bg-green-600 text-white animate-pulse';
-                                        } else {
+                                        } else if (isSelectedAnswer && feedback === 'incorrect') {
                                             buttonClass = 'bg-destructive/80';
                                         }
                                     }
@@ -245,8 +250,8 @@ export default function TrainingPage() {
                                             disabled={!!feedback}
                                         >
                                             {option}
-                                            {feedback && isCorrectAnswer && <Check className="ml-2" />}
-                                            {feedback === 'incorrect' && !isCorrectAnswer && <X className="ml-2" />}
+                                            {feedback === 'correct' && isCorrectAnswer && <Check className="ml-2" />}
+                                            {feedback === 'incorrect' && isSelectedAnswer && <X className="ml-2" />}
                                         </Button>
                                     );
                                 })}
@@ -258,12 +263,12 @@ export default function TrainingPage() {
                 </CardContent>
             </Card>
 
-            {completedQueue.length > 0 && (
+            {completedSessionWords.length > 0 && (
                 <div className="w-full max-w-2xl">
-                    <h3 className="text-lg font-semibold mb-4 text-center">Выучено за сегодня</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-center">Прогресс за сессию</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                         <AnimatePresence>
-                            {completedQueue.map((item) => {
+                            {completedSessionWords.map((item) => {
                                 const word = wordMap.get(item.word);
                                 if (!word) return null;
                                 return (

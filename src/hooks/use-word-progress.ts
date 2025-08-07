@@ -41,16 +41,13 @@ const SRS_INTERVALS_HOURS: { [key: number]: number } = {
   2: 24,     // 2 correct -> 1 day
   3: 72,     // 3 correct -> 3 days
   4: 168,    // 4 correct -> 1 week
-  5: 336,    // 5 correct -> 2 weeks
-  6: 720,    // 6 correct -> 1 month
-  7: 2160,   // 7 correct -> 3 months
-  8: 4320,   // 8 correct -> 6 months
 };
-const MASTERED_STREAK = 9;
+const MASTERED_STREAK = 5;
 
 const calculateNextReviewDate = (streak: number): string => {
     const now = new Date();
-    const hoursToAdd = SRS_INTERVALS_HOURS[streak] || SRS_INTERVALS_HOURS[MASTERED_STREAK-1];
+    // For streaks beyond the defined intervals, let's just keep doubling the last interval
+    const hoursToAdd = SRS_INTERVALS_HOURS[streak] || (SRS_INTERVALS_HOURS[MASTERED_STREAK - 1] * Math.pow(2, streak - (MASTERED_STREAK-1)));
     now.setHours(now.getHours() + hoursToAdd);
     return now.toISOString();
 };
@@ -78,8 +75,8 @@ export const useWordProgress = create<WordProgressState>()(
         if (isCorrect) {
           newStreak = currentWord.streak + 1;
         } else {
-          // If incorrect, reset streak but maybe not to 0 to be less punishing
-          newStreak = Math.max(0, currentWord.streak - 2);
+          // If incorrect, reset streak
+          newStreak = 0;
         }
         
         if (newStreak >= MASTERED_STREAK) {
@@ -137,7 +134,7 @@ export const useWordProgress = create<WordProgressState>()(
 
       getLearnedWordsCount: () => {
         const { progress } = get();
-        return Object.values(progress).filter(p => p.status !== 'new').length;
+        return Object.values(progress).filter(p => p.status === 'mastered').length;
       },
 
       getTodaysReviewCount: () => {
