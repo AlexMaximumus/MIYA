@@ -27,18 +27,14 @@ interface AnswerRecord {
     isCorrect: boolean;
 }
 
-// Option now contains the full word object
-interface Option {
-    word: Word;
-}
-
 export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, vocabSet }: WordQuizProps) {
   const [questions, setQuestions] = useState<Word[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [options, setOptions] = useState<Option[]>([]);
+  const [options, setOptions] = useState<Word[]>([]);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
 
   const generateQuestions = (retryIncorrect = false) => {
@@ -67,12 +63,10 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
   }, [words, questionType, quizLength]);
 
   const generateOptions = (correctAnswerWord: Word) => {
-    const correctOption: Option = { word: correctAnswerWord };
-    
     let wrongOptionsPool = words.filter(w => w.word !== correctAnswerWord.word);
-    let wrongOptions = shuffleArray(wrongOptionsPool).slice(0, 3).map(w => ({ word: w }));
+    let wrongOptions = shuffleArray(wrongOptionsPool).slice(0, 3);
 
-    const allOptions = shuffleArray([...wrongOptions, correctOption]);
+    const allOptions = shuffleArray([...wrongOptions, correctAnswerWord]);
     setOptions(allOptions);
   };
 
@@ -86,15 +80,16 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
   }, [currentQuestionIndex, questions]);
 
 
-  const handleAnswer = (selectedOption: Option) => {
+  const handleAnswer = (selectedOption: Word) => {
     if (feedback) return;
 
+    setSelectedWord(selectedOption);
     const correctAnswer = questions[currentQuestionIndex];
-    const isCorrect = selectedOption.word.word === correctAnswer.word;
+    const isCorrect = selectedOption.word === correctAnswer.word;
 
     setAnswerHistory(prev => [...prev, {
         question: correctAnswer,
-        answer: selectedOption.word.word,
+        answer: selectedOption.word,
         isCorrect
     }]);
 
@@ -107,6 +102,7 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
 
     setTimeout(() => {
       setFeedback(null);
+      setSelectedWord(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }, 1200);
   };
@@ -164,8 +160,8 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
               <div className="mb-4">
                 <h3 className="font-bold">Ошибки:</h3>
                 <div className="flex flex-wrap justify-center gap-2 mt-2">
-                  {incorrectAnswers.map((char, i) => (
-                    <span key={i} className="text-lg text-destructive">{char.word} ({char.translation})</span>
+                  {incorrectAnswers.map((word, i) => (
+                    <span key={i} className="text-lg text-destructive">{word.word} ({word.translation})</span>
                   ))}
                 </div>
               </div>
@@ -227,32 +223,28 @@ export default function WordQuiz({ onQuizEnd, words, questionType, quizLength, v
             </div>
           <div className="grid grid-cols-2 gap-4 w-full">
             {options.map((option) => {
-                const isCorrectOption = option.word.word === currentQuestion.word;
-
-                let buttonContent;
-                if (isJpToRu) {
-                    buttonContent = <span className="font-normal">{option.word.translation}</span>;
-                } else {
-                    buttonContent = (
-                        <div className="text-center">
-                            <span className="text-xs font-normal text-muted-foreground">{option.word.reading}</span>
-                            <span className="block font-japanese text-2xl">{option.word.word}</span>
-                        </div>
-                    );
-                }
+                const isCorrectOption = option.word === currentQuestion.word;
+                const isSelectedOption = selectedWord?.word === option.word;
 
                 return (
                     <Button
-                        key={option.word.word + option.word.translation}
+                        key={option.word}
                         onClick={() => handleAnswer(option)}
                         className={cn(`h-auto min-h-16 text-lg transition-all duration-300 transform p-2 flex flex-col`,
                             feedback === 'correct' && isCorrectOption ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse scale-105' : '',
-                            feedback === 'incorrect' && !isCorrectOption ? 'bg-destructive/80' : '',
+                            feedback === 'incorrect' && isSelectedOption ? 'bg-destructive/80' : '',
                             feedback === 'incorrect' && isCorrectOption ? 'bg-green-500' : ''
                         )}
                         disabled={!!feedback}
                     >
-                       {buttonContent}
+                       {isJpToRu ? (
+                           <span className="font-normal">{option.translation}</span>
+                       ) : (
+                           <div>
+                               <span className="text-xs font-normal text-muted-foreground">{option.reading}</span>
+                               <span className="block font-japanese text-2xl">{option.word}</span>
+                           </div>
+                       )}
                     </Button>
                 );
             })}
