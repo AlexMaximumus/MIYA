@@ -74,7 +74,6 @@ const n5Kanji: Kanji[] = [
     { kanji: '午', on: ['ご'], kun: [], translation: 'полдень', jlpt: 'N5' },
     { kanji: '年', on: ['ねん'], kun: ['とし'], translation: 'год', jlpt: 'N5' },
     { kanji: '今', on: ['こん', 'きん'], kun: ['いま'], translation: 'сейчас', jlpt: 'N5' },
-    { kanji: '毎', on: ['まい'], kun: [], translation: 'каждый', jlpt: 'N5' },
     { kanji: '週', on: ['しゅう'], kun: [], translation: 'неделя', jlpt: 'N5' },
     { kanji: '休', on: ['きゅう'], kun: ['やすむ'], translation: 'отдыхать', jlpt: 'N5' },
     { kanji: '見', on: ['けん'], kun: ['みる'], translation: 'смотреть', jlpt: 'N5' },
