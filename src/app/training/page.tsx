@@ -10,6 +10,7 @@ import { ArrowLeft, Check, X, RotateCcw, BrainCircuit, CheckCircle2 } from 'luci
 import { useWordProgress } from '@/hooks/use-word-progress';
 import { vocabularyData } from '@/lib/dictionary-data';
 import type { Word } from '@/lib/dictionary-data';
+import type { QueueItem } from '@/hooks/use-word-progress';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -17,11 +18,6 @@ const allWords = [...vocabularyData.n5, ...vocabularyData.n4, ...vocabularyData.
 
 const shuffleArray = <T,>(array: T[]): T[] => {
     return [...array].sort(() => Math.random() - 0.5);
-};
-
-type QueueItem = {
-    word: string;
-    type: 'new' | 'review';
 };
 
 type QuestionType = 'jp_to_ru' | 'ru_to_jp';
@@ -35,30 +31,29 @@ const getStreakColor = (streak: number) => {
 }
 
 export default function TrainingPage() {
-    const { getReviewQueue, updateWordProgress, getStreak } = useWordProgress();
+    const { 
+        getReviewQueue, 
+        updateWordProgress, 
+        getStreak,
+        startNewSession,
+        activeSessionQueue,
+        completedInSession,
+        advanceSession,
+        requeueIncorrectAnswer
+    } = useWordProgress();
     
     const [wordMap, setWordMap] = useState<Map<string, Word>>(new Map());
-    const [activeQueue, setActiveQueue] = useState<QueueItem[]>([]);
-    const [completedSessionWords, setCompletedSessionWords] = useState<QueueItem[]>([]);
-    
     const [options, setOptions] = useState<string[]>([]);
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [questionType, setQuestionType] = useState<QuestionType>('jp_to_ru');
     
     const [isClient, setIsClient] = useState(false);
-
-    const totalInitialCount = useRef(0);
-
-    const initializeSession = useCallback((forceNew = false) => {
-        const queue = getReviewQueue(allWords, 10);
-        totalInitialCount.current = queue.length;
-        setActiveQueue(shuffleArray(queue));
-        setCompletedSessionWords([]);
-        setFeedback(null);
-        setSelectedAnswer(null);
-    }, [getReviewQueue]);
     
+    const totalInitialCount = useWordProgress(state => state.activeSessionTotal);
+    const isSessionFinished = totalInitialCount > 0 && activeSessionQueue.length === 0;
+
+    // Build word map on client mount
     useEffect(() => {
         setIsClient(true);
         const map = new Map<string, Word>();
@@ -66,13 +61,12 @@ export default function TrainingPage() {
         setWordMap(map);
     }, []);
 
-    // Effect to initialize the session only once or when forced
+    // Initialize a new session if none is active on mount
     useEffect(() => {
-        if(isClient && activeQueue.length === 0 && completedSessionWords.length === 0) {
-            initializeSession();
+        if (isClient && totalInitialCount === 0) {
+            startNewSession(allWords);
         }
-    }, [isClient, initializeSession, activeQueue.length, completedSessionWords.length]);
-
+    }, [isClient, totalInitialCount, startNewSession]);
 
     const generateOptions = useCallback((correctWord: Word, type: QuestionType) => {
         if (type === 'jp_to_ru') {
@@ -89,10 +83,11 @@ export default function TrainingPage() {
             setOptions(shuffleArray([...shuffledWrong, correctWord.word]));
         }
     }, []);
-
+    
+    // Generate new options when the active word changes
     useEffect(() => {
-        if (activeQueue.length > 0) {
-            const currentWordKey = activeQueue[0].word;
+        if (activeSessionQueue.length > 0) {
+            const currentWordKey = activeSessionQueue[0].word;
             const currentWord = wordMap.get(currentWordKey);
             if (currentWord) {
                 const newQuestionType = Math.random() > 0.5 ? 'jp_to_ru' : 'ru_to_jp';
@@ -100,13 +95,13 @@ export default function TrainingPage() {
                 generateOptions(currentWord, newQuestionType);
             }
         }
-    }, [activeQueue, generateOptions, wordMap]);
+    }, [activeSessionQueue, generateOptions, wordMap]);
 
 
     const handleAnswer = (selectedOption: string) => {
         if (feedback) return;
 
-        const currentQueueItem = activeQueue[0];
+        const currentQueueItem = activeSessionQueue[0];
         const correctWord = wordMap.get(currentQueueItem.word);
         if (!correctWord) return;
         
@@ -121,20 +116,14 @@ export default function TrainingPage() {
         if (isCorrect) {
             setFeedback('correct');
             setTimeout(() => {
-                setCompletedSessionWords(prev => [...prev, currentQueueItem]);
-                setActiveQueue(prev => prev.slice(1));
+                advanceSession(); // Move word from active to completed
                 setFeedback(null);
                 setSelectedAnswer(null);
             }, 1200);
         } else {
             setFeedback('incorrect');
             setTimeout(() => {
-                // Move incorrect card to a random position in the last 1/3 of the queue
-                const remaining = activeQueue.slice(1);
-                const incorrectCard = activeQueue[0];
-                const insertIndex = Math.floor(remaining.length * 2/3) + Math.floor(Math.random() * (remaining.length / 3));
-                remaining.splice(insertIndex, 0, incorrectCard);
-                setActiveQueue(remaining);
+                requeueIncorrectAnswer(); // Move incorrect card to the back
                 setFeedback(null);
                 setSelectedAnswer(null);
             }, 1200);
@@ -150,7 +139,7 @@ export default function TrainingPage() {
         );
     }
     
-    if (totalInitialCount.current > 0 && activeQueue.length === 0 && completedSessionWords.length === totalInitialCount.current) {
+    if (isSessionFinished) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8 animate-fade-in">
                  <Card className="w-full max-w-lg text-center p-6">
@@ -161,9 +150,9 @@ export default function TrainingPage() {
                     <CardContent>
                         <p className="text-lg text-muted-foreground mb-6">Вы прошли все слова на сегодня. Отличная работа! <br/> За новой порцией слов возвращайтесь завтра.</p>
                         <div className="flex gap-4 justify-center">
-                            <Button onClick={() => initializeSession(true)} className="btn-gradient">
+                            <Button onClick={() => startNewSession(allWords)} className="btn-gradient">
                                 <RotateCcw className="mr-2"/>
-                                Повторить еще раз
+                                Еще одна сессия
                             </Button>
                             <Button asChild variant="outline">
                                 <Link href="/">Вернуться на главную</Link>
@@ -175,7 +164,7 @@ export default function TrainingPage() {
         )
     }
 
-    if (totalInitialCount.current === 0) {
+    if (totalInitialCount === 0 && activeSessionQueue.length === 0) {
          return (
              <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-8">
                 <Card className="w-full max-w-lg text-center p-6">
@@ -197,9 +186,9 @@ export default function TrainingPage() {
         )
     }
 
-    const currentQueueItem = activeQueue[0];
+    const currentQueueItem = activeSessionQueue[0];
     const currentWord = currentQueueItem ? wordMap.get(currentQueueItem.word) : null;
-    const progress = totalInitialCount.current > 0 ? (completedSessionWords.length / totalInitialCount.current) * 100 : 0;
+    const progress = totalInitialCount > 0 ? (completedInSession.length / totalInitialCount) * 100 : 0;
     
     const isJpToRu = questionType === 'jp_to_ru';
     const streak = currentWord ? getStreak(currentWord.word) : 0;
@@ -211,7 +200,7 @@ export default function TrainingPage() {
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-xl">Тренировка дня</CardTitle>
                         <span className="text-sm text-muted-foreground">
-                            {completedSessionWords.length} / {totalInitialCount.current}
+                            {completedInSession.length} / {totalInitialCount}
                         </span>
                     </div>
                     <Progress value={progress} className="mt-2" />
@@ -268,12 +257,12 @@ export default function TrainingPage() {
                 </CardContent>
             </Card>
 
-            {completedSessionWords.length > 0 && (
+            {completedInSession.length > 0 && (
                 <div className="w-full max-w-2xl">
                     <h3 className="text-lg font-semibold mb-4 text-center">Прогресс за сессию</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                         <AnimatePresence>
-                            {completedSessionWords.map((item) => {
+                            {completedInSession.map((item) => {
                                 const word = wordMap.get(item.word);
                                 if (!word) return null;
                                 return (
