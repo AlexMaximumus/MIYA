@@ -22,12 +22,18 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 
 type QuestionType = 'jp_to_ru' | 'ru_to_jp';
 
-const getStreakColor = (streak: number) => {
-    if (streak === 0) return 'bg-pink-100/60';
-    if (streak === 1) return 'bg-yellow-100/60';
-    if (streak <= 3) return 'bg-blue-100/60';
-    if (streak > 3) return 'bg-green-200/60';
-    return 'bg-card';
+const getStreakCardColor = (streak: number) => {
+    if (streak >= 5) return 'border-green-500/80 bg-green-500/10'; // Mastered
+    if (streak >= 3) return 'border-blue-500/60 bg-blue-500/10'; // Well learned
+    if (streak >= 1) return 'border-yellow-500/60 bg-yellow-500/10'; // Starting to learn
+    return 'bg-card'; // New or error
+}
+
+const getStreakTextColor = (streak: number) => {
+    if (streak >= 5) return 'text-green-600';
+    if (streak >= 3) return 'text-blue-600';
+    if (streak >= 1) return 'text-yellow-600';
+    return 'text-muted-foreground';
 }
 
 export default function TrainingPage() {
@@ -208,8 +214,8 @@ export default function TrainingPage() {
                 <CardContent className="flex flex-col items-center gap-6 min-h-[380px] justify-center">
                      {currentWord ? (
                         <>
-                            <div className={cn("text-center p-4 rounded-lg w-full transition-colors duration-300 relative", getStreakColor(streak))}>
-                               <span className="absolute top-2 left-2 text-xs font-bold text-muted-foreground bg-background/50 px-2 py-1 rounded-full">
+                            <div className={cn("text-center p-4 rounded-lg w-full transition-colors duration-300 relative bg-card")}>
+                               <span className={cn("absolute top-2 left-2 text-xs font-bold bg-background/50 px-2 py-1 rounded-full", getStreakTextColor(streak))}>
                                     {currentQueueItem.type === 'new' ? 'Новое слово' : `На повторении (серия: ${streak})`}
                                 </span>
                                 {isJpToRu ? (
@@ -265,6 +271,7 @@ export default function TrainingPage() {
                             {completedInSession.map((item) => {
                                 const word = wordMap.get(item.word);
                                 if (!word) return null;
+                                const itemStreak = getStreak(item.word);
                                 return (
                                     <motion.div
                                         key={word.word}
@@ -274,7 +281,7 @@ export default function TrainingPage() {
                                         exit={{ opacity: 0, scale: 0.5 }}
                                         transition={{ duration: 0.3 }}
                                     >
-                                        <Card className="p-2 text-center border-green-500/50 bg-green-500/10">
+                                        <Card className={cn("p-2 text-center", getStreakCardColor(itemStreak))}>
                                             <p className="font-japanese font-semibold">{word.word}</p>
                                             <p className="text-xs text-muted-foreground">{word.translation}</p>
                                         </Card>
