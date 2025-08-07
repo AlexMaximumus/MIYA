@@ -107,6 +107,12 @@ export default function PhoneticsLesson1Page() {
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
 
+    const handleShare = () => {
+        copy(window.location.href)
+            .then(() => toast({ title: 'Ссылка скопирована!', description: 'Вы можете поделиться этим уроком с кем угодно.' }))
+            .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
+    }
+
     useEffect(() => {
         try {
             const storedAnswers = localStorage.getItem(`${LESSON_ID}-answers`);
