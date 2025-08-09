@@ -15,6 +15,7 @@ import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 const LESSON_ID = 'grammar-lesson-7';
 
@@ -155,7 +156,7 @@ export default function GrammarLesson7Page() {
                                      <AccordionTrigger className="text-base md:text-xl font-semibold">§4. Частица も</AccordionTrigger>
                                      <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
                                         <div>Частица <b>も</b> имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</div>
-                                        <p>Примеры:</p>
+                                        <div>Примеры:</div>
                                         <div><InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} /></div>
                                         <div><InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} /></div>
                                      </AccordionContent>
@@ -270,7 +271,7 @@ export default function GrammarLesson7Page() {
                         </div>
                     </ExerciseCard>
 
-                    <ExerciseCard title="Упражнения 2-22" description="Выполните задания, используя поля для ввода. Автоматическая проверка для большинства этих упражнений будет добавлена в будущих обновлениях.">
+                    <ExerciseCard title="Упражнения 2-22" description="Выполните задания, используя поля для ввода. Автоматическая проверка для большинства этих упражнений будет добавлена в будущих обновлениях." onCheck={showNotImplementedToast} canCheck={false}>
                          <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg mb-6">
                             <Lightbulb className="w-5 h-5 text-blue-500 shrink-0" />
                             <p className="text-sm text-blue-800">
@@ -278,7 +279,7 @@ export default function GrammarLesson7Page() {
                             </p>
                         </div>
                         <div className="space-y-8">
-                            <div>
+                             <div>
                                 <h4 className="font-semibold text-lg mb-2">Упражнение 2: Образование наук</h4>
                                 <p>Образуйте с помощью суффикса 学 названия теоретических наук от следующих слов и переведите: 法 (закон), 語 (язык), 植物 (растение), 動物 (животное), 心理 (психика), 哲 (философия), 運動 (движение).</p>
                                 <Textarea className="mt-2" placeholder="Ваши ответы..." />
@@ -289,7 +290,7 @@ export default function GrammarLesson7Page() {
                                 <Textarea className="mt-2" placeholder="Ваши ответы..." />
                             </div>
                             <div>
-                                <h4 className="font-semibold text-lg mb-2">Упражнение 4-5: Работа с рисунками</h4>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 4-5, 7-8, 17: Работа с рисунками</h4>
                                 <p>Эти упражнения требуют визуальных материалов, которые будут добавлены позже. Вы можете их пока пропустить.</p>
                             </div>
                              <div>
@@ -300,16 +301,79 @@ export default function GrammarLesson7Page() {
                                     <li>То учебник.</li>
                                     <li>Это потолок.</li>
                                     <li>То аудитория.</li>
-                                    <li>... и так далее до 12.</li>
+                                    <li>Это карандаш.</li>
+                                    <li>Это книга.</li>
+                                    <li>То окно.</li>
+                                    <li>То стена.</li>
+                                    <li>То карта.</li>
+                                    <li>Это фотография.</li>
+                                    <li>Это ручка.</li>
+                                    <li>То полка.</li>
                                 </ol>
                                 <Textarea className="mt-2" placeholder="Ваш перевод..." />
                             </div>
-                            <p>... и так далее для всех 22 упражнений, используя Textarea для открытых ответов.</p>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 9: Отрицательная форма</h4>
+                                 <p>Скажите следующие предложения в отрицательной форме, дополнив вариантом правильного ответа, используя для этого слова, данные в скобках:</p>
+                                <ul className="list-disc list-inside space-y-1 mt-2">
+                                    <li>それはノートです。(本)</li>
+                                    <li>あれは地図です。(絵)</li>
+                                    <li>これはドアです。(壁)</li>
+                                    <li>それはひらがなです。(カタカナ)</li>
+                                </ul>
+                                <Textarea className="mt-2" placeholder="Ваш перевод..." />
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 10: Перевод</h4>
+                                <Textarea className="mt-2" placeholder="Переведите все 14 предложений..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 11: Частица も</h4>
+                                <Textarea className="mt-2" placeholder="Дополните предложения, используя も..." />
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 12: Перевод c частицей も</h4>
+                                <Textarea className="mt-2" placeholder="Переведите все 12 предложений..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 13: Вопросы с вопросительным словом</h4>
+                                <Textarea className="mt-2" placeholder="Поставьте вопросы к предложениям..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 14: Ответы на вопросы</h4>
+                                <Textarea className="mt-2" placeholder="Ответьте на вопросы, используя слова в скобках..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 15: Перевод</h4>
+                                <Textarea className="mt-2" placeholder="Переведите все 12 предложений..." />
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 16: Диалоги</h4>
+                                <Textarea className="mt-2" placeholder="Составьте диалоги по образцам..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 18: Заполните пропуски</h4>
+                                <Textarea className="mt-2" placeholder="Заполните все пропуски в подпунктах а, б, в, г..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 19: Составьте вопросы</h4>
+                                <Textarea className="mt-2" placeholder="Придумайте вопросы к данным ответам..." />
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 20: Составьте предложения</h4>
+                                <Textarea className="mt-2" placeholder="Составьте предложения из данных слов..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 21: Ответьте на вопросы</h4>
+                                <Textarea className="mt-2" placeholder="Ответьте на вопросы..." />
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 22: Перевод</h4>
+                                <Textarea className="mt-2" placeholder="Переведите все 13 предложений..." />
+                            </div>
                         </div>
                     </ExerciseCard>
-
                  </div>
-
 
                  <div className="mt-12 text-center flex flex-col items-center gap-4">
                     <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
@@ -320,4 +384,3 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
-
