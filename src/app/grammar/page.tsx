@@ -9,7 +9,7 @@ import LessonCard from '@/components/lesson-card';
 
 const lessons = [
     {
-        id: 'lesson-1',
+        id: 'grammar-lesson-1',
         title: 'Основы: Связки и предложения',
         description: 'Части речи, связка です, простые утвердительные, отрицательные и вопросительные предложения.',
         href: '/grammar/lesson-1',
@@ -17,11 +17,19 @@ const lessons = [
         icon: <BookCheck className="w-8 h-8" />
     },
     {
-        id: 'lesson-2',
+        id: 'grammar-lesson-2',
         title: 'Вопросительные предложения',
         description: 'Структура общих и специальных вопросов, вопросительные слова и правильные ответы на вопросы.',
         href: '/grammar/lesson-2',
         lessonNumber: 2,
+        icon: <BookCheck className="w-8 h-8" />
+    },
+    {
+        id: 'grammar-lesson-7',
+        title: 'Указательные местоимения',
+        description: 'Разбор местоимений これ, それ, あれ. Падежи, частица も и вопросительные предложения в отрицательной форме.',
+        href: '/grammar/lesson-7',
+        lessonNumber: 7,
         icon: <BookCheck className="w-8 h-8" />
     }
 ];

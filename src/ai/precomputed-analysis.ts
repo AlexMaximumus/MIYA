@@ -1,5 +1,4 @@
 
-
 /**
  * @fileoverview This file contains pre-computed analysis for Japanese sentences
  * to avoid making live AI calls for static content, improving performance and
@@ -650,7 +649,7 @@ export const grammarAnalyses = {
             { word: "山田さん", furigana: "やまださん", translation: "г-н Ямада", partOfSpeech: "имя собственное" },
             { word: "が", furigana: "が", translation: "частица", partOfSpeech: "частица" },
             { word: "先生", furigana: "せんせい", translation: "учитель", partOfSpeech: "существительное" },
-            { word: "です", furigana: "です", translation: "есть (связка)", "partOfSpeech": "связка" },
+            { word: "です", furigana: "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Господин Ямада — учитель."
     },
@@ -689,7 +688,77 @@ export const grammarAnalyses = {
             { word: "です", furigana: "です", "translation": "есть (связка)", "partOfSpeech": "связка" },
         ],
         fullTranslation: "Имя — Анна."
-    }
+    },
+     // Lesson 7
+     kyoukasho_wa_dore_desuka: {
+        sentence: [
+            { word: '教科書', furigana: 'きょうかしょ', translation: 'учебник', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
+        ],
+        fullTranslation: 'Учебник - это что (из имеющихся предметов)?',
+    },
+    kyoukasho_wa_kore_desu: {
+        sentence: [
+            { word: '教科書', furigana: 'きょうかしょ', translation: 'учебник', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'указательное местоимение' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Учебник - это.',
+    },
+    kore_ga_hon_desu: {
+        sentence: [
+            { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'указательное местоимение' },
+            { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' },
+            { word: '本', furigana: 'ほん', translation: 'книга', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Это (а не что-либо другое) книга.',
+    },
+    kore_wa_hon_desu: {
+        sentence: [
+            { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'указательное местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: '本', furigana: 'ほん', translation: 'книга', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Это книга.',
+    },
+    yamadasan_mo_sensei_desu: {
+        sentence: [
+            { word: '山田さん', furigana: 'やまださん', translation: 'г-н Ямада', partOfSpeech: 'имя собственное' },
+            { word: 'も', furigana: 'も', translation: 'частица', partOfSpeech: 'частица' },
+            { word: '先生', furigana: 'せんせい', translation: 'учитель', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Ямада-сан тоже преподаватель.',
+    },
+    anna_mo_tanakasan_mo_sensei_dewa_arimasen: {
+        sentence: [
+            { word: 'アンナ', furigana: 'アンナ', translation: 'Анна', partOfSpeech: 'имя собственное' },
+            { word: 'も', furigana: 'も', translation: 'частица', partOfSpeech: 'частица' },
+            { word: '田中さん', furigana: 'たなかさん', translation: 'г-н Танака', partOfSpeech: 'имя собственное' },
+            { word: 'も', furigana: 'も', translation: 'частица', partOfSpeech: 'частица' },
+            { word: '先生', furigana: 'せんせい', translation: 'учитель', partOfSpeech: 'существительное' },
+            { word: 'では', furigana: 'では', translation: 'отрицательная частица', partOfSpeech: 'отрицательная частица' },
+            { word: 'ありません', furigana: 'ありません', translation: 'не является', partOfSpeech: 'вспомогательный глагол' },
+        ],
+        fullTranslation: 'Ни Анна, ни Танака-сан не преподаватели.',
+    },
+    anohito_wa_gakusei_dewa_arimasenka: {
+        sentence: [
+            { word: 'あの人', furigana: 'あのひと', translation: 'тот человек', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: '学生', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+            { word: 'では', furigana: 'では', translation: 'отрицательная частица', partOfSpeech: 'отрицательная частица' },
+            { word: 'ありません', furigana: 'ありません', translation: 'не является', partOfSpeech: 'вспомогательный глагол' },
+            { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
+        ],
+        fullTranslation: 'Он не студент?',
+    },
 }
 
 export const dialogueAnalyses = {
@@ -900,14 +969,56 @@ export const dialogueAnalyses = {
             { word: '。', furigana: '', translation: 'точка', partOfSpeech: 'знак препинания' },
         ],
         fullTranslation: 'Мне тоже очень приятно, прошу любить и жаловать.'
-    }
+    },
+    // Lesson 7
+    wakarimashita: {
+        sentence: [
+            { word: 'わかりました', furigana: 'わかりました', translation: 'Понятно', partOfSpeech: 'выражение' },
+        ],
+        fullTranslation: 'Понятно.',
+    },
+    doumo_arigatou_gozaimashita: {
+        sentence: [
+            { word: 'どうも', furigana: 'どうも', translation: 'очень', partOfSpeech: 'наречие' },
+            { word: 'ありがとう', furigana: 'ありがとう', translation: 'спасибо', partOfSpeech: 'выражение' },
+            { word: 'ございました', furigana: 'ございました', translation: 'было', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Большое спасибо.',
+    },
+    dou_itashimashite: {
+        sentence: [
+            { word: 'どういたしまして', furigana: 'どういたしまして', translation: 'не стоит', partOfSpeech: 'выражение' },
+        ],
+        fullTranslation: 'Не стоит.',
+    },
+    kore_wa_nan_desuka: {
+        sentence: [
+            { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: '何', furigana: 'なん', translation: 'что?', partOfSpeech: 'вопросительное местоимение' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
+        ],
+        fullTranslation: 'Что это?',
+    },
+    sore_wa_jisho_desu: {
+        sentence: [
+            { word: 'それ', furigana: 'それ', translation: 'то', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Это словарь.',
+    },
+    nihongo_no_jisho_desuka: {
+        sentence: [
+            { word: '日本語', furigana: 'にほんご', translation: 'японский язык', partOfSpeech: 'существительное' },
+            { word: 'の', furigana: 'の', translation: 'частица (принадлежность)', partOfSpeech: 'частица (принадлежность)' },
+            { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
+        ],
+        fullTranslation: 'Это японский словарь?',
+    },
+
 };
-
-
-
-
-    
-
-    
-
-    
