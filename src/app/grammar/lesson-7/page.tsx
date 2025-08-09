@@ -33,19 +33,19 @@ const katakanaRows = {
 };
 
 const kanjiList = [
-    { kanji: '大', kun: 'おお', on: 'ダイ, タイ', meaning: 'большой, великий' },
-    { kanji: '山', kun: 'やま', on: 'サン', meaning: 'гора' },
-    { kanji: '中', kun: 'なか', on: 'チュウ', meaning: 'центр, середина, в, внутри' },
-    { kanji: '四', kun: 'よん, よ', on: 'シ', meaning: 'четыре' },
-    { kanji: '室', kun: 'しつ', on: 'シツ', meaning: 'комната' },
-    { kanji: '信', kun: '-', on: 'シン', meaning: 'вера, учение' },
-    { kanji: '教', kun: 'おしえる', on: 'キョウ', meaning: 'преподавать' },
-    { kanji: '習', kun: 'ならう', on: 'シュウ', meaning: 'учиться, обучаться' },
-    { kanji: '内', kun: 'うち', on: 'ナイ', meaning: 'внутри, в' },
-    { kanji: '出', kun: 'でる', on: 'シュツ', meaning: 'выходить, появляться' },
-    { kanji: '部', kun: '-', on: 'ブ', meaning: 'часть, отдел, отделение' },
-    { kanji: '田', kun: 'た', on: 'デン', meaning: 'поле' },
-    { kanji: '年', kun: 'とし', on: 'ネン', meaning: 'год' },
+    { kanji: '大', kun: ['おお'], on: ['ダイ', 'タイ'], meaning: 'большой, великий' },
+    { kanji: '山', kun: ['やま'], on: ['サン'], meaning: 'гора' },
+    { kanji: '中', kun: ['なか'], on: ['チュウ'], meaning: 'центр, середина, в, внутри' },
+    { kanji: '四', kun: ['よん', 'よ'], on: ['シ'], meaning: 'четыре' },
+    { kanji: '室', kun: ['しつ'], on: ['シツ'], meaning: 'комната' },
+    { kanji: '信', kun: [], on: ['シン'], meaning: 'вера, учение' },
+    { kanji: '教', kun: ['おしえる'], on: ['キョウ'], meaning: 'преподавать' },
+    { kanji: '習', kun: ['ならう'], on: ['シュウ'], meaning: 'учиться, обучаться' },
+    { kanji: '内', kun: ['うち'], on: ['ナイ'], meaning: 'внутри, в' },
+    { kanji: '出', kun: ['でる'], on: ['シュツ'], meaning: 'выходить, появляться' },
+    { kanji: '部', kun: [], on: ['ブ'], meaning: 'часть, отдел, отделение' },
+    { kanji: '田', kun: ['た'], on: ['デン'], meaning: 'поле' },
+    { kanji: '年', kun: ['とし'], on: ['ネン'], meaning: 'год' },
 ];
 
 const ExerciseCard = ({ title, description, children }: { title: string; description?: React.ReactNode; children: React.ReactNode;}) => (
@@ -103,40 +103,53 @@ export default function GrammarLesson7Page() {
                     <AccordionItem value="item-grammar">
                         <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                           <p><b>Предметно-указательные местоимения これ, それ, あれ</b> замещают названия предметов. Различаются по степени удаления от говорящего.</p>
-                           <ul className="list-disc list-inside space-y-2">
-                               <li><b>これ:</b> предмет у говорящего.</li>
-                               <li><b>それ:</b> предмет у собеседника.</li>
-                               <li><b>あれ:</b> предмет далеко от обоих.</li>
+                           <h4 className="font-bold text-xl mb-2">Предметно-указательные местоимения これ, それ, あれ</h4>
+                           <p>Местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных. Различаются по степени удаления от говорящего:</p>
+                           <ul className="list-disc list-inside space-y-2 mt-2">
+                               <li><b>これ:</b> Предмет у говорящего.</li>
+                               <li><b>それ:</b> Предмет у собеседника.</li>
+                               <li><b>あれ:</b> Предмет далеко от обоих.</li>
                            </ul>
-                           <p><b>Вопросительное местоимение どれ</b> соответствует これ, それ, あれ и означает "какой?", "что?" (из имеющихся).</p>
+                           <p className="mt-2">Например, если у говорящего в руках книга, он скажет <b className="font-japanese">これ</b>. Если книга у собеседника — <b className="font-japanese">それ</b>. Если они оба смотрят на далёкое здание — <b className="font-japanese">あれ</b>.</p>
+                           <p className="mt-2">Эти местоимения могут быть подлежащим или дополнением, но не определением. Изменяются по падежам, но не имеют родительного падежа.</p>
+                           
+                           <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное местоимение どれ</h4>
+                           <p>Соответствует これ, それ, あれ и означает "какой?", "что?" (из имеющихся).</p>
                            <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} />
+                           <p>Ответ:</p>
                            <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} />
 
-                           <h4 className="font-semibold text-lg mt-4">Именительный падеж (が)</h4>
-                           <p>Подлежащее ставится в именительном падеже с частицей <b>が</b>, когда на него падает логическое ударение (новая информация).</p>
+                           <h4 className="font-bold text-xl mt-4 mb-2">Именительный падеж (が)</h4>
+                           <p>Суффикс <b>が</b> ставится после подлежащего, когда на него падает логическое ударение (новая информация).</p>
                            <InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} />
-                           <p>Сравните:</p>
+                           <p className="mt-2">Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</p>
+                           <p><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></p>
+                           <p><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></p>
+                           <p className="mt-4 font-semibold">Сравните:</p>
                            <ul className="list-disc list-inside space-y-2">
                                <li><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</li>
                                <li><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /> (Ответ на вопрос "Что из этого книга?")</li>
                            </ul>
 
-                            <h4 className="font-semibold text-lg mt-4">Частица も</h4>
+                            <h4 className="font-bold text-xl mt-4 mb-2">Частица も</h4>
                            <p>Имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</p>
+                           <p>Примеры:</p>
                            <InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} />
                            <InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} />
                            
-                           <h4 className="font-semibold text-lg mt-4">Вопросительное предложение в отрицательной форме</h4>
-                           <p>Задается, когда говорящий ожидает подтверждения.</p>
+                           <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное предложение в отрицательной форме</h4>
+                           <p>Задается, когда говорящий ожидает подтверждения своего предположения.</p>
                            <InteractiveFormula formula="N は N ではありませんか。" />
                            <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
+                           <p className="mt-2">Ответы на такой вопрос:</p>
+                           <p><b>Да:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></p>
+                           <p><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></p>
                         </AccordionContent>
                     </AccordionItem>
                      <AccordionItem value="item-word-formation">
                         <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                           <p>Некоторые корни китайского происхождения (канго), как <b className="font-japanese">学</b>, могут выступать как самостоятельные слова (大学, 学生) или как суффиксы для обозначения наук (文学 - литература, 史学 - история).</p>
+                           <p>Некоторые корни китайского происхождения (канго), как <b className="font-japanese">学</b>, могут выступать как самостоятельные слова (<InteractiveText analysis={grammarAnalyses.daigaku} />, <InteractiveText analysis={grammarAnalyses.gakuseidesu} />) или как суффиксы для обозначения наук (<InteractiveText analysis={grammarAnalyses.bungaku} /> - литература, 史学 - история).</p>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-writing">
@@ -154,8 +167,8 @@ export default function GrammarLesson7Page() {
                                     {kanjiList.map(k => (
                                         <TableRow key={k.kanji}>
                                             <TableCell className="font-japanese text-2xl md:text-3xl">{k.kanji}</TableCell>
-                                            <TableCell className="font-japanese">{k.kun}</TableCell>
-                                            <TableCell className="font-japanese">{k.on}</TableCell>
+                                            <TableCell className="font-japanese">{k.kun.join(', ')}</TableCell>
+                                            <TableCell className="font-japanese">{k.on.join(', ')}</TableCell>
                                             <TableCell>{k.meaning}</TableCell>
                                         </TableRow>
                                     ))}
@@ -245,3 +258,5 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
+
+    
