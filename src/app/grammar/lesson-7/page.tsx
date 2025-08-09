@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
 import InteractiveFormula from '@/components/interactive-formula';
@@ -48,6 +48,16 @@ const kanjiList = [
     { kanji: '年', kun: 'とし', on: 'ネン', meaning: 'год' },
 ];
 
+const ExerciseCard = ({ title, description, children }: { title: string; description?: React.ReactNode; children: React.ReactNode;}) => (
+    <Card>
+        <CardHeader>
+            <CardTitle className="text-lg md:text-xl">{title}</CardTitle>
+            {description && <CardDescription>{description}</CardDescription>}
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+    </Card>
+);
+
 export default function GrammarLesson7Page() {
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
@@ -57,6 +67,13 @@ export default function GrammarLesson7Page() {
             .then(() => toast({ title: 'Ссылка скопирована!', description: 'Вы можете поделиться этим уроком с кем угодно.' }))
             .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
     }
+
+    const showNotImplementedToast = () => {
+        toast({
+          title: 'Упражнение в разработке',
+          description: 'Проверка для этого задания пока не реализована. Следите за обновлениями!',
+        });
+    };
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen bg-background p-4 sm:p-8 pt-16 sm:pt-24 animate-fade-in">
@@ -156,14 +173,68 @@ export default function GrammarLesson7Page() {
                     </AccordionItem>
                 </Accordion>
                 
-                 <Card>
-                    <CardHeader>
-                        <CardTitle className="text-2xl text-center">📝 Упражнения</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground text-center">Интерактивные упражнения для этого урока находятся в разработке и скоро появятся!</p>
-                    </CardContent>
-                </Card>
+                <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
+                <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg mb-6">
+                    <Lightbulb className="w-5 h-5 text-blue-500 shrink-0" />
+                    <p className="text-sm text-blue-800">
+                        <b>Примечание:</b> Интерактивная проверка для всех упражнений этого урока находится в разработке. Вы можете выполнять задания в полях для ввода, но автоматическая оценка пока недоступна.
+                    </p>
+                </div>
+                <div className="space-y-6">
+                    <ExerciseCard title="Упражнение 1" description="Отработайте интонацию следующих предложений.">
+                        <div className="space-y-4">
+                            <InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} />
+                            <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} />
+                            <p>あれは図書館です。</p>
+                            <p>どれが辞書ですか。</p>
+                            <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
+                        </div>
+                    </ExerciseCard>
+
+                    <ExerciseCard title="Упражнение 6" description="Переведите письменно на японский язык.">
+                        <div className="space-y-2">
+                            <Input placeholder="1. Это газета." className="font-japanese" />
+                            <Input placeholder="2. То учебник." className="font-japanese" />
+                            <Input placeholder="3. Это потолок." className="font-japanese" />
+                            <Input placeholder="4. То аудитория." className="font-japanese" />
+                        </div>
+                        <Button onClick={showNotImplementedToast} className="mt-4">Проверить</Button>
+                    </ExerciseCard>
+
+                    <ExerciseCard title="Упражнение 9" description="Скажите предложения в отрицательной форме, дополнив вариантом правильного ответа.">
+                        <div className="space-y-4">
+                            <div>
+                                <Label>それはノートです。(本)</Label>
+                                <Input placeholder="これは...ではありません。...です。" className="font-japanese mt-1" />
+                            </div>
+                             <div>
+                                <Label>あれは地図です。(絵)</Label>
+                                <Input className="font-japanese mt-1" />
+                            </div>
+                        </div>
+                         <Button onClick={showNotImplementedToast} className="mt-4">Проверить</Button>
+                    </ExerciseCard>
+                    <ExerciseCard title="Упражнение 11" description="Дополните предложения, употребив частицу も.">
+                        <div className="space-y-4">
+                            <div>
+                                <Label>これは椅子です。(それ)</Label>
+                                <Input className="font-japanese mt-1" />
+                            </div>
+                             <div>
+                                <Label>田中さんは学生です。(山田さん)</Label>
+                                <Input className="font-japanese mt-1" />
+                            </div>
+                        </div>
+                         <Button onClick={showNotImplementedToast} className="mt-4">Проверить</Button>
+                    </ExerciseCard>
+                     <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg md:text-xl">Остальные упражнения (2-5, 7, 8, 10, 12-22)</CardTitle>
+                            <CardDescription>Эти задания требуют более сложного разбора и будут добавлены в следующих обновлениях.</CardDescription>
+                        </CardHeader>
+                    </Card>
+                </div>
+
 
                  <div className="mt-12 text-center flex flex-col items-center gap-4">
                     <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
@@ -174,5 +245,3 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
-
-    
