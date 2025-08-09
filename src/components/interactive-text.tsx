@@ -35,7 +35,7 @@ export default function InteractiveText({ analysis }: InteractiveTextProps) {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div>
+      <div className='inline-block'>
         <div className="flex flex-wrap items-end leading-loose cursor-pointer" lang="ja">
             {analysis.sentence.map((word, index) => (
             <Tooltip key={index}>

@@ -24,16 +24,17 @@ const termExplanations: Record<string, string> = {
 };
 
 export default function InteractiveFormula({ formula, className }: InteractiveFormulaProps) {
-  const parts = formula.split(/(\s+)/).filter(Boolean); // Split by spaces, keeping them
+  const parts = formula.split(/(\s+|\b)/).filter(Boolean); // Split by spaces and word boundaries
 
   return (
-    <div className={cn("font-mono bg-muted p-3 rounded-md inline-block text-lg md:text-xl", className)}>
+    <div className={cn("font-mono bg-muted p-3 rounded-md inline-flex flex-wrap items-center gap-x-1 text-lg md:text-xl", className)}>
         {parts.map((part, index) => {
             if (part.trim() === '') {
                 return <span key={index}>&nbsp;</span>;
             }
             
-            const explanation = termExplanations[part];
+            const cleanPart = part.trim();
+            const explanation = termExplanations[cleanPart];
 
             if (explanation) {
                 return (
@@ -42,7 +43,7 @@ export default function InteractiveFormula({ formula, className }: InteractiveFo
                         <span 
                             className="underline decoration-dotted cursor-pointer transition-colors hover:bg-primary/20 rounded px-1"
                         >
-                            {part}
+                            {cleanPart}
                         </span>
                         </PopoverTrigger>
                         <PopoverContent side="bottom" className="w-auto max-w-xs p-2 text-sm">
@@ -52,7 +53,7 @@ export default function InteractiveFormula({ formula, className }: InteractiveFo
                 );
             }
             
-            return <span key={index}>{part}</span>;
+            return <span key={index}>{cleanPart}</span>;
         })}
     </div>
   );
