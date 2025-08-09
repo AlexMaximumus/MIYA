@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
@@ -50,7 +49,6 @@ const kanjiList = [
 ];
 
 export default function GrammarLesson7Page() {
-    const [progress, setProgress] = useState(0);
     const [_, copy] = useCopyToClipboard();
     const { toast } = useToast();
 
@@ -80,7 +78,6 @@ export default function GrammarLesson7Page() {
                         <p className="text-sm text-primary font-semibold">Урок 7 — Грамматика</p>
                         <CardTitle className="text-2xl md:text-3xl">Указательные местоимения</CardTitle>
                         <CardDescription>Разбор местоимений これ, それ, あれ, падежи, частица も и вопросительные предложения в отрицательной форме.</CardDescription>
-                        <Progress value={progress} className="mt-2" />
                     </CardHeader>
                 </Card>
 
@@ -149,19 +146,33 @@ export default function GrammarLesson7Page() {
                             </Table>
                          </AccordionContent>
                     </AccordionItem>
+                     <AccordionItem value="item-dialogues">
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Обиходные выражения</AccordionTrigger>
+                        <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                           <InteractiveText analysis={dialogueAnalyses.wakarimashita} />
+                           <InteractiveText analysis={dialogueAnalyses.doumo_arigatou_gozaimashita} />
+                           <InteractiveText analysis={dialogueAnalyses.dou_itashimashite} />
+                        </AccordionContent>
+                    </AccordionItem>
                 </Accordion>
                 
-                {/* Exercises section will be added here in a future update */}
                  <Card>
                     <CardHeader>
-                        <CardTitle>Упражнения</CardTitle>
+                        <CardTitle className="text-2xl text-center">📝 Упражнения</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground">Интерактивные упражнения для этого урока находятся в разработке и скоро появятся!</p>
+                        <p className="text-muted-foreground text-center">Интерактивные упражнения для этого урока находятся в разработке и скоро появятся!</p>
                     </CardContent>
                 </Card>
 
+                 <div className="mt-12 text-center flex flex-col items-center gap-4">
+                    <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
+                        <Link href="/grammar">Вернуться к списку уроков</Link>
+                    </Button>
+                </div>
             </div>
         </div>
     );
 }
+
+    
