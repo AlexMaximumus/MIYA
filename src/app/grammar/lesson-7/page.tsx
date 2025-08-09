@@ -257,11 +257,11 @@ export default function GrammarLesson7Page() {
                         <b>Примечание:</b> Интерактивная проверка для всех упражнений этого урока находится в разработке. Вы можете выполнять задания в полях для ввода, но автоматическая оценка пока недоступна.
                     </p>
                 </div>
-                <div className="space-y-6">
+                 <div className="space-y-6">
                     <ExerciseCard title="Упражнение 1: Интонация" description="Отработайте интонацию следующих предложений.">
                         <div className="space-y-4">
-                            <div><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /></div>
-                            <div><InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
+                            <div><InteractiveText analysis={{ sentence: [{ word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '本', furigana: 'ほん', translation: 'книга', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'Это книга.' }} /></div>
+                            <div><InteractiveText analysis={{ sentence: [{ word: 'それ', furigana: 'それ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '何', furigana: 'なん', translation: 'что?', partOfSpeech: 'вопросительное местоимение' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что это?' }} /></div>
                             <div><InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'То - библиотека.'}} /></div>
                             <div><InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что (из этого) - словарь?'}} /></div>
                             <div><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
@@ -286,5 +286,3 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
-
-    
