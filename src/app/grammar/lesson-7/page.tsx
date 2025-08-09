@@ -160,21 +160,21 @@ export default function GrammarLesson7Page() {
                            </div>
                         </AccordionContent>
                     </AccordionItem>
-                     <AccordionItem value="item-word-formation">
+                    <AccordionItem value="item-word-formation">
                         <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <div className="space-y-2">
-                            <p>Некоторые корни китайского происхождения (канго) обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</p>
-                            <p>Например, корень <b className="font-japanese">学</b> в сочетании с другими корнями образует новые слова:</p>
-                            <ul className="list-disc list-inside ml-4">
-                                <li><InteractiveText analysis={grammarAnalyses.gakuseidesu} /></li>
-                                <li><InteractiveText analysis={grammarAnalyses.daigaku} /></li>
-                            </ul>
-                            <p>Вместе с тем <b className="font-japanese">学</b> используется как суффикс для обозначения теоретических наук:</p>
-                             <ul className="list-disc list-inside ml-4">
-                                <li><InteractiveText analysis={grammarAnalyses.bungaku} /> (литература)</li>
-                                <li><b className="font-japanese">史学</b> (история как наука)</li>
-                            </ul>
+                                <p>Некоторые корни китайского происхождения (канго) обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</p>
+                                <p>Например, корень <b className="font-japanese">学</b> в сочетании с другими корнями образует новые слова:</p>
+                                <ul className="list-disc list-inside ml-4">
+                                    <li><InteractiveText analysis={grammarAnalyses.gakuseidesu} /></li>
+                                    <li><InteractiveText analysis={grammarAnalyses.daigaku} /></li>
+                                </ul>
+                                <p>Вместе с тем <b className="font-japanese">学</b> используется как суффикс для обозначения теоретических наук:</p>
+                                 <ul className="list-disc list-inside ml-4">
+                                    <li><InteractiveText analysis={grammarAnalyses.bungaku} /></li>
+                                    <li><InteractiveText analysis={grammarAnalyses.shigaku} /></li>
+                                </ul>
                            </div>
                         </AccordionContent>
                     </AccordionItem>

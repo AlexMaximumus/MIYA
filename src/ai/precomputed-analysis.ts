@@ -690,6 +690,12 @@ export const grammarAnalyses = {
         fullTranslation: "Имя — Анна."
     },
      // Lesson 7
+     shigaku: {
+        sentence: [
+            { word: '史学', furigana: 'しがく', translation: 'история (как наука)', partOfSpeech: 'существительное' },
+        ],
+        fullTranslation: 'История (как наука)',
+    },
      kyoukasho_wa_dore_desuka: {
         sentence: [
             { word: '教科書', furigana: 'きょうかしょ', translation: 'учебник', partOfSpeech: 'существительное' },
