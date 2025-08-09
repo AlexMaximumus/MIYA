@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -104,49 +104,59 @@ export default function GrammarLesson7Page() {
                         <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <h4 className="font-bold text-xl mb-2">Предметно-указательные местоимения これ, それ, あれ</h4>
-                           <p>Местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных. Различаются по степени удаления от говорящего:</p>
-                           <ul className="list-disc list-inside space-y-2 mt-2">
-                               <li><b>これ:</b> Предмет у говорящего.</li>
-                               <li><b>それ:</b> Предмет у собеседника.</li>
-                               <li><b>あれ:</b> Предмет далеко от обоих.</li>
-                           </ul>
-                           <p className="mt-2">Например, если у говорящего в руках книга, он скажет <b className="font-japanese">これ</b>. Если книга у собеседника — <b className="font-japanese">それ</b>. Если они оба смотрят на далёкое здание — <b className="font-japanese">あれ</b>.</p>
-                           <p className="mt-2">Эти местоимения могут быть подлежащим или дополнением, но не определением. Изменяются по падежам, но не имеют родительного падежа.</p>
+                           <div className="space-y-2">
+                               <p>Местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных. Различаются по степени удаления от говорящего:</p>
+                               <ul className="list-disc list-inside space-y-2 mt-2">
+                                   <li><b>これ:</b> Предмет у говорящего.</li>
+                                   <li><b>それ:</b> Предмет у собеседника.</li>
+                                   <li><b>あれ:</b> Предмет далеко от обоих.</li>
+                               </ul>
+                               <p>Например, если у говорящего в руках книга, он скажет <b>これ</b>. Если книга у собеседника — <b>それ</b>. Если они оба смотрят на далёкое здание — <b>あれ</b>.</p>
+                               <p>Эти местоимения могут быть подлежащим или дополнением, но не определением. Изменяются по падежам, но не имеют родительного падежа.</p>
+                           </div>
                            
                            <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное местоимение どれ</h4>
-                           <p>Соответствует これ, それ, あれ и означает "какой?", "что?" (из имеющихся).</p>
-                           <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} />
-                           <div className="mt-2">
-                                <p>Ответ:</p>
-                                <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} />
+                           <div>
+                               Вопросительным местоимением, соответствующим これ, それ, あれ, является どれ. Оно означает "какой?", "что?" (из имеющихся).
+                               <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} />
+                               <div className="mt-2">
+                                    <p>Ответ:</p>
+                                    <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} />
+                               </div>
                            </div>
 
                            <h4 className="font-bold text-xl mt-4 mb-2">Именительный падеж (が)</h4>
-                           <p>Суффикс <b>が</b> ставится после подлежащего, когда на него падает логическое ударение (новая информация).</p>
-                           <InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} />
-                           <p className="mt-2">Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</p>
-                           <div className="mt-2"><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></div>
-                           <div className="mt-2"><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></div>
-                           <p className="mt-4 font-semibold">Сравните:</p>
-                           <ul className="list-disc list-inside space-y-2">
-                               <li><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</li>
-                               <li><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /> (Ответ на вопрос "Что из этого книга?")</li>
-                           </ul>
+                           <div className="space-y-2">
+                               <p>Суффикс <b>が</b> ставится после подлежащего, когда на него падает логическое ударение (новая информация).</p>
+                               <InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} />
+                               <p className="mt-2">Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</p>
+                               <div className="mt-2"><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></div>
+                               <div className="mt-2"><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></div>
+                               <p className="mt-4 font-semibold">Сравните:</p>
+                               <ul className="list-disc list-inside space-y-2">
+                                   <li><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</li>
+                                   <li><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /> (Ответ на вопрос "Что из этого книга?")</li>
+                               </ul>
+                           </div>
 
                             <h4 className="font-bold text-xl mt-4 mb-2">Частица も</h4>
-                           <p>Имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</p>
-                           <p className="mt-2">Примеры:</p>
-                           <InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} />
-                           <InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} />
+                            <div className="space-y-2">
+                               <p>Имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</p>
+                               <p>Примеры:</p>
+                               <InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} />
+                               <InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} />
+                           </div>
                            
                            <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное предложение в отрицательной форме</h4>
-                           <p>Задается, когда говорящий ожидает подтверждения своего предположения.</p>
-                           <InteractiveFormula formula="N は N ではありませんか。" />
-                           <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
-                           <div className="mt-2">
-                                <p>Ответы на такой вопрос:</p>
-                                <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
-                                <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></div>
+                           <div className="space-y-2">
+                               <p>Задается, когда говорящий ожидает подтверждения своего предположения.</p>
+                               <InteractiveFormula formula="N は N ではありませんか。" />
+                               <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
+                               <div className="mt-2">
+                                    <p>Ответы на такой вопрос:</p>
+                                    <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
+                                    <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></div>
+                               </div>
                            </div>
                         </AccordionContent>
                     </AccordionItem>
@@ -202,8 +212,8 @@ export default function GrammarLesson7Page() {
                         <div className="space-y-4">
                             <InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} />
                             <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} />
-                            <p>あれは図書館です。</p>
-                            <p>どれが辞書ですか。</p>
+                            <InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'То - библиотека.'}} />
+                            <InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что (из этого) - словарь?'}} />
                             <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
                         </div>
                     </ExerciseCard>
