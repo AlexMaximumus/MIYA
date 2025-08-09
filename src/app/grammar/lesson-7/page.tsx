@@ -21,7 +21,7 @@ const LESSON_ID = 'grammar-lesson-7';
 const KatakanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
     <div className='flex flex-wrap gap-4 mt-2 justify-center'>
        {rowData.map(char => (
-           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-3xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
+           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-3xl md:text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
        ))}
    </div>
 );
@@ -51,7 +51,7 @@ const kanjiList = [
 const ExerciseCard = ({ title, description, children }: { title: string; description?: React.ReactNode; children: React.ReactNode;}) => (
     <Card>
         <CardHeader>
-            <CardTitle className="text-xl">{title}</CardTitle>
+            <CardTitle className="text-lg md:text-xl">{title}</CardTitle>
             {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
         <CardContent>{children}</CardContent>
@@ -101,78 +101,86 @@ export default function GrammarLesson7Page() {
                 <h2 className="text-3xl font-bold text-foreground mb-6 text-center">🧠 Теория</h2>
                 <Accordion type="multiple" className="w-full max-w-4xl mb-12 space-y-4" defaultValue={['item-grammar']}>
                     <AccordionItem value="item-grammar">
-                        <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
-                        <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                           <h4 className="font-bold text-xl mb-2">Предметно-указательные местоимения これ, それ, あれ</h4>
-                           <div className="space-y-2">
-                               <p>Местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных. Различаются по степени удаления от говорящего:</p>
-                               <ul className="list-disc list-inside space-y-2 mt-2">
-                                   <li><b>これ:</b> Предмет у говорящего.</li>
-                                   <li><b>それ:</b> Предмет у собеседника.</li>
-                                   <li><b>あれ:</b> Предмет далеко от обоих.</li>
-                               </ul>
-                               <p>Например, если у говорящего в руках книга, он скажет <b>これ</b>. Если книга у собеседника — <b>それ</b>. Если они оба смотрят на далёкое здание — <b>あれ</b>.</p>
-                               <p>Эти местоимения могут быть подлежащим или дополнением, но не определением. Изменяются по падежам, но не имеют родительного падежа.</p>
-                           </div>
-                           
-                           <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное местоимение どれ</h4>
-                           <div>
-                               Вопросительным местоимением, соответствующим これ, それ, あれ, является どれ. Оно означает "какой?", "что?" (из имеющихся).
-                               <div className="my-2"><InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} /></div>
-                               <div>
-                                    <b>Ответ:</b>
-                                    <div className="mt-1"><InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} /></div>
-                               </div>
-                           </div>
-
-                           <h4 className="font-bold text-xl mt-4 mb-2">Именительный падеж (が)</h4>
-                           <div className="space-y-2">
-                               <div>Показателем именительного падежа является суффикс <b>が</b>. Он ставится после подлежащего, когда на него падает логическое ударение (новая информация).</div>
-                               <div className="my-2"><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /></div>
-                               <div>Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</div>
-                               <div className="my-2"><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></div>
-                               <div className="my-2"><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></div>
-                               <div className="mt-4 font-semibold">Сравните:</div>
-                               <ul className="list-disc list-inside space-y-2">
-                                   <li><div><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</div></li>
-                                   <li><div><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /> (Ответ на вопрос "Что из этого книга?")</div></li>
-                               </ul>
-                           </div>
-
-                            <h4 className="font-bold text-xl mt-4 mb-2">Частица も</h4>
-                            <div className="space-y-2">
-                               <div>Частица <b>も</b> имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</div>
-                               <p>Примеры:</p>
-                               <div><InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} /></div>
-                               <div><InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} /></div>
-                           </div>
-                           
-                           <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное предложение в отрицательной форме</h4>
-                           <div className="space-y-2">
-                               <div>Задается, когда говорящий ожидает подтверждения своего предположения.</div>
-                               <InteractiveFormula formula="N は N ではありませんか。" />
-                               <div className="my-2"><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
-                               <div>
-                                    <p>Ответы на такой вопрос:</p>
-                                    <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.hai_gakuseidesu} /></div>
-                                    <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.iie_gakuseidewaarimasen} /></div>
-                               </div>
-                           </div>
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Грамматика</AccordionTrigger>
+                        <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                            <Accordion type="single" collapsible className="w-full">
+                                <AccordionItem value="g-1">
+                                    <AccordionTrigger className="text-base md:text-xl font-semibold">Предметно-указательные местоимения これ, それ, あれ</AccordionTrigger>
+                                    <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
+                                        <div>Местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных. Различаются по степени удаления от говорящего:</div>
+                                        <ul className="list-disc list-inside space-y-2 mt-2">
+                                            <li><b>これ:</b> Предмет у говорящего.</li>
+                                            <li><b>それ:</b> Предмет у собеседника.</li>
+                                            <li><b>あれ:</b> Предмет далеко от обоих.</li>
+                                        </ul>
+                                        <div>Например, если у говорящего в руках книга, он скажет <b>これ</b>. Если книга у собеседника — <b>それ</b>. Если они оба смотрят на далёкое здание — <b>あれ</b>.</div>
+                                        <div>Эти местоимения могут быть подлежащим или дополнением, но не определением.</div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="g-2">
+                                     <AccordionTrigger className="text-base md:text-xl font-semibold">Вопросительное местоимение どれ</AccordionTrigger>
+                                    <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
+                                        <div>Вопросительным местоимением, соответствующим これ, それ, あれ, является どれ. Оно означает "какой?", "что?" (из имеющихся).</div>
+                                        <div className="my-2"><InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} /></div>
+                                        <div>
+                                                <b>Ответ:</b>
+                                                <div className="mt-1"><InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} /></div>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="g-3">
+                                     <AccordionTrigger className="text-base md:text-xl font-semibold">Именительный падеж (частица が)</AccordionTrigger>
+                                     <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
+                                        <div>Показателем именительного падежа является суффикс <b>が</b>. Он ставится после подлежащего, когда на него падает логическое ударение (новая информация).</div>
+                                        <div className="my-2"><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /></div>
+                                        <div>Вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</div>
+                                        <div className="my-2"><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></div>
+                                        <div className="my-2"><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></div>
+                                        <div className="mt-4 font-semibold">Сравните:</div>
+                                        <ul className="list-disc list-inside space-y-2">
+                                            <li><div><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</div></li>
+                                            <li><div><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /> (Ответ на вопрос "Что из этого книга?")</div></li>
+                                        </ul>
+                                     </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="g-4">
+                                     <AccordionTrigger className="text-base md:text-xl font-semibold">Частица も</AccordionTrigger>
+                                     <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
+                                        <div>Частица <b>も</b> имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</div>
+                                        <p>Примеры:</p>
+                                        <div><InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} /></div>
+                                        <div><InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} /></div>
+                                     </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="g-5">
+                                     <AccordionTrigger className="text-base md:text-xl font-semibold">Вопросительное предложение в отрицательной форме</AccordionTrigger>
+                                     <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
+                                        <div>Задается, когда говорящий ожидает подтверждения своего предположения.</div>
+                                        <InteractiveFormula formula="N は N ではありませんか。" />
+                                        <div className="my-2"><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
+                                        <div>
+                                            <p>Ответы на такой вопрос:</p>
+                                            <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.hai_gakuseidesu} /></div>
+                                            <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.iie_gakuseidewaarimasen} /></div>
+                                        </div>
+                                     </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-word-formation">
-                        <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
-                        <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
+                        <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <div className="space-y-2">
-                                <div>Некоторые корни китайского происхождения обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</div>
+                                <div>Некоторые корни китайского происхождения (канго) обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</div>
                                 <div>Например, корень <b className="font-japanese">学</b> в сочетании с другими корнями образует новые слова: <InteractiveText analysis={grammarAnalyses.gakusei} />, <InteractiveText analysis={grammarAnalyses.daigaku} />.</div>
                                 <div>Вместе с тем <b className="font-japanese">学</b> используется как суффикс для обозначения теоретических наук: <InteractiveText analysis={grammarAnalyses.bungaku} />, <InteractiveText analysis={grammarAnalyses.shigaku} />.</div>
                            </div>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-writing">
-                        <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Письменность</AccordionTrigger>
-                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Письменность</AccordionTrigger>
+                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                             <h4 className="font-bold text-xl mt-4 mb-2">Катакана: Ряды ТА, НА, ХА</h4>
                             <KatakanaRowDisplay rowData={katakanaRows.ta} />
                             <KatakanaRowDisplay rowData={katakanaRows.na} />
@@ -195,8 +203,8 @@ export default function GrammarLesson7Page() {
                          </AccordionContent>
                     </AccordionItem>
                      <AccordionItem value="item-texts">
-                        <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Тексты</AccordionTrigger>
-                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Тексты</AccordionTrigger>
+                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                             <h4 className="font-bold text-xl mb-2">ТЕКСТ 7-1</h4>
                             <div className="space-y-2">
                                 <div><InteractiveText analysis={grammarAnalyses.kore_wa_note_desu} /></div>
@@ -207,19 +215,33 @@ export default function GrammarLesson7Page() {
                             </div>
                             <h4 className="font-bold text-xl mt-4 mb-2">ТЕКСТ 7-2</h4>
                             <div className="space-y-2">
-                                <div><InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
-                                <div><InteractiveText analysis={dialogueAnalyses.sore_wa_jisho_desu} /></div>
-                                <div><InteractiveText analysis={dialogueAnalyses.nihongo_no_jisho_desuka} /></div>
-                                <div><InteractiveText analysis={dialogueAnalyses.hai_soudesu} /></div>
+                                <div><b>Танака:</b> <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
+                                <div><b>Анна:</b> <InteractiveText analysis={dialogueAnalyses.sore_wa_jisho_desu} /></div>
+                                <div><b>Танака:</b> <InteractiveText analysis={dialogueAnalyses.nihongo_no_jisho_desuka} /></div>
+                                <div><b>Анна:</b> <InteractiveText analysis={dialogueAnalyses.hai_soudesu} /></div>
                             </div>
                          </AccordionContent>
                     </AccordionItem>
-                     <AccordionItem value="item-expressions">
-                        <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Обиходные выражения</AccordionTrigger>
-                        <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                    <AccordionItem value="item-expressions">
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Обиходные выражения</AccordionTrigger>
+                        <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <div><InteractiveText analysis={dialogueAnalyses.wakarimashita} /></div>
                            <div><InteractiveText analysis={dialogueAnalyses.doumo_arigatou_gozaimashita} /></div>
                            <div><InteractiveText analysis={dialogueAnalyses.dou_itashimashite} /></div>
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-commentary">
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Комментарий</AccordionTrigger>
+                        <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                            <h4 className="font-bold text-xl mb-2">1. Речевой этикет</h4>
+                            <div>Выражение благодарности. В японском языке словами благодарности служат слова ありがとう (Спасибо) или более вежливо - どうもありがとうございました (Большое спасибо). Ответной репликой обычно служит どういたしまして (Не стоит).</div>
+                            
+                            <h4 className="font-bold text-xl mt-4 mb-2">2. Особенности употребления частиц</h4>
+                            <div>Частица ね, произнесённая с интонацией удивления, передаёт значения непонимания, удивления, на русский язык может не переводиться, например: これは？ - Это?</div>
+                            <div>Частица あ соответствует русской частице А!, имеющей значение Понятно!, например: あ、これはペンです。 - А, это ручка.</div>
+
+                            <h4 className="font-bold text-xl mt-4 mb-2">3. Указание на предметы</h4>
+                            <div>В некоторых случаях, когда собеседники находятся рядом с каким-либо предметом, то оба, указывая на него, могут сказать これ.</div>
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
@@ -280,7 +302,7 @@ export default function GrammarLesson7Page() {
                     </ExerciseCard>
                      <Card>
                         <CardHeader>
-                            <CardTitle className="text-xl">Остальные упражнения (2-5, 7, 8, 10, 12-22)</CardTitle>
+                            <CardTitle className="text-lg md:text-xl">Остальные упражнения (2-5, 7, 8, 10, 12-22)</CardTitle>
                             <CardDescription>Эти задания требуют более сложного разбора и будут добавлены в следующих обновлениях.</CardDescription>
                         </CardHeader>
                     </Card>
