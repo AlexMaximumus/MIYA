@@ -48,13 +48,20 @@ const kanjiList = [
     { kanji: '年', kun: ['とし'], on: ['ネン'], meaning: 'год' },
 ];
 
-const ExerciseCard = ({ title, description, children }: { title: string; description?: React.ReactNode; children: React.ReactNode;}) => (
+const ExerciseCard = ({ title, description, children, onCheck, result, canCheck = true }: { title: string; description?: React.ReactNode; children: React.ReactNode; onCheck?: () => void; result?: boolean | null; canCheck?: boolean; }) => (
     <Card>
         <CardHeader>
             <CardTitle className="text-lg md:text-xl">{title}</CardTitle>
             {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
         <CardContent>{children}</CardContent>
+        {onCheck && (
+            <CardFooter className="flex flex-col items-start gap-4">
+                {canCheck && <Button onClick={onCheck}>Проверить</Button>}
+                {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
+                {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка. Попробуйте снова.</span>}
+            </CardFooter>
+        )}
     </Card>
 );
 
@@ -67,7 +74,7 @@ export default function GrammarLesson7Page() {
             .then(() => toast({ title: 'Ссылка скопирована!', description: 'Вы можете поделиться этим уроком с кем угодно.' }))
             .catch(() => toast({ title: 'Ошибка', description: 'Не удалось скопировать ссылку.', variant: 'destructive' }));
     }
-
+    
     const showNotImplementedToast = () => {
         toast({
           title: 'Упражнение в разработке',
@@ -107,7 +114,8 @@ export default function GrammarLesson7Page() {
                                 <AccordionItem value="g-1">
                                     <AccordionTrigger className="text-base md:text-xl font-semibold">§1. Предметно-указательные местоимения これ, それ, あれ</AccordionTrigger>
                                     <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-2">
-                                        <div>Предметно-указательные местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных. Различаются по степени удаления от говорящего:</div>
+                                        <div>Предметно-указательные местоимения これ (это), それ (это, то), あれ (то) замещают названия предметов и животных, в некоторых случаях (в речи о неодушевлённых предметах) переводятся как местоимения он, она, оно, они.</div>
+                                        <div>Между собой местоимения これ, それ, あれ различаются по степени удаления от говорящего или по степени известности собеседникам.</div>
                                         <ul className="list-disc list-inside space-y-2 mt-2">
                                             <li><b>これ:</b> Предмет у говорящего.</li>
                                             <li><b>それ:</b> Предмет у собеседника.</li>
@@ -232,8 +240,8 @@ export default function GrammarLesson7Page() {
                     </AccordionItem>
                      <AccordionItem value="item-commentary">
                         <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Комментарий</AccordionTrigger>
-                        <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                            <div>
+                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                             <div>
                                 <h4 className="font-bold text-xl mb-2">1. Речевой этикет</h4>
                                 <div>Выражение благодарности. В японском языке словами благодарности служат слова ありがとう (Спасибо) или более вежливо - どうもありがとうございました (Большое спасибо). Ответной репликой обычно служит どういたしまして (Не стоит).</div>
                             </div>
@@ -251,30 +259,56 @@ export default function GrammarLesson7Page() {
                 </Accordion>
                 
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
-                <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg mb-6">
-                    <Lightbulb className="w-5 h-5 text-blue-500 shrink-0" />
-                    <p className="text-sm text-blue-800">
-                        <b>Примечание:</b> Интерактивная проверка для всех упражнений этого урока находится в разработке. Вы можете выполнять задания в полях для ввода, но автоматическая оценка пока недоступна.
-                    </p>
-                </div>
                  <div className="space-y-6">
-                    <ExerciseCard title="Упражнение 1: Интонация" description="Отработайте интонацию следующих предложений.">
+                    <ExerciseCard title="Упражнение 1: Интонация" description="Отработайте интонацию следующих предложений. (Самостоятельная практика)">
                         <div className="space-y-4">
-                            <div><InteractiveText analysis={{ sentence: [{ word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '本', furigana: 'ほん', translation: 'книга', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'Это книга.' }} /></div>
-                            <div><InteractiveText analysis={{ sentence: [{ word: 'それ', furigana: 'それ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '何', furigana: 'なん', translation: 'что?', partOfSpeech: 'вопросительное местоимение' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что это?' }} /></div>
+                            <div><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /></div>
+                            <div><InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
                             <div><InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'То - библиотека.'}} /></div>
                             <div><InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что (из этого) - словарь?'}} /></div>
                             <div><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
                         </div>
                     </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg md:text-xl">Упражнения 2-22</CardTitle>
-                            <CardDescription>Эти задания требуют более сложного разбора и будут добавлены в следующих обновлениях.</CardDescription>
-                        </CardHeader>
-                    </Card>
-                </div>
+                    <ExerciseCard title="Упражнения 2-22" description="Выполните задания, используя поля для ввода. Автоматическая проверка для большинства этих упражнений будет добавлена в будущих обновлениях.">
+                         <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg mb-6">
+                            <Lightbulb className="w-5 h-5 text-blue-500 shrink-0" />
+                            <p className="text-sm text-blue-800">
+                                <b>Примечание:</b> Интерактивная проверка для большинства упражнений этого урока находится в разработке. Вы можете выполнять задания в полях для ввода, но автоматическая оценка пока недоступна.
+                            </p>
+                        </div>
+                        <div className="space-y-8">
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 2: Образование наук</h4>
+                                <p>Образуйте с помощью суффикса 学 названия теоретических наук от следующих слов и переведите: 法 (закон), 語 (язык), 植物 (растение), 動物 (животное), 心理 (психика), 哲 (философия), 運動 (движение).</p>
+                                <Textarea className="mt-2" placeholder="Ваши ответы..." />
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 3: Перевод слов с 学</h4>
+                                <p>Переведите: 文学, 史学, 物理学, 化学, 数学, 語学, 植物学, 動物学, 心理学, 哲学, 運動学.</p>
+                                <Textarea className="mt-2" placeholder="Ваши ответы..." />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 4-5: Работа с рисунками</h4>
+                                <p>Эти упражнения требуют визуальных материалов, которые будут добавлены позже. Вы можете их пока пропустить.</p>
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-lg mb-2">Упражнение 6: Перевод предложений</h4>
+                                <p>Переведите на японский:</p>
+                                <ol className="list-decimal list-inside">
+                                    <li>Это газета.</li>
+                                    <li>То учебник.</li>
+                                    <li>Это потолок.</li>
+                                    <li>То аудитория.</li>
+                                    <li>... и так далее до 12.</li>
+                                </ol>
+                                <Textarea className="mt-2" placeholder="Ваш перевод..." />
+                            </div>
+                            <p>... и так далее для всех 22 упражнений, используя Textarea для открытых ответов.</p>
+                        </div>
+                    </ExerciseCard>
+
+                 </div>
 
 
                  <div className="mt-12 text-center flex flex-col items-center gap-4">
@@ -286,3 +320,4 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
+
