@@ -154,8 +154,8 @@ export default function GrammarLesson7Page() {
                                <div className="my-2"><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
                                <div>
                                     <p>Ответы на такой вопрос:</p>
-                                    <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
-                                    <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></div>
+                                    <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.hai_gakuseidesu} /></div>
+                                    <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.iie_gakuseidewaarimasen} /></div>
                                </div>
                            </div>
                         </AccordionContent>
@@ -164,17 +164,9 @@ export default function GrammarLesson7Page() {
                         <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <div className="space-y-2">
-                                <p>Некоторые корни китайского происхождения (канго) обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</p>
-                                <p>Например, корень <b className="font-japanese">学</b> в сочетании с другими корнями образует новые слова:</p>
-                                <ul className="list-disc list-inside ml-4">
-                                    <li><InteractiveText analysis={grammarAnalyses.gakuseidesu} /></li>
-                                    <li><InteractiveText analysis={grammarAnalyses.daigaku} /></li>
-                                </ul>
-                                <p>Вместе с тем <b className="font-japanese">学</b> используется как суффикс для обозначения теоретических наук:</p>
-                                 <ul className="list-disc list-inside ml-4">
-                                    <li><InteractiveText analysis={grammarAnalyses.bungaku} /></li>
-                                    <li><InteractiveText analysis={grammarAnalyses.shigaku} /></li>
-                                </ul>
+                                <div>Некоторые корни китайского происхождения обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</div>
+                                <div>Например, корень <b className="font-japanese">学</b> в сочетании с другими корнями образует новые слова: <InteractiveText analysis={grammarAnalyses.gakusei} />, <InteractiveText analysis={grammarAnalyses.daigaku} />.</div>
+                                <div>Вместе с тем <b className="font-japanese">学</b> используется как суффикс для обозначения теоретических наук: <InteractiveText analysis={grammarAnalyses.bungaku} />, <InteractiveText analysis={grammarAnalyses.shigaku} />.</div>
                            </div>
                         </AccordionContent>
                     </AccordionItem>
@@ -202,7 +194,27 @@ export default function GrammarLesson7Page() {
                             </Table>
                          </AccordionContent>
                     </AccordionItem>
-                     <AccordionItem value="item-dialogues">
+                     <AccordionItem value="item-texts">
+                        <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Тексты</AccordionTrigger>
+                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
+                            <h4 className="font-bold text-xl mb-2">ТЕКСТ 7-1</h4>
+                            <div className="space-y-2">
+                                <div><InteractiveText analysis={grammarAnalyses.kore_wa_note_desu} /></div>
+                                <div><InteractiveText analysis={grammarAnalyses.sore_wa_pen_desu} /></div>
+                                <div><InteractiveText analysis={grammarAnalyses.are_wa_hondana_desu} /></div>
+                                <div><InteractiveText analysis={grammarAnalyses.doa_wa_doko_desu_ka} /></div>
+                                <div><InteractiveText analysis={grammarAnalyses.enpitsu_wa_dore_desu_ka} /></div>
+                            </div>
+                            <h4 className="font-bold text-xl mt-4 mb-2">ТЕКСТ 7-2</h4>
+                            <div className="space-y-2">
+                                <div><InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
+                                <div><InteractiveText analysis={dialogueAnalyses.sore_wa_jisho_desu} /></div>
+                                <div><InteractiveText analysis={dialogueAnalyses.nihongo_no_jisho_desuka} /></div>
+                                <div><InteractiveText analysis={dialogueAnalyses.hai_soudesu} /></div>
+                            </div>
+                         </AccordionContent>
+                    </AccordionItem>
+                     <AccordionItem value="item-expressions">
                         <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><Volume2 className="mr-4 text-primary"/>Обиходные выражения</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <div><InteractiveText analysis={dialogueAnalyses.wakarimashita} /></div>

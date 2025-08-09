@@ -1,4 +1,5 @@
 
+
 /**
  * @fileoverview This file contains pre-computed analysis for Japanese sentences
  * to avoid making live AI calls for static content, improving performance and
@@ -765,6 +766,72 @@ export const grammarAnalyses = {
         ],
         fullTranslation: 'Он не студент?',
     },
+    hai_gakuseidesu: {
+        sentence: [
+            { word: 'はい', furigana: 'はい', translation: 'да', partOfSpeech: 'междометие' },
+            { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+            { word: '学生', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Да, он студент.'
+    },
+    iie_gakuseidewaarimasen: {
+        sentence: [
+            { word: 'いいえ', furigana: 'いいえ', translation: 'нет', partOfSpeech: 'междометие' },
+            { word: '、', furigana: '', translation: 'запятая', partOfSpeech: 'знак препинания' },
+            { word: '学生', furigana: 'がくせい', translation: 'студент', partOfSpeech: 'существительное' },
+            { word: 'では', furigana: 'では', translation: 'отрицательная частица', partOfSpeech: 'отрицательная частица' },
+            { word: 'ありません', furigana: 'ありません', translation: 'не является', partOfSpeech: 'вспомогательный глагол' },
+        ],
+        fullTranslation: 'Нет, он не студент.'
+    },
+    kore_wa_note_desu: {
+        sentence: [
+            { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'ノート', furigana: 'ノート', translation: 'тетрадь', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'Это тетрадь.'
+    },
+    sore_wa_pen_desu: {
+        sentence: [
+            { word: 'それ', furigana: 'それ', translation: 'то', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'ペン', furigana: 'ペン', translation: 'ручка', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'То ручка.'
+    },
+    are_wa_hondana_desu: {
+        sentence: [
+            { word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: '本棚', furigana: 'ほんだな', translation: 'книжная полка', partOfSpeech: 'существительное' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+        ],
+        fullTranslation: 'То книжная полка.'
+    },
+    doa_wa_doko_desu_ka: {
+        sentence: [
+            { word: 'ドア', furigana: 'ドア', translation: 'дверь', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'どこ', furigana: 'どこ', translation: 'где?', partOfSpeech: 'вопросительное местоимение' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
+        ],
+        fullTranslation: 'Где дверь?'
+    },
+    enpitsu_wa_dore_desu_ka: {
+        sentence: [
+            { word: '鉛筆', furigana: 'えんぴつ', translation: 'карандаш', partOfSpeech: 'существительное' },
+            { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' },
+            { word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' },
+            { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' },
+            { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' },
+        ],
+        fullTranslation: 'Который из них карандаш?'
+    }
 }
 
 export const dialogueAnalyses = {
@@ -1026,7 +1093,15 @@ export const dialogueAnalyses = {
         ],
         fullTranslation: 'Это японский словарь?',
     },
-
+    hai_soudesu: {
+        sentence: [
+            { "word": "はい", "furigana": "はい", "translation": "да", "partOfSpeech": "междометие" },
+            { "word": "、", "furigana": "", "translation": "запятая", "partOfSpeech": "знак препинания" },
+            { "word": "そうです", "furigana": "そうです", "translation": "это так", "partOfSpeech": "выражение" }
+        ],
+        "fullTranslation": "Да, это так."
+    },
 };
 
   
+
