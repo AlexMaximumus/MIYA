@@ -116,15 +116,17 @@ export default function GrammarLesson7Page() {
                            <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное местоимение どれ</h4>
                            <p>Соответствует これ, それ, あれ и означает "какой?", "что?" (из имеющихся).</p>
                            <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} />
-                           <p>Ответ:</p>
-                           <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} />
+                           <div className="mt-2">
+                                <p>Ответ:</p>
+                                <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} />
+                           </div>
 
                            <h4 className="font-bold text-xl mt-4 mb-2">Именительный падеж (が)</h4>
                            <p>Суффикс <b>が</b> ставится после подлежащего, когда на него падает логическое ударение (новая информация).</p>
                            <InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} />
                            <p className="mt-2">Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</p>
-                           <p><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></p>
-                           <p><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></p>
+                           <div className="mt-2"><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></div>
+                           <div className="mt-2"><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></div>
                            <p className="mt-4 font-semibold">Сравните:</p>
                            <ul className="list-disc list-inside space-y-2">
                                <li><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</li>
@@ -133,7 +135,7 @@ export default function GrammarLesson7Page() {
 
                             <h4 className="font-bold text-xl mt-4 mb-2">Частица も</h4>
                            <p>Имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</p>
-                           <p>Примеры:</p>
+                           <p className="mt-2">Примеры:</p>
                            <InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} />
                            <InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} />
                            
@@ -141,9 +143,11 @@ export default function GrammarLesson7Page() {
                            <p>Задается, когда говорящий ожидает подтверждения своего предположения.</p>
                            <InteractiveFormula formula="N は N ではありませんか。" />
                            <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
-                           <p className="mt-2">Ответы на такой вопрос:</p>
-                           <p><b>Да:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></p>
-                           <p><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></p>
+                           <div className="mt-2">
+                                <p>Ответы на такой вопрос:</p>
+                                <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.gakuseidesu} /></div>
+                                <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.watashi_wa_gakusei_dewa_arimasen} /></div>
+                           </div>
                         </AccordionContent>
                     </AccordionItem>
                      <AccordionItem value="item-word-formation">
@@ -258,5 +262,3 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
-
-    
