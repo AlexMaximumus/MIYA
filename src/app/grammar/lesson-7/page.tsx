@@ -120,19 +120,19 @@ export default function GrammarLesson7Page() {
                                Вопросительным местоимением, соответствующим これ, それ, あれ, является どれ. Оно означает "какой?", "что?" (из имеющихся).
                                <div className="my-2"><InteractiveText analysis={grammarAnalyses.kyoukasho_wa_dore_desuka} /></div>
                                <div>
-                                    <p>Ответ:</p>
-                                    <InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} />
+                                    <b>Ответ:</b>
+                                    <div className="mt-1"><InteractiveText analysis={grammarAnalyses.kyoukasho_wa_kore_desu} /></div>
                                </div>
                            </div>
 
                            <h4 className="font-bold text-xl mt-4 mb-2">Именительный падеж (が)</h4>
                            <div className="space-y-2">
-                               <p>Суффикс <b>が</b> ставится после подлежащего, когда на него падает логическое ударение (новая информация).</p>
+                               <div>Показателем именительного падежа является суффикс <b>が</b>. Он ставится после подлежащего, когда на него падает логическое ударение (новая информация).</div>
                                <div className="my-2"><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /></div>
-                               <p>Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</p>
+                               <div>Поэтому вопросительные слова (<b>だれ</b>, <b>どれ</b>) в роли подлежащего всегда используются с <b>が</b>.</div>
                                <div className="my-2"><b>Вопрос:</b> <InteractiveText analysis={grammarAnalyses.daregagakuseidesuka} /></div>
                                <div className="my-2"><b>Ответ:</b> <InteractiveText analysis={grammarAnalyses.yamadasan_ga_sensei_desu} /></div>
-                               <p className="mt-4 font-semibold">Сравните:</p>
+                               <div className="mt-4 font-semibold">Сравните:</div>
                                <ul className="list-disc list-inside space-y-2">
                                    <li><div><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /> (Ответ на вопрос "Что это?")</div></li>
                                    <li><div><InteractiveText analysis={grammarAnalyses.kore_ga_hon_desu} /> (Ответ на вопрос "Что из этого книга?")</div></li>
@@ -141,7 +141,7 @@ export default function GrammarLesson7Page() {
 
                             <h4 className="font-bold text-xl mt-4 mb-2">Частица も</h4>
                             <div className="space-y-2">
-                               <p>Имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</p>
+                               <div>Частица <b>も</b> имеет присоединительное значение "тоже", "и... и...". В отрицательных предложениях — "ни... ни...".</div>
                                <p>Примеры:</p>
                                <div><InteractiveText analysis={grammarAnalyses.yamadasan_mo_sensei_desu} /></div>
                                <div><InteractiveText analysis={grammarAnalyses.anna_mo_tanakasan_mo_sensei_dewa_arimasen} /></div>
@@ -149,7 +149,7 @@ export default function GrammarLesson7Page() {
                            
                            <h4 className="font-bold text-xl mt-4 mb-2">Вопросительное предложение в отрицательной форме</h4>
                            <div className="space-y-2">
-                               <p>Задается, когда говорящий ожидает подтверждения своего предположения.</p>
+                               <div>Задается, когда говорящий ожидает подтверждения своего предположения.</div>
                                <InteractiveFormula formula="N は N ではありませんか。" />
                                <div className="my-2"><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
                                <div>
@@ -163,7 +163,19 @@ export default function GrammarLesson7Page() {
                      <AccordionItem value="item-word-formation">
                         <AccordionTrigger className="text-xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
                         <AccordionContent className="text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                           <p>Некоторые корни китайского происхождения (канго), как <b className="font-japanese">学</b>, могут выступать как самостоятельные слова (<InteractiveText analysis={grammarAnalyses.daigaku} />, <InteractiveText analysis={grammarAnalyses.gakuseidesu} />) или как суффиксы для обозначения наук (<InteractiveText analysis={grammarAnalyses.bungaku} /> - литература, 史学 - история).</p>
+                           <div className="space-y-2">
+                            <p>Некоторые корни китайского происхождения (канго) обладают словообразовательной функцией. Они могут выступать как самостоятельные слова или как суффиксы.</p>
+                            <p>Например, корень <b className="font-japanese">学</b> в сочетании с другими корнями образует новые слова:</p>
+                            <ul className="list-disc list-inside ml-4">
+                                <li><InteractiveText analysis={grammarAnalyses.gakuseidesu} /></li>
+                                <li><InteractiveText analysis={grammarAnalyses.daigaku} /></li>
+                            </ul>
+                            <p>Вместе с тем <b className="font-japanese">学</b> используется как суффикс для обозначения теоретических наук:</p>
+                             <ul className="list-disc list-inside ml-4">
+                                <li><InteractiveText analysis={grammarAnalyses.bungaku} /> (литература)</li>
+                                <li><b className="font-japanese">史学</b> (история как наука)</li>
+                            </ul>
+                           </div>
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-writing">
