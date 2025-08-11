@@ -829,7 +829,3 @@ export default function GrammarLesson1Page() {
     </div>
   );
 }
-
-
-
-

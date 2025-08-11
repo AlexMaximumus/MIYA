@@ -108,7 +108,7 @@ export default function GrammarLesson7Page() {
                 </div>
                 <Card className="w-full mb-8">
                     <CardHeader>
-                        <p className="text-sm text-primary font-semibold">Урок 7 — Грамматика</p>
+                        <p className="text-sm text-primary font-semibold">Урок 3 — Грамматика</p>
                         <CardTitle className="text-2xl md:text-3xl">Указательные местоимения</CardTitle>
                         <CardDescription>Разбор местоимений これ, それ, あれ. Падежи, частица も и вопросительные предложения в отрицательной форме.</CardDescription>
                     </CardHeader>
@@ -191,7 +191,7 @@ export default function GrammarLesson7Page() {
                         <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Словообразование</AccordionTrigger>
                         <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
                            <div className="space-y-2">
-                                <p>Некоторые корни китайского происхождения обладают словообразовательной функцией. Например, корень <b>学</b> в сочетании с другими корнями образует новые слова, а также может использоваться как суффикс для обозначения теоретических наук.</p>
+                               <p>Некоторые корни китайского происхождения обладают словообразовательной функцией. Например, корень <b>学</b> в сочетании с другими корнями образует новые слова, а также может использоваться как суффикс для обозначения теоретических наук.</p>
                                 <div className="space-y-2 mt-2">
                                     <div><b>Примеры слов:</b> <InteractiveText analysis={grammarAnalyses.gakusei} />, <InteractiveText analysis={grammarAnalyses.daigaku} />.</div>
                                     <div><b>Примеры наук:</b> <InteractiveText analysis={grammarAnalyses.bungaku} />, <InteractiveText analysis={grammarAnalyses.shigaku} />.</div>
@@ -206,7 +206,7 @@ export default function GrammarLesson7Page() {
                             <KatakanaRowDisplay rowData={katakanaRows.ta} />
                             <KatakanaRowDisplay rowData={katakanaRows.na} />
                             <KatakanaRowDisplay rowData={katakanaRows.ha} />
-                            <h4 className="font-bold text-xl mt-4 mb-2">Иероглифы урока 7</h4>
+                            <h4 className="font-bold text-xl mt-4 mb-2">Иероглифы урока 3</h4>
                             <Table>
                                 <TableHeader><TableRow><TableHead>Иероглиф</TableHead><TableHead>Кун</TableHead><TableHead>Он</TableHead><TableHead>Значение</TableHead></TableRow></TableHeader>
                                 <TableBody>
@@ -225,7 +225,7 @@ export default function GrammarLesson7Page() {
                     <AccordionItem value="item-texts">
                         <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Тексты, словари и выражения</AccordionTrigger>
                          <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                            <h4 className="font-bold text-xl mb-2">ТЕКСТ 7-1</h4>
+                            <h4 className="font-bold text-xl mb-2">ТЕКСТ 3-1</h4>
                             <div className="space-y-2">
                                 <div><InteractiveText analysis={grammarAnalyses.kore_wa_note_desu} /></div>
                                 <div><InteractiveText analysis={grammarAnalyses.sore_wa_pen_desu} /></div>
@@ -233,7 +233,7 @@ export default function GrammarLesson7Page() {
                                 <div><InteractiveText analysis={grammarAnalyses.doa_wa_doko_desu_ka} /></div>
                                 <div><InteractiveText analysis={grammarAnalyses.enpitsu_wa_dore_desu_ka} /></div>
                             </div>
-                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 7-1</h4>
+                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 3-1</h4>
                             <div className="space-y-1 text-sm columns-2">
                                 <div><b>ノート</b> - тетрадь</div>
                                 <div><b>これ</b> - это</div>
@@ -252,14 +252,14 @@ export default function GrammarLesson7Page() {
                                 <div><b>大学生 (だいがくせい)</b> - студент университета</div>
                                 <div><b>電気 (でんき)</b> - электричество, лампа</div>
                             </div>
-                            <h4 className="font-bold text-xl mt-4 mb-2">ТЕКСТ 7-2</h4>
+                            <h4 className="font-bold text-xl mt-4 mb-2">ТЕКСТ 3-2</h4>
                             <div className="space-y-2">
                                 <div><b>Танака:</b> <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
                                 <div><b>Анна:</b> <InteractiveText analysis={dialogueAnalyses.sore_wa_jisho_desu} /></div>
                                 <div><b>Танака:</b> <InteractiveText analysis={dialogueAnalyses.nihongo_no_jisho_desuka} /></div>
                                 <div><b>Анна:</b> <InteractiveText analysis={dialogueAnalyses.hai_soudesu} /></div>
                             </div>
-                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 7-2</h4>
+                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 3-2</h4>
                             <div className="space-y-1 text-sm">
                                 <div><b>何 (なに/なん)</b> - что?</div>
                                 <div><b>そう</b> - так</div>
@@ -304,13 +304,16 @@ export default function GrammarLesson7Page() {
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
                  <div className="space-y-6">
                     <Card>
-                        <CardHeader><CardTitle>Упражнение 1: Интонация</CardTitle><CardDescription>Прочтите вслух, обращая внимание на интонацию. (Самостоятельная практика)</CardDescription></CardHeader>
+                        <CardHeader>
+                            <CardTitle>Упражнение 1: Интонация</CardTitle>
+                            <CardDescription>Прочтите вслух, обращая внимание на интонацию. (Самостоятельная практика)</CardDescription>
+                        </CardHeader>
                         <CardContent className="space-y-4">
-                            <div><InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} /></div>
-                            <div><InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
-                            <div><InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'То - библиотека.'}} /></div>
-                            <div><InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что (из этого) - словарь?'}} /></div>
-                            <div><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
+                           <InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} />
+                           <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} />
+                           <InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'То - библиотека.'}} />
+                           <InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что (из этого) - словарь?'}} />
+                           <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
                         </CardContent>
                     </Card>
 

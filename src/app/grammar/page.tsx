@@ -29,7 +29,7 @@ const lessons = [
         title: 'Указательные местоимения',
         description: 'Разбор местоимений これ, それ, あれ. Падежи, частица も и вопросительные предложения в отрицательной форме.',
         href: '/grammar/lesson-7',
-        lessonNumber: 7,
+        lessonNumber: 3,
         icon: <BookCheck className="w-8 h-8" />
     }
 ];
