@@ -132,10 +132,14 @@ export default function GrammarLesson1Page() {
     }
 
     const checkAnswer = (id: string, correctAnswer: string | string[]) => {
-        const userAnswer = (answers[id] || '').trim().replace(/[.\s。]/g, '');
+        const normalize = (str: string) => str.toLowerCase().replace(/[.,\s。]/g, '');
+        
+        const userAnswer = normalize(answers[id] || '');
+        
         const isCorrect = Array.isArray(correctAnswer) 
-            ? correctAnswer.map(c => c.replace(/[.\s。]/g, '')).includes(userAnswer)
-            : userAnswer === correctAnswer.replace(/[.\s。]/g, '');
+            ? correctAnswer.map(c => normalize(c)).includes(userAnswer)
+            : userAnswer === normalize(correctAnswer);
+
         setResults(prev => ({ ...prev, [id]: isCorrect }));
     };
     

@@ -84,10 +84,14 @@ export default function GrammarLesson7Page() {
     };
 
     const checkAnswer = (id: string, correctAnswer: string | string[]) => {
-        const userAnswer = (answers[id] || '').trim().replace(/[.\s。]/g, '');
+        const normalize = (str: string) => str.toLowerCase().replace(/[.,\s。]/g, '');
+        
+        const userAnswer = normalize(answers[id] || '');
+        
         const isCorrect = Array.isArray(correctAnswer) 
-            ? correctAnswer.map(c => c.replace(/[.\s。]/g, '')).includes(userAnswer)
-            : userAnswer === correctAnswer.replace(/[.\s。]/g, '');
+            ? correctAnswer.map(c => normalize(c)).includes(userAnswer)
+            : userAnswer === normalize(correctAnswer);
+
         setResults(prev => ({ ...prev, [id]: isCorrect }));
     };
 
@@ -178,7 +182,7 @@ export default function GrammarLesson7Page() {
                                         <InteractiveFormula formula="N は N ではありませんか 。" />
                                         <div className="mt-2"><InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} /></div>
                                         <div>
-                                            <p className="font-semibold mt-4">Ответы на такой вопрос:</p>
+                                            <div className="font-semibold mt-4">Ответы на такой вопрос:</div>
                                             <div className="ml-4"><b>Да:</b> <InteractiveText analysis={grammarAnalyses.hai_gakuseidesu} /></div>
                                             <div className="ml-4"><b>Нет:</b> <InteractiveText analysis={grammarAnalyses.iie_gakuseidewaarimasen} /></div>
                                         </div>
@@ -223,9 +227,9 @@ export default function GrammarLesson7Page() {
                          </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-texts">
-                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Тексты, словари и выражения</AccordionTrigger>
+                        <AccordionTrigger className="text-lg md:text-2xl font-semibold bg-muted/50 px-4 rounded-t-lg"><BookOpen className="mr-4 text-primary"/>Тексты и словари</AccordionTrigger>
                          <AccordionContent className="text-base md:text-lg text-foreground/90 space-y-4 px-6 py-4 border border-t-0 rounded-b-lg">
-                            <h4 className="font-bold text-xl mb-2">ТЕКСТ 3-1</h4>
+                            <h4 className="font-bold text-xl mb-2">ТЕКСТ 7-1</h4>
                             <div className="space-y-2">
                                 <div><InteractiveText analysis={grammarAnalyses.kore_wa_note_desu} /></div>
                                 <div><InteractiveText analysis={grammarAnalyses.sore_wa_pen_desu} /></div>
@@ -233,7 +237,7 @@ export default function GrammarLesson7Page() {
                                 <div><InteractiveText analysis={grammarAnalyses.doa_wa_doko_desu_ka} /></div>
                                 <div><InteractiveText analysis={grammarAnalyses.enpitsu_wa_dore_desu_ka} /></div>
                             </div>
-                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 3-1</h4>
+                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 7-1</h4>
                             <div className="space-y-1 text-sm columns-2">
                                 <div><b>ノート</b> - тетрадь</div>
                                 <div><b>これ</b> - это</div>
@@ -252,14 +256,14 @@ export default function GrammarLesson7Page() {
                                 <div><b>大学生 (だいがくせい)</b> - студент университета</div>
                                 <div><b>電気 (でんき)</b> - электричество, лампа</div>
                             </div>
-                            <h4 className="font-bold text-xl mt-4 mb-2">ТЕКСТ 3-2</h4>
+                            <h4 className="font-bold text-xl mt-4 mb-2">ТЕКСТ 7-2</h4>
                             <div className="space-y-2">
                                 <div><b>Танака:</b> <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} /></div>
                                 <div><b>Анна:</b> <InteractiveText analysis={dialogueAnalyses.sore_wa_jisho_desu} /></div>
                                 <div><b>Танака:</b> <InteractiveText analysis={dialogueAnalyses.nihongo_no_jisho_desuka} /></div>
                                 <div><b>Анна:</b> <InteractiveText analysis={dialogueAnalyses.hai_soudesu} /></div>
                             </div>
-                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 3-2</h4>
+                             <h4 className="font-bold text-xl mt-4 mb-2">Словарь к тексту 7-2</h4>
                             <div className="space-y-1 text-sm">
                                 <div><b>何 (なに/なん)</b> - что?</div>
                                 <div><b>そう</b> - так</div>
@@ -288,10 +292,8 @@ export default function GrammarLesson7Page() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-xl mt-4 mb-2">2. Особенности употребления частиц</h4>
-                                <div className="space-y-2">
-                                    <div className="flex flex-wrap items-center gap-x-2">Частица ね, произнесённая с интонацией удивления, передаёт значение непонимания. Например: <InteractiveText analysis={{sentence: [{ word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение'}, { word: '？', furigana: '', translation: 'вопрос', partOfSpeech: 'знак препинания'}], fullTranslation: 'Это?'}} /></div>
-                                    <div className="flex flex-wrap items-center gap-x-2">Частица あ соответствует русской частице А!, имеющей значение "Понятно!". Например: <InteractiveText analysis={{sentence: [{ word: 'あ', furigana: 'あ', translation: 'а!', partOfSpeech: 'междометие'}, { word: '、', furigana: '', translation: ',', partOfSpeech: 'знак препинания'}, { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение'}, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)'}, { word: 'ペン', furigana: 'ペン', translation: 'ручка', partOfSpeech: 'существительное'}, { word: 'です', furigana: 'です', translation: 'есть', partOfSpeech: 'связка'}, { word: '。', furigana: '', translation: '.', partOfSpeech: 'знак препинания'}], fullTranslation: 'А, это ручка.'}} /></div>
-                                </div>
+                                <div>Частица ね, произнесённая с интонацией удивления, передаёт значения непонимания. Например: <InteractiveText analysis={{sentence: [{ word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение'}, { word: '？', furigana: '', translation: 'вопрос', partOfSpeech: 'знак препинания'}], fullTranslation: 'Это?'}} /></div>
+                                <div className="mt-2">Частица あ соответствует русской частице А!, имеющей значение "Понятно!". Например: <InteractiveText analysis={{sentence: [{ word: 'あ', furigana: 'あ', translation: 'а!', partOfSpeech: 'междометие'}, { word: '、', furigana: '', translation: ',', partOfSpeech: 'знак препинания'}, { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение'}, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)'}, { word: 'ペン', furigana: 'ペン', translation: 'ручка', partOfSpeech: 'существительное'}, { word: 'です', furigana: 'です', translation: 'есть', partOfSpeech: 'связка'}, { word: '。', furigana: '', translation: '.', partOfSpeech: 'знак препинания'}], fullTranslation: 'А, это ручка.'}} /></div>
                             </div>
                             <div>
                                 <h4 className="font-bold text-xl mt-4 mb-2">3. Указание на предметы</h4>
@@ -303,191 +305,7 @@ export default function GrammarLesson7Page() {
                 
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
                  <div className="space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 1: Интонация</CardTitle>
-                            <CardDescription>Прочтите вслух, обращая внимание на интонацию. (Самостоятельная практика)</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                           <InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} />
-                           <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} />
-                           <InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }], fullTranslation: 'То - библиотека.'}} />
-                           <InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который?', partOfSpeech: 'вопросительное местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть (связка)', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопросительная частица', partOfSpeech: 'вопросительная частица' }], fullTranslation: 'Что (из этого) - словарь?'}} />
-                           <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 2 и 3</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <h4 className="font-semibold text-lg mb-2">Упражнение 2: Образование наук</h4>
-                                <p>Образуйте с помощью суффикса 学 названия теоретических наук от следующих слов и переведите: 法 (закон), 語 (язык), 植物 (растение), 動物 (животное), 心理 (психика), 哲 (философия), 運動 (движение).</p>
-                                <Textarea className="mt-2" placeholder="Ваши ответы..." />
-                            </div>
-                             <div>
-                                <h4 className="font-semibold text-lg mb-2">Упражнение 3: Перевод слов с 学</h4>
-                                <p>Переведите: 文学, 史学, 物理学, 化学, 数学, 語学, 植物学, 動物学, 心理学, 哲学, 運動学.</p>
-                                <Textarea className="mt-2" placeholder="Ваши ответы..." />
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Button disabled>Проверить (в разработке)</Button>
-                        </CardFooter>
-                    </Card>
-
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнения 4, 5, 7, 8, 17: Работа с рисунками</CardTitle>
-                        </CardHeader>
-                         <CardContent>
-                            <div className="flex items-center gap-2 p-3 bg-blue-500/10 rounded-lg mt-2">
-                                <Lightbulb className="w-5 h-5 text-blue-500 shrink-0" />
-                                <div className="text-sm text-blue-800">
-                                    <b>Примечание:</b> Эти упражнения требуют визуальных материалов (рисунков), которые будут добавлены позже. Пока их можно пропустить.
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 9: Отрицательная форма</CardTitle>
-                            <CardDescription>Скажите предложения в отрицательной форме, дополнив правильным ответом из скобок.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {[
-                                { id: 'ex9-1', question: 'それはノートです。(本)', answer: 'それはノートではありません。本です。' },
-                                { id: 'ex9-2', question: 'あれは地図です。(絵)', answer: 'あれは地図ではありません。絵です。' },
-                                { id: 'ex9-3', question: 'これはドアです。(壁)', answer: 'これはドアではありません。壁です。' },
-                                { id: 'ex9-4', question: 'それはひらがなです。(カタカナ)', answer: 'それはひらがなではありません。カタカナです。' },
-                            ].map(item => (
-                                <div key={item.id}>
-                                    <Label htmlFor={item.id}>{item.question}</Label>
-                                    <Input id={item.id} className="font-japanese mt-1" value={answers[item.id] || ''} onChange={e => handleInputChange(item.id, e.target.value)} />
-                                     <Button size="sm" className="mt-2" onClick={() => checkAnswer(item.id, item.answer)}>Проверить</Button>
-                                     {results[item.id] !== null && (results[item.id] ? <CheckCircle className="text-green-500 inline-block ml-2" /> : <XCircle className="text-destructive inline-block ml-2" />)}
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                         <CardHeader><CardTitle>Упражнения на перевод (6, 10, 12, 15, 22)</CardTitle><CardDescription>Переведите предложения на японский язык.</CardDescription></CardHeader>
-                         <CardContent>
-                            <Textarea placeholder="Введите здесь перевод для всех предложений..." className="min-h-[200px]" />
-                            <div className="text-xs text-muted-foreground mt-2">Проверка для этих упражнений будет добавлена позже.</div>
-                         </CardContent>
-                    </Card>
-                    
-                    <Card>
-                        <CardHeader><CardTitle>Упражнение 11: Частица も</CardTitle></CardHeader>
-                        <CardContent className="space-y-4">
-                            {[
-                                { id: 'ex11-1', question: 'これは椅子です。(それ)', answer: 'これは椅子です。それも椅子です。' },
-                                { id: 'ex11-2', question: 'あれは電灯です。(これ)', answer: 'あれは電灯です。これも電灯です。' },
-                                { id: 'ex11-3', question: '田中さんは学生です。(山田さん)', answer: '田中さんは学生です。山田さんも学生です。' },
-                                { id: 'ex11-4', question: 'わたしは先生です。(あの人)', answer: 'わたしは先生です。あの人も先生です。' },
-                            ].map(item => (
-                                <div key={item.id}>
-                                    <Label htmlFor={item.id}>{item.question}</Label>
-                                    <Input id={item.id} className="font-japanese mt-1" value={answers[item.id] || ''} onChange={e => handleInputChange(item.id, e.target.value)} />
-                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(item.id, item.answer)}>Проверить</Button>
-                                    {results[item.id] !== null && (results[item.id] ? <CheckCircle className="text-green-500 inline-block ml-2" /> : <XCircle className="text-destructive inline-block ml-2" />)}
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-
-                     <Card>
-                        <CardHeader><CardTitle>Упражнение 13: Вопросы с вопросительным словом</CardTitle></CardHeader>
-                        <CardContent className="space-y-4">
-                             {[
-                                { id: 'ex13-1', question: 'それは鉛筆です。', answer: 'それは何ですか。' },
-                                { id: 'ex13-2', question: 'あれは時計です。', answer: 'あれは何ですか。' },
-                                { id: 'ex13-3', question: 'これは教室です。', answer: 'これは何ですか。' },
-                                { id: 'ex13-4', question: '田中さんが学生です。', answer: 'だれが学生ですか。' },
-                            ].map(item => (
-                                <div key={item.id}>
-                                    <Label htmlFor={item.id}>Дано: {item.question}</Label>
-                                    <Input id={item.id} placeholder="Ваш вопрос..." className="font-japanese mt-1" value={answers[item.id] || ''} onChange={e => handleInputChange(item.id, e.target.value)} />
-                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(item.id, item.answer)}>Проверить</Button>
-                                    {results[item.id] !== null && (results[item.id] ? <CheckCircle className="text-green-500 inline-block ml-2" /> : <XCircle className="text-destructive inline-block ml-2" />)}
-                                </div>
-                             ))}
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader><CardTitle>Упражнение 14: Ответы на вопросы</CardTitle></CardHeader>
-                        <CardContent className="space-y-4">
-                            {[
-                                 { id: 'ex14-1', question: 'どれが辞書ですか。(それ)', answer: 'それが辞書です。' },
-                                 { id: 'ex14-2', question: 'どれが地図ですか。(あれ)', answer: 'あれが地図です。' },
-                                 { id: 'ex14-3', question: 'だれが先生ですか。(山田さん)', answer: '山田さんが先生です。' },
-                                 { id: 'ex14-4', question: 'だれが医者ですか。(田中さん)', answer: '田中さんが医者です。' },
-                            ].map(item => (
-                                <div key={item.id}>
-                                    <Label htmlFor={item.id}>{item.question}</Label>
-                                    <Input id={item.id} className="font-japanese mt-1" value={answers[item.id] || ''} onChange={e => handleInputChange(item.id, e.target.value)} />
-                                    <Button size="sm" className="mt-2" onClick={() => checkAnswer(item.id, item.answer)}>Проверить</Button>
-                                    {results[item.id] !== null && (results[item.id] ? <CheckCircle className="text-green-500 inline-block ml-2" /> : <XCircle className="text-destructive inline-block ml-2" />)}
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                    
-                    <Card>
-                        <CardHeader><CardTitle>Упражнение 16: Составьте диалоги</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">В разработке...</p></CardContent>
-                    </Card>
-    
-                    <Card>
-                        <CardHeader><CardTitle>Упражнение 18: Заполните пропуски</CardTitle></CardHeader>
-                        <CardContent className="space-y-6">
-                             <div>
-                                <h4 className="font-semibold mb-2">а) частицы は или も:</h4>
-                                {[
-                                    { id: 'ex18a-1', text: ['これ', '本です。'], answer: 'は' },
-                                    { id: 'ex18a-2', text: ['それ', '本です。'], answer: 'も' },
-                                    { id: 'ex18a-3', text: ['田中さん', '学生です。'], answer: 'は' },
-                                    { id: 'ex18a-4', text: ['山田さん', '学生です。'], answer: 'も' },
-                                ].map(item => (
-                                    <div key={item.id} className="flex items-center gap-1 flex-wrap">
-                                        <Label htmlFor={item.id}>{item.text[0]}</Label>
-                                        <Input id={item.id} className="w-16 font-japanese" value={answers[item.id] || ''} onChange={e => handleInputChange(item.id, e.target.value)} />
-                                        <Label>{item.text[1]}</Label>
-                                        <Button variant="ghost" size="sm" onClick={() => checkAnswer(item.id, item.answer)}>✔️</Button>
-                                        {results[item.id] !== null && (results[item.id] ? <CheckCircle className="text-green-500 inline-block ml-2" /> : <XCircle className="text-destructive inline-block ml-2" />)}
-                                    </div>
-                                ))}
-                             </div>
-                             <div>
-                                <h4 className="font-semibold mb-2">б) частицу は или が:</h4>
-                                 {[
-                                    { id: 'ex18b-1', text: ['これ', '何ですか。'], answer: 'は' },
-                                    { id: 'ex18b-2', text: ['どれ', '辞書ですか。'], answer: 'が' },
-                                    { id: 'ex18b-3', text: ['だれ', '先生ですか。'], answer: 'が' },
-                                    { id: 'ex18b-4', text: ['田中さん', '学生です。'], answer: 'は' },
-                                ].map(item => (
-                                    <div key={item.id} className="flex items-center gap-1 flex-wrap">
-                                        <Label htmlFor={item.id}>{item.text[0]}</Label>
-                                        <Input id={item.id} className="w-16 font-japanese" value={answers[item.id] || ''} onChange={e => handleInputChange(item.id, e.target.value)} />
-                                        <Label>{item.text[1]}</Label>
-                                        <Button variant="ghost" size="sm" onClick={() => checkAnswer(item.id, item.answer)}>✔️</Button>
-                                        {results[item.id] !== null && (results[item.id] ? <CheckCircle className="text-green-500 inline-block ml-2" /> : <XCircle className="text-destructive inline-block ml-2" />)}
-                                    </div>
-                                ))}
-                             </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader><CardTitle>Упражнения 19, 20, 21</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">В разработке...</p></CardContent>
-                    </Card>
+                    <p>Раздел в разработке...</p>
                  </div>
                  <div className="mt-12 text-center flex flex-col items-center gap-4">
                     <Button size="lg" asChild className="btn-gradient w-full max-w-xs">
