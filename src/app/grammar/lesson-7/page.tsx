@@ -61,7 +61,7 @@ export default function GrammarLesson7Page() {
         const userAnswer = normalize(answers[id] || '');
         
         const isCorrect = Array.isArray(correctAnswer) 
-            ? correctAnswer.map(c => normalize(c)).includes(userAnswer)
+            ? correctAnswer.some(c => normalize(c) === userAnswer)
             : userAnswer === normalize(correctAnswer);
 
         setResults(prev => ({ ...prev, [id]: isCorrect }));
@@ -477,10 +477,10 @@ export default function GrammarLesson7Page() {
                     <ExerciseCard title="Упражнение 20: Составьте предложения">
                         <CardContent className="space-y-4">
                            {[
-                               { id: 'ex20-1', words: 'これ, は, 何, ですか', answer: 'これは何ですか。' },
-                               { id: 'ex20-2', words: 'どれ, が, 本, ですか', answer: 'どれが本ですか。' },
-                               { id: 'ex20-3', words: 'それ, も, 辞書, です', answer: 'それも辞書です。' },
-                               { id: 'ex20-4', words: '田中さん, は, 学生, ではありません', answer: '田中さんは学生ではありません。' },
+                               { id: 'ex20-1', words: ['これ', 'は', '何', 'ですか'], answer: 'これは何ですか。' },
+                               { id: 'ex20-2', words: ['どれ', 'が', '本', 'ですか'], answer: 'どれが本ですか。' },
+                               { id: 'ex20-3', words: ['それ', 'も', '辞書', 'です'], answer: 'それも辞書です。' },
+                               { id: 'ex20-4', words: ['田中さん', 'は', '学生', 'ではありません'], answer: '田中さんは学生ではありません。' },
                            ].map(q => (
                                <div key={q.id}>
                                    <Label htmlFor={q.id}>Слова: {q.words.join('、 ')}</Label>
