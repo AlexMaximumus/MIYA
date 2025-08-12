@@ -17,45 +17,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
 
 const LESSON_ID = 'grammar-lesson-7';
 
-const KatakanaRowDisplay = ({ rowData }: { rowData: { kana: string; romaji: string }[] }) => (
-    <div className='flex flex-wrap gap-4 mt-2 justify-center'>
-       {rowData.map(char => (
-           <Card key={char.kana} className="p-4 flex flex-col items-center justify-center w-24 h-24"><span className="text-3xl md:text-4xl font-japanese">{char.kana}</span><span className="text-muted-foreground">{char.romaji}</span></Card>
-       ))}
-   </div>
-);
 
-const katakanaRows = {
-    ta: [{ kana: 'タ', romaji: 'ta' }, { kana: 'チ', romaji: 'chi' }, { kana: 'ツ', romaji: 'tsu' }, { kana: 'テ', romaji: 'te' }, { kana: 'ト', romaji: 'to' }],
-    na: [{ kana: 'ナ', romaji: 'na' }, { kana: 'ニ', romaji: 'ni' }, { kana: 'ヌ', romaji: 'nu' }, { kana: 'ネ', romaji: 'ne' }, { kana: 'ノ', romaji: 'no' }],
-    ha: [{ kana: 'ハ', romaji: 'ha' }, { kana: 'ヒ', romaji: 'hi' }, { kana: 'フ', romaji: 'fu' }, { kana: 'ヘ', romaji: 'he' }, { kana: 'ホ', romaji: 'ho' }],
-};
-
-const kanjiList = [
-    { kanji: '大', kun: ['おお'], on: ['ダイ', 'タイ'], meaning: 'большой, великий' },
-    { kanji: '山', kun: ['やま'], on: ['サン'], meaning: 'гора' },
-    { kanji: '中', kun: ['なか'], on: ['チュウ'], meaning: 'центр, середина, в, внутри' },
-    { kanji: '四', kun: ['よん', 'よ'], on: ['シ'], meaning: 'четыре' },
-    { kanji: '室', kun: ['しつ'], on: ['シツ'], meaning: 'комната' },
-    { kanji: '信', kun: [], on: ['シン'], meaning: 'вера, учение' },
-    { kanji: '教', kun: ['おしえる'], on: ['キョウ'], meaning: 'преподавать' },
-    { kanji: '習', kun: ['ならう'], on: ['シュウ'], meaning: 'учиться, обучаться' },
-    { kanji: '内', kun: ['うち'], on: ['ナイ'], meaning: 'внутри, в' },
-    { kanji: '出', kun: ['でる'], on: ['シュツ'], meaning: 'выходить, появляться' },
-    { kanji: '部', kun: [], on: ['ブ'], meaning: 'часть, отдел, отделение' },
-    { kanji: '田', kun: ['た'], on: ['デン'], meaning: 'поле' },
-    { kanji: '年', kun: ['とし'], on: ['ネン'], meaning: 'год' },
-];
-
-const ExerciseCard = ({ title, children }: { title: string; children: React.ReactNode; }) => (
+const ExerciseCard = ({ title, description, children, result, onCheck, canCheck = true }: { title: string; description?: React.ReactNode; children: React.ReactNode; result?: boolean | null; onCheck?: () => void, canCheck?: boolean }) => (
     <Card>
         <CardHeader>
             <CardTitle className="text-lg md:text-xl">{title}</CardTitle>
+            {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
         <CardContent>{children}</CardContent>
+        {onCheck && (
+            <CardFooter className="flex flex-col items-start gap-4">
+                {canCheck && <Button onClick={onCheck}>Проверить</Button>}
+                {result === true && <span className="flex items-center gap-2 text-green-600"><CheckCircle/> Верно!</span>}
+                {result === false && <span className="flex items-center gap-2 text-destructive"><XCircle/> Ошибка. Попробуйте снова.</span>}
+            </CardFooter>
+        )}
     </Card>
 );
 
@@ -77,7 +57,7 @@ export default function GrammarLesson7Page() {
     };
 
     const checkAnswer = (id: string, correctAnswer: string | string[]) => {
-        const normalize = (str: string) => str.toLowerCase().replace(/[.,\s。]/g, '');
+        const normalize = (str: string) => str.toLowerCase().replace(/[.,\s。、]/g, '');
         const userAnswer = normalize(answers[id] || '');
         
         const isCorrect = Array.isArray(correctAnswer) 
@@ -271,57 +251,121 @@ export default function GrammarLesson7Page() {
                 
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
                 <div className="space-y-6">
-                    <ExerciseCard title="Упражнение 1: Интонация">
-                        <p>Отработайте интонацию следующих предложений (самостоятельная практика).</p>
-                        <div className="space-y-2 mt-2">
-                            <InteractiveText analysis={grammarAnalyses.kore_wa_hon_desu} />
-                            <InteractiveText analysis={dialogueAnalyses.kore_wa_nan_desuka} />
-                            <InteractiveText analysis={{ sentence: [{ word: 'あれ', furigana: 'あれ', translation: 'то', partOfSpeech: 'местоимение' }, { word: 'は', furigana: 'は', translation: 'частица', partOfSpeech: 'частица' }, { word: '図書館', furigana: 'としょかん', translation: 'библиотека', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть', partOfSpeech: 'связка' }], fullTranslation: 'То — библиотека.' }} />
-                            <InteractiveText analysis={{ sentence: [{ word: 'どれ', furigana: 'どれ', translation: 'который', partOfSpeech: 'местоимение' }, { word: 'が', furigana: 'が', translation: 'частица', partOfSpeech: 'частица' }, { word: '辞書', furigana: 'じしょ', translation: 'словарь', partOfSpeech: 'существительное' }, { word: 'です', furigana: 'です', translation: 'есть', partOfSpeech: 'связка' }, { word: 'か', furigana: 'か', translation: 'вопрос', partOfSpeech: 'частица' }], fullTranslation: 'Который из них словарь?' }} />
-                            <InteractiveText analysis={grammarAnalyses.anohito_wa_gakusei_dewa_arimasenka} />
-                        </div>
-                    </ExerciseCard>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 1: Интонация</CardTitle>
+                            <CardDescription>Отработайте интонацию следующих предложений (самостоятельная практика).</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                           <InteractiveText analysis={grammarAnalyses.ex_7_1_1} />
+                           <InteractiveText analysis={grammarAnalyses.ex_7_1_2} />
+                           <InteractiveText analysis={grammarAnalyses.ex_7_1_3} />
+                           <InteractiveText analysis={grammarAnalyses.ex_7_1_4} />
+                           <InteractiveText analysis={grammarAnalyses.ex_7_1_5} />
+                        </CardContent>
+                    </Card>
 
-                    <ExerciseCard title="Упражнение 2 и 3: Словообразование с 学">
-                         <div className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 2 и 3: Словообразование</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
                             <div>
-                                <Label>Образуйте и переведите науки: 法 (закон), 語 (язык), 植物 (растение), 動物 (животное), 心理 (психика), 哲 (философия), 運動 (движение).</Label>
-                                <Textarea id="ex2" value={answers['ex2'] || ''} onChange={(e) => handleInputChange('ex2', e.target.value)} className="mt-2" placeholder="Например: 地学 - геология, ..."/>
+                                <Label htmlFor="ex2" className="mb-2 block"><b>Упражнение 2:</b> Образуйте с помощью суффикса 学 названия наук от слов: 法 (закон), 語 (язык), 植物 (растение), 動物 (животное), 心理 (психика), 哲 (мудрец), 運動 (движение).</Label>
+                                <Textarea id="ex2" placeholder="法学 - юриспруденция, ..." value={answers['ex2'] || ''} onChange={(e) => handleInputChange('ex2', e.target.value)} />
+                                {createExerciseCheckButton('ex2', "法学,語学,植物学,動物学,心理学,哲学,運動学")}
                             </div>
-                             <div>
-                                <Label>Переведите: 文学, 史学, 物理学, 化学, 数学, 語学, 植物学, 動物学, 心理学, 哲学, 運動学.</Label>
-                                <Textarea id="ex3" value={answers['ex3'] || ''} onChange={(e) => handleInputChange('ex3', e.target.value)} className="mt-2" placeholder="Например: литература, ..."/>
+                            <div>
+                                <Label htmlFor="ex3" className="mb-2 block"><b>Упражнение 3:</b> Переведите: 文学, 史学, 物理学, 化学, 数学, 語学, 植物学, 動物学, 心理学, 哲学, 運動学.</Label>
+                                <Textarea id="ex3" placeholder="литература, история, ..." value={answers['ex3'] || ''} onChange={(e) => handleInputChange('ex3', e.target.value)} />
+                                {createExerciseCheckButton('ex3', "литература,история,физика,химия,математика,лингвистика,ботаника,зоология,психология,философия,кинематика")}
                             </div>
-                         </div>
-                    </ExerciseCard>
+                        </CardContent>
+                    </Card>
 
-                    <ExerciseCard title="Упражнение 4, 5, 7, 8: Работа с предметами">
-                        <div className="flex items-start gap-2 p-3 bg-blue-500/10 rounded-lg">
-                            <HelpCircle className="w-8 h-8 text-blue-500 shrink-0 mt-1" />
-                            <div className="text-sm text-blue-800">
-                                <p><b>Примечание:</b> Эти упражнения требуют визуальных материалов (рисунков), которые пока отсутствуют. Поэтому задания упрощены. Представьте, что перед вами <b>книга (本)</b>, у собеседника <b>ручка (ペン)</b>, а вдалеке <b>библиотека (図書館)</b>.</p>
+                    <Card>
+                         <CardHeader>
+                             <CardTitle>Упражнения 4, 5, 7, 8: Работа с предметами</CardTitle>
+                         </CardHeader>
+                         <CardContent>
+                             <div className="flex items-start gap-2 p-3 bg-blue-500/10 rounded-lg">
+                                <Lightbulb className="w-5 h-5 text-blue-500 shrink-0 mt-1" />
+                                <div className="text-sm text-blue-800">
+                                    <b>Примечание:</b> Эти упражнения требуют визуальных материалов (рисунков), которые будут добавлены позже. Пока их можно пропустить.
+                                </div>
                             </div>
-                        </div>
-                        <div className="space-y-4 mt-4">
-                             <div>
-                                <Label htmlFor='ex4-1'>Вставьте слово: これは ( ... ) です。</Label>
-                                <Input id="ex4-1" value={answers['ex4-1'] || ''} onChange={e => handleInputChange('ex4-1', e.target.value)} className="font-japanese" />
-                                {createExerciseCheckButton('ex4-1', '本')}
-                            </div>
-                             <div>
-                                <Label htmlFor='ex6'>Переведите: 1. Это газета. 2. То учебник. 3. Это потолок. 4. То аудитория.</Label>
-                                <Textarea id="ex6" value={answers['ex6'] || ''} onChange={e => handleInputChange('ex6', e.target.value)} className="font-japanese" placeholder="1. これは新聞です。..." />
-                            </div>
-                        </div>
-                    </ExerciseCard>
+                         </CardContent>
+                    </Card>
                     
-                     <ExerciseCard title="Упражнение 9: Отрицание и дополнение">
-                        <div className="space-y-4">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 6: Перевод предложений</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Label htmlFor="ex6">Переведите на японский: 1. Это газета. 2. То учебник. 3. Это потолок. 4. То аудитория. 5. Это карандаш. 6. Это книга. 7. То окно. 8. То стена. 9. То карта. 10. Это фотография. 11. Это ручка. 12. То полка.</Label>
+                            <Textarea id="ex6" value={answers['ex6'] || ''} onChange={e => handleInputChange('ex6', e.target.value)} className="font-japanese mt-2" placeholder="1. これは新聞です。..." />
+                            {createExerciseCheckButton('ex6', ['これは新聞です。それは教科書です。これは天井です。あれは教室です。これは鉛筆です。これは本です。あれは窓です。あれは壁です。あれは地図です。これは写真です。これはペンです。あれは棚です。'])}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 9: Отрицание и дополнение</CardTitle>
+                            <CardDescription>Скажите предложения в отрицательной форме, дополнив правильным вариантом из скобок.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
                             {[
-                                { id: 'ex9-1', sentence: 'それはノートです。', option: '(本)', answer: 'それはノートではありません。本です。' },
-                                { id: 'ex9-2', sentence: 'あれは地図です。', option: '(絵)', answer: 'あれは地図ではありません。絵です。' },
-                                { id: 'ex9-3', sentence: 'これはドアです。', option: '(壁)', answer: 'これはドアではありません。壁です。' },
-                                { id: 'ex9-4', sentence: 'それはひらがなです。', option: '(カタカナ)', answer: 'それはひらがなではありません。カタカナです。' },
+                                { id: 'ex9-1', sentence: grammarAnalyses.ex_9_1, option: '(本)', answer: 'それはノートではありません。本です。' },
+                                { id: 'ex9-2', sentence: grammarAnalyses.ex_9_2, option: '(絵)', answer: 'あれは地図ではありません。絵です。' },
+                                { id: 'ex9-3', sentence: grammarAnalyses.ex_9_3, option: '(壁)', answer: 'これはドアではありません。壁です。' },
+                                { id: 'ex9-4', sentence: grammarAnalyses.ex_9_4, option: '(カタカナ)', answer: 'それはひらがなではありません。カタカナです。' },
+                            ].map(q => (
+                                <div key={q.id}>
+                                    <Label htmlFor={q.id}><InteractiveText analysis={q.sentence} /> {q.option}</Label>
+                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
+                                    {createExerciseCheckButton(q.id, q.answer)}
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                    
+                    <Card>
+                        <CardHeader>
+                             <CardTitle>Упражнение 10: Перевод на японский</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                             <Label htmlFor="ex10">Переведите предложения:</Label>
+                             <ul className='list-decimal list-inside text-sm text-muted-foreground my-2'>
+                                 <li>Что это? - Это - стол.</li>
+                                 <li>Это что? - Это книга.</li>
+                                 <li>То - что? - То - дверь.</li>
+                                 <li>Это бумага? - Нет, это не бумага, это газета.</li>
+                                 <li>То - карта? - Нет, то не карта, то - картина.</li>
+                                 <li>То - тетрадь, это книга.</li>
+                                 <li>Это не дверь? - Нет, это не дверь, это стена.</li>
+                                 <li>Это не хирагана? - Нет, это не хирагана, это катакана.</li>
+                                 <li>Это не цветок? - Да, это не цветок.</li>
+                                 <li>Это не коробка? - Да, коробка.</li>
+                                 <li>Это не телефон? - Да, это телефон.</li>
+                                 <li>Танака-сан не студент? - Нет, Танака-сан не студент.</li>
+                                 <li>(Ваш) преподаватель не Ямада-сан? - Да, преподаватель - Ямада-сан.</li>
+                             </ul>
+                             <Textarea id="ex10" value={answers['ex10'] || ''} onChange={e => handleInputChange('ex10', e.target.value)} placeholder="Введите переводы через точку..." className="font-japanese"/>
+                             {createExerciseCheckButton('ex10', ['これは何ですか。机です。','これは何ですか。本です。','あれは何ですか。ドアです。','これは紙ですか。いいえ、紙ではありません。新聞です。','あれは地図ですか。いいえ、地図ではありません。絵です。','それはノートです、これは本です。','これはドアではありませんか。いいえ、ドアではありません。壁です。','これはひらがなではありませんか。いいえ、ひらがなではありません。カタカナです。','これは花ではありませんか。はい、花ではありません。','これは箱ではありませんか。はい、箱です。','これは電話ではありませんか。はい、電話です。','田中さんは学生ではありませんか。いいえ、学生ではありません。','先生は山田さんではありませんか。はい、山田さんです。'])}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 11: Частица も</CardTitle>
+                            <CardDescription>Дополните предложения словами в скобках, используя частицу も.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {[
+                                { id: 'ex11-1', sentence: 'これは椅子です。', option: '(それ)', answer: 'これは椅子です。それも椅子です。' },
+                                { id: 'ex11-2', sentence: 'あれは電灯です。', option: '(これ)', answer: 'あれは電灯です。これも電灯です。' },
+                                { id: 'ex11-3', sentence: '田中さんは学生です。', option: '(山田さん)', answer: '田中さんは学生です。山田さんも学生です。' },
+                                { id: 'ex11-4', sentence: 'わたしは先生です。', option: '(あの人)', answer: 'わたしは先生です。あの人も先生です。' },
                             ].map(q => (
                                 <div key={q.id}>
                                     <Label htmlFor={q.id}>{q.sentence} {q.option}</Label>
@@ -329,73 +373,85 @@ export default function GrammarLesson7Page() {
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
                             ))}
-                        </div>
-                    </ExerciseCard>
-
-                    <ExerciseCard title="Упражнение 10: Перевод на японский">
-                        <div className="space-y-2">
-                             <Label>Переведите предложения:</Label>
-                             <ul className='list-decimal list-inside text-sm text-muted-foreground'>
-                                 <li>Что это? - Это - стол.</li>
-                                 <li>Это бумага? - Нет, это не бумага, это газета.</li>
-                                 <li>То - карта? - Нет, то не карта, то - картина.</li>
-                                 <li>Это не дверь? - Нет, это не дверь, это стена.</li>
-                                 <li>Это не цветок? - Да, это не цветок.</li>
-                                 <li>Это не коробка? - Да, коробка.</li>
+                        </CardContent>
+                    </Card>
+                    
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 12: Перевод с частицей も</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Label htmlFor="ex12">Переведите:</Label>
+                             <ul className='list-decimal list-inside text-sm text-muted-foreground my-2'>
+                                <li>Это коробка. И это коробка.</li>
+                                <li>Это стул. И то - стул.</li>
+                                <li>И это, и то - газеты.</li>
+                                <li>И Анна, и Инна - студентки университета.</li>
+                                <li>Ни я, ни он не врачи.</li>
                              </ul>
-                             <Textarea id="ex10" value={answers['ex10'] || ''} onChange={e => handleInputChange('ex10', e.target.value)} placeholder="Введите переводы через точку..." className="font-japanese"/>
-                        </div>
-                    </ExerciseCard>
+                            <Textarea id="ex12" value={answers['ex12'] || ''} onChange={e => handleInputChange('ex12', e.target.value)} className="font-japanese mt-1" />
+                             {createExerciseCheckButton('ex12', ['これは箱です。それも箱です。', 'これは椅子です。あれも椅子です。', 'これもあれも新聞です。', 'アンナさんもインナさんも大学生です。', 'わたしも彼も医者ではありません。'])}
+                        </CardContent>
+                    </Card>
 
-                    <ExerciseCard title="Упражнение 11 и 12: Частица も">
-                         <div className="space-y-4">
-                            <div>
-                                <Label>Дополните, используя も: これは椅子です。(それ)</Label>
-                                <Input id="ex11-1" value={answers['ex11-1'] || ''} onChange={e => handleInputChange('ex11-1', e.target.value)} className="font-japanese" />
-                                {createExerciseCheckButton('ex11-1', 'これは椅子です。それも椅子です。')}
-                            </div>
-                            <div>
-                                <Label>Переведите: 1. Это коробка. И это коробка. 2. И Анна, и Инна - студентки. 3. Ни я, ни он не врачи.</Label>
-                                <Textarea id="ex12" value={answers['ex12'] || ''} onChange={e => handleInputChange('ex12', e.target.value)} className="font-japanese"/>
-                            </div>
-                         </div>
-                    </ExerciseCard>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 13: Вопросы с 何</CardTitle>
+                            <CardDescription>Поставьте к предложениям вопросы с вопросительным словом.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            {[
+                                { id: 'ex13-1', sentence: 'それは鉛筆です。', answer: 'それは何ですか。' },
+                                { id: 'ex13-2', sentence: 'あれは時計です。', answer: 'あれは何ですか。' },
+                                { id: 'ex13-3', sentence: 'これは教室です。', answer: 'これは何ですか。' },
+                                { id: 'ex13-4', sentence: '田中さんが学生です。', answer: '学生は誰ですか。' },
+                            ].map(q => (
+                                <div key={q.id}>
+                                    <Label htmlFor={q.id}>{q.sentence}</Label>
+                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
+                                    {createExerciseCheckButton(q.id, q.answer)}
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
 
-                    <ExerciseCard title="Упражнение 13, 14, 15: Вопросы и ответы">
-                        <div className="space-y-4">
-                            <div>
-                                <Label htmlFor="ex13-1">Поставьте вопрос: それは鉛筆です。</Label>
-                                <Input id="ex13-1" value={answers['ex13-1'] || ''} onChange={e => handleInputChange('ex13-1', e.target.value)} className="font-japanese"/>
-                                {createExerciseCheckButton('ex13-1', 'それは何ですか。')}
-                            </div>
-                             <div>
-                                <Label htmlFor="ex14-1">Ответьте на вопрос: どれが辞書ですか。(それ)</Label>
-                                <Input id="ex14-1" value={answers['ex14-1'] || ''} onChange={e => handleInputChange('ex14-1', e.target.value)} className="font-japanese"/>
-                                {createExerciseCheckButton('ex14-1', 'それが辞書です。')}
-                            </div>
-                             <div>
-                                <Label htmlFor="ex15-1">Переведите: Кто преподаватель? - Ямада преподаватель.</Label>
-                                <Input id="ex15-1" value={answers['ex15-1'] || ''} onChange={e => handleInputChange('ex15-1', e.target.value)} className="font-japanese"/>
-                                {createExerciseCheckButton('ex15-1', 'だれが先生ですか。山田さんが先生です。')}
-                            </div>
-                        </div>
-                    </ExerciseCard>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 14: Ответы на вопросы</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                           {[
+                                { id: 'ex14-1', question: 'どれが辞書ですか。', option: '(それ)', answer: 'それが辞書です。' },
+                                { id: 'ex14-2', question: 'どれが地図ですか。', option: '(あれ)', answer: 'あれが地図です。' },
+                                { id: 'ex14-3', question: 'だれが先生ですか。', option: '(山田さん)', answer: '山田さんが先生です。' },
+                                { id: 'ex14-4', question: 'だれが医者ですか。', option: '(田中さん)', answer: '田中さんが医者です。' },
+                           ].map(q => (
+                               <div key={q.id}>
+                                   <Label htmlFor={q.id}>{q.question} {q.option}</Label>
+                                   <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
+                                   {createExerciseCheckButton(q.id, q.answer)}
+                               </div>
+                           ))}
+                        </CardContent>
+                    </Card>
 
-                    <ExerciseCard title="Упражнение 16: Составьте диалог">
-                         <div>
-                            <p className='text-sm text-muted-foreground mb-2'>Составьте диалог по образцу, используя слово <b>鉛筆 (карандаш)</b>.</p>
-                            <div className='p-2 bg-muted rounded-md'>
-                                <p>А: これは何ですか。</p>
-                                <p>Б: それは時計です。</p>
-                                <p>А: あ、時計ですね。ありがとうございました。</p>
-                                <p>Б: どういたしまして。</p>
+                    <Card>
+                        <CardHeader><CardTitle>Упражнения 15, 16, 17, 21, 22</CardTitle></CardHeader>
+                        <CardContent>
+                            <div className="flex items-start gap-2 p-3 bg-blue-500/10 rounded-lg">
+                                <Lightbulb className="w-5 h-5 text-blue-500 shrink-0 mt-1" />
+                                <div className="text-sm text-blue-800">
+                                    Эти упражнения требуют более сложной логики (диалоги, работа с изображениями) или повторяют предыдущие. Они будут реализованы в будущих обновлениях.
+                                </div>
                             </div>
-                             <Textarea id="ex16" value={answers['ex16'] || ''} onChange={e => handleInputChange('ex16', e.target.value)} className="font-japanese mt-2" placeholder="A: ..."/>
-                         </div>
-                    </ExerciseCard>
+                        </CardContent>
+                    </Card>
 
-                     <ExerciseCard title="Упражнение 18: Заполните пропуски">
-                        <div className="space-y-4">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 18: Заполните пропуски</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
                             <div>
                                 <p>а) Вставьте は или も:</p>
                                 <div className='flex items-center gap-1 flex-wrap font-japanese text-lg'>
@@ -405,44 +461,72 @@ export default function GrammarLesson7Page() {
                                 {createExerciseCheckButton('ex18-a1', 'は')}
                                 {createExerciseCheckButton('ex18-a2', 'も')}
                             </div>
-                            <div>
+                             <div>
                                 <p>б) Вставьте は или が:</p>
                                 <div className='flex items-center gap-1 flex-wrap font-japanese text-lg'>
                                     <span>これ</span><Input id="ex18-b1" value={answers['ex18-b1'] || ''} onChange={e=>handleInputChange('ex18-b1', e.target.value)} className="w-12 text-center" /><span>何ですか。</span>
                                     <span>どれ</span><Input id="ex18-b2" value={answers['ex18-b2'] || ''} onChange={e=>handleInputChange('ex18-b2', e.target.value)} className="w-12 text-center" /><span>辞書ですか。</span>
                                 </div>
-                                {createExerciseCheckButton('ex18-b1', 'は')}
-                                {createExerciseCheckButton('ex18-b2', 'が')}
+                                 {createExerciseCheckButton('ex18-b1', 'は')}
+                                 {createExerciseCheckButton('ex18-b2', 'が')}
                             </div>
-                            <div>
+                             <div>
                                 <p>в) Вставьте これ, それ, или あれ:</p>
                                 <div className='flex items-center gap-1 flex-wrap font-japanese text-lg'>
-                                    <span>( ... )</span><Input id="ex18-c1" value={answers['ex18-c1'] || ''} onChange={e=>handleInputChange('ex18-c1', e.target.value)} className="w-20 text-center" /><span>は本です。(рядом с вами)</span>
+                                   <span>（</span><Input id="ex18-c1" value={answers['ex18-c1'] || ''} onChange={e=>handleInputChange('ex18-c1', e.target.value)} className="w-20 text-center" /><span>）は本です。(рядом с вами)</span>
                                 </div>
                                 {createExerciseCheckButton('ex18-c1', 'これ')}
                             </div>
-                        </div>
-                    </ExerciseCard>
+                             <div>
+                                <p>г) Вставьте だれ, なに, どれ:</p>
+                                <div className='flex items-center gap-1 flex-wrap font-japanese text-lg'>
+                                   <span>（</span><Input id="ex18-d1" value={answers['ex18-d1'] || ''} onChange={e=>handleInputChange('ex18-d1', e.target.value)} className="w-12 text-center" /><span>）が学生ですか。</span>
+                                </div>
+                                 {createExerciseCheckButton('ex18-d1', 'だれ')}
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                    <ExerciseCard title="Упражнение 19, 20, 21, 22: Итоговая практика">
-                        <div className="space-y-4">
-                             <div>
-                                <Label htmlFor="ex19">Составьте вопрос к ответу: これが辞書です。</Label>
-                                <Input id="ex19" value={answers['ex19'] || ''} onChange={e => handleInputChange('ex19', e.target.value)} className="font-japanese mt-1" />
-                                {createExerciseCheckButton('ex19', 'どれが辞書ですか')}
-                             </div>
-                              <div>
-                                <Label htmlFor="ex20">Составьте предложение из слов: これ, は, 何, ですか</Label>
-                                <Input id="ex20" value={answers['ex20'] || ''} onChange={e => handleInputChange('ex20', e.target.value)} className="font-japanese mt-1" />
-                                {createExerciseCheckButton('ex20', 'これは何ですか')}
-                             </div>
-                             <div>
-                                <Label htmlFor="ex22">Переведите: Это книга, то - учебник.</Label>
-                                <Input id="ex22" value={answers['ex22'] || ''} onChange={e => handleInputChange('ex22', e.target.value)} className="font-japanese mt-1" />
-                                {createExerciseCheckButton('ex22', 'これは本です、それは教科書です')}
-                             </div>
-                        </div>
-                    </ExerciseCard>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 19: Составьте вопросы</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                           {[
+                               { id: 'ex19-1', answer: 'これが辞書です。', question: 'どれが辞書ですか。' },
+                               { id: 'ex19-2', answer: 'それは時計です。', question: 'それは何ですか。' },
+                               { id: 'ex19-3', answer: '田中さんが先生です。', question: 'だれが先生ですか。' },
+                               { id: 'ex19-4', answer: 'はい、学生です。', question: 'あなたは学生ですか。' },
+                               { id: 'ex19-5', answer: 'いいえ、本ではありません。ノートです。', question: 'これは本ですか。' },
+                           ].map(q => (
+                               <div key={q.id}>
+                                   <Label htmlFor={q.id}>Ответ: {q.answer}</Label>
+                                   <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
+                                   {createExerciseCheckButton(q.id, q.question)}
+                               </div>
+                           ))}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Упражнение 20: Составьте предложения</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                           {[
+                               { id: 'ex20-1', words: 'これ, は, 何, ですか', answer: 'これは何ですか。' },
+                               { id: 'ex20-2', words: 'どれ, が, 本, ですか', answer: 'どれが本ですか。' },
+                               { id: 'ex20-3', words: 'それ, も, 辞書, です', answer: 'それも辞書です。' },
+                               { id: 'ex20-4', words: '田中さん, は, 学生, ではありません', answer: '田中さんは学生ではありません。' },
+                           ].map(q => (
+                               <div key={q.id}>
+                                   <Label htmlFor={q.id}>Слова: {q.words}</Label>
+                                   <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
+                                   {createExerciseCheckButton(q.id, q.answer)}
+                               </div>
+                           ))}
+                        </CardContent>
+                    </Card>
                 </div>
 
                  <div className="mt-12 text-center flex flex-col items-center gap-4">
@@ -454,4 +538,3 @@ export default function GrammarLesson7Page() {
         </div>
     );
 }
-
