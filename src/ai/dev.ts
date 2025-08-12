@@ -1,5 +1,19 @@
+/**
+ * @fileoverview Точка входа для локального запуска Genkit.
+ *
+ * Этот файл используется для импорта и, следовательно, регистрации всех
+ * Genkit Flows и Tools в среде разработки. Когда вы запускаете `npm run genkit:watch`,
+ * этот файл выполняется, и все импортированные ресурсы становятся доступными
+ * в локальной панели разработчика Genkit (Genkit Developer UI).
+ *
+ * @see https://firebase.google.com/docs/genkit/run-in-development#genkit-dev-ui
+ */
+
 'use server';
-// Flows will be imported for their side effects in this file.
+
+// Импортируйте сюда все ваши "потоки" (flows).
+// Это необходимо для того, чтобы они были обнаружены и зарегистрированы Genkit.
 import './flows/miya-assistant-flow';
 
-// Tools will be imported for their side effects in this file.
+// Импортируйте сюда все ваши "инструменты" (tools).
+// Это обеспечивает их регистрацию и доступность для языковых моделей.

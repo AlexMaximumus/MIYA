@@ -1,7 +1,12 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
+# === App Hosting Configuration ===
+# Этот файл используется для настройки поведения серверной части вашего приложения,
+# развернутой на Firebase App Hosting.
+# Официальная документация: https://firebase.google.com/docs/app-hosting/configure
 
+# runConfig: Определяет конфигурацию выполнения вашего серверного кода.
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
+  # maxInstances: Максимальное количество экземпляров сервера, которые могут быть
+  # запущены одновременно. Firebase будет автоматически масштабировать количество
+  # экземпляров от 0 до этого значения в зависимости от входящего трафика.
+  # Увеличьте это значение, если ожидается высокая нагрузка.
   maxInstances: 1
