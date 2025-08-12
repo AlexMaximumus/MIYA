@@ -9,7 +9,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
-import Furigana from '@/components/furigana';
 import InteractiveFormula from '@/components/interactive-formula';
 import { grammarAnalyses, dialogueAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
@@ -238,8 +237,8 @@ export default function GrammarLesson7Page() {
                             <div>
                                 <h4 className="font-bold text-xl mt-4 mb-2">2. Особенности употребления частиц</h4>
                                 <div className="space-y-2">
-                                    <div>Частица ね, произнесённая с интонацией удивления, передаёт значения непонимания, удивления, на русский язык может не переводиться, например: <Furigana text="これ？" className="font-japanese text-lg inline-block" /></div>
-                                    <div>Частица あ соответствует русской частице А!, имеющей значение "Понятно!". Например: <Furigana text="あ、これはペンです。" className="font-japanese text-lg inline-block" /></div>
+                                    <div>Частица ね, произнесённая с интонацией удивления, передаёт значения непонимания, удивления, на русский язык может не переводиться, например: <InteractiveText analysis={grammarAnalyses.ex_7_commentary_1} /></div>
+                                    <div>Частица あ соответствует русской частице А!, имеющей значение "Понятно!". Например: <InteractiveText analysis={grammarAnalyses.ex_7_commentary_2} /></div>
                                 </div>
                             </div>
                             <div>
@@ -254,11 +253,11 @@ export default function GrammarLesson7Page() {
                 <div className="space-y-6">
                     <ExerciseCard title="Упражнение 1: Интонация" canCheck={false} description="Отработайте интонацию следующих предложений (самостоятельная практика).">
                         <div className="space-y-2">
-                           <Furigana text="これは本です。" className="text-lg font-japanese" />
-                           <br/><Furigana text="それは何ですか。" className="text-lg font-japanese" />
-                           <br/><Furigana text="あれは図書館です。" className="text-lg font-japanese" />
-                           <br/><Furigana text="どれが辞書ですか。" className="text-lg font-japanese" />
-                           <br/><Furigana text="あの人は学生ではありませんか。" className="text-lg font-japanese" />
+                           <div><InteractiveText analysis={grammarAnalyses.ex_7_1_1} /></div>
+                           <div><InteractiveText analysis={grammarAnalyses.ex_7_1_2} /></div>
+                           <div><InteractiveText analysis={grammarAnalyses.ex_7_1_3} /></div>
+                           <div><InteractiveText analysis={grammarAnalyses.ex_7_1_4} /></div>
+                           <div><InteractiveText analysis={grammarAnalyses.ex_7_1_5} /></div>
                         </div>
                     </ExerciseCard>
 
@@ -311,7 +310,7 @@ export default function GrammarLesson7Page() {
                                 { id: 'ex9-4', sentence: 'それはひらがなです。', option: '(カタカナ)', answer: 'それはひらがなではありません。カタカナです。' },
                             ].map(q => (
                                 <div key={q.id}>
-                                    <Label htmlFor={q.id}><Furigana text={q.sentence} className="font-japanese" /> {q.option}</Label>
+                                    <Label htmlFor={q.id}><InteractiveText analysis={grammarAnalyses[('ex_9_'+q.id.slice(-1)) as keyof typeof grammarAnalyses]} /> {q.option}</Label>
                                     <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
@@ -351,7 +350,7 @@ export default function GrammarLesson7Page() {
                                 { id: 'ex11-4', sentence: 'わたしは先生です。', option: '(あの人)', answer: 'わたしは先生です。あの人も先生です。' },
                             ].map(q => (
                                 <div key={q.id}>
-                                    <Label htmlFor={q.id}><Furigana text={q.sentence} className="font-japanese"/> {q.option}</Label>
+                                    <Label htmlFor={q.id}><InteractiveText analysis={grammarAnalyses[('ex_11_'+q.id.slice(-1)) as keyof typeof grammarAnalyses]} /> {q.option}</Label>
                                     <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
@@ -383,7 +382,7 @@ export default function GrammarLesson7Page() {
                                 { id: 'ex13-4', sentence: '田中さんが学生です。', answer: '学生は誰ですか。' },
                             ].map(q => (
                                 <div key={q.id}>
-                                    <Label htmlFor={q.id}><Furigana text={q.sentence} className="font-japanese" /></Label>
+                                    <Label htmlFor={q.id}><InteractiveText analysis={grammarAnalyses[('ex_13_'+q.id.slice(-1)) as keyof typeof grammarAnalyses]} /></Label>
                                     <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
@@ -400,7 +399,7 @@ export default function GrammarLesson7Page() {
                                 { id: 'ex14-4', question: 'だれが医者ですか。', option: ' (田中さん)', answer: '田中さんが医者です。' },
                            ].map(q => (
                                <div key={q.id}>
-                                   <Label htmlFor={q.id}><Furigana text={q.question} className="font-japanese" /> {q.option}</Label>
+                                   <Label htmlFor={q.id}><InteractiveText analysis={grammarAnalyses[('ex_14_'+q.id.slice(-1)) as keyof typeof grammarAnalyses]} /> {q.option}</Label>
                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                    {createExerciseCheckButton(q.id, q.answer)}
                                </div>
@@ -467,7 +466,7 @@ export default function GrammarLesson7Page() {
                                { id: 'ex19-5', answer: 'いいえ、本ではありません。ノートです。', question: 'これは本ですか。' },
                            ].map(q => (
                                <div key={q.id}>
-                                   <Label htmlFor={q.id}>Ответ: <Furigana text={q.answer} className="font-japanese" /></Label>
+                                   <Label htmlFor={q.id}>Ответ: <InteractiveText analysis={grammarAnalyses[('ex_19_'+q.id.slice(-1)) as keyof typeof grammarAnalyses]} /></Label>
                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                    {createExerciseCheckButton(q.id, q.question)}
                                </div>
@@ -484,7 +483,7 @@ export default function GrammarLesson7Page() {
                                { id: 'ex20-4', words: '田中さん, は, 学生, ではありません', answer: '田中さんは学生ではありません。' },
                            ].map(q => (
                                <div key={q.id}>
-                                   <Label htmlFor={q.id}>Слова: {q.words}</Label>
+                                   <Label htmlFor={q.id}>Слова: {q.words.join('、 ')}</Label>
                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                    {createExerciseCheckButton(q.id, q.answer)}
                                </div>
