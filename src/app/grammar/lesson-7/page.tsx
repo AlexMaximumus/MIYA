@@ -9,8 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ArrowLeft, Share2, Volume2, BookOpen, CheckCircle, XCircle, Lightbulb, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import InteractiveText from '@/components/interactive-text';
+import Furigana from '@/components/furigana';
 import InteractiveFormula from '@/components/interactive-formula';
-import { grammarAnalyses, dialogueAnalyses, phoneticsAnalyses } from '@/ai/precomputed-analysis';
+import { grammarAnalyses, dialogueAnalyses } from '@/ai/precomputed-analysis';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -237,8 +238,8 @@ export default function GrammarLesson7Page() {
                             <div>
                                 <h4 className="font-bold text-xl mt-4 mb-2">2. Особенности употребления частиц</h4>
                                 <div className="space-y-2">
-                                    <p>Частица ね, произнесённая с интонацией удивления, передаёт значения непонимания, удивления, на русский язык может не переводиться, например: <InteractiveText analysis={{sentence: [{ word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение'}, { word: '？', furigana: '', translation: 'вопрос', partOfSpeech: 'знак препинания'}], fullTranslation: 'Это?'}} /></p>
-                                    <p>Частица あ соответствует русской частице А!, имеющей значение "Понятно!". Например: <InteractiveText analysis={{sentence: [{ word: 'あ', furigana: 'あ', translation: 'а!', partOfSpeech: 'междометие'}, { word: '、', furigana: '', translation: ',', partOfSpeech: 'знак препинания'}, { word: 'これ', furigana: 'これ', translation: 'это', partOfSpeech: 'местоимение'}, { word: 'は', furigana: 'は', translation: 'частица (тема)', partOfSpeech: 'частица (тема)'}, { word: 'ペン', furigana: 'ペン', translation: 'ручка', partOfSpeech: 'существительное'}, { word: 'です', furigana: 'です', translation: 'есть', partOfSpeech: 'связка'}, { word: '。', furigana: '', translation: '.', partOfSpeech: 'знак препинания'}], fullTranslation: 'А, это ручка.'}} /></p>
+                                    <div>Частица ね, произнесённая с интонацией удивления, передаёт значения непонимания, удивления, на русский язык может не переводиться, например: <Furigana text="これ？" className="font-japanese text-lg inline-block" /></div>
+                                    <div>Частица あ соответствует русской частице А!, имеющей значение "Понятно!". Например: <Furigana text="あ、これはペンです。" className="font-japanese text-lg inline-block" /></div>
                                 </div>
                             </div>
                             <div>
@@ -251,19 +252,15 @@ export default function GrammarLesson7Page() {
                 
                 <h2 className="text-3xl font-bold text-foreground mb-8 mt-12 text-center">📝 Закрепление</h2>
                 <div className="space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 1: Интонация</CardTitle>
-                            <CardDescription>Отработайте интонацию следующих предложений (самостоятельная практика).</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                           <InteractiveText analysis={grammarAnalyses.ex_7_1_1} />
-                           <InteractiveText analysis={grammarAnalyses.ex_7_1_2} />
-                           <InteractiveText analysis={grammarAnalyses.ex_7_1_3} />
-                           <InteractiveText analysis={grammarAnalyses.ex_7_1_4} />
-                           <InteractiveText analysis={grammarAnalyses.ex_7_1_5} />
-                        </CardContent>
-                    </Card>
+                    <ExerciseCard title="Упражнение 1: Интонация" canCheck={false} description="Отработайте интонацию следующих предложений (самостоятельная практика).">
+                        <div className="space-y-2">
+                           <Furigana text="これは本です。" className="text-lg font-japanese" />
+                           <br/><Furigana text="それは何ですか。" className="text-lg font-japanese" />
+                           <br/><Furigana text="あれは図書館です。" className="text-lg font-japanese" />
+                           <br/><Furigana text="どれが辞書ですか。" className="text-lg font-japanese" />
+                           <br/><Furigana text="あの人は学生ではありませんか。" className="text-lg font-japanese" />
+                        </div>
+                    </ExerciseCard>
 
                     <Card>
                         <CardHeader>
@@ -297,42 +294,32 @@ export default function GrammarLesson7Page() {
                          </CardContent>
                     </Card>
                     
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 6: Перевод предложений</CardTitle>
-                        </CardHeader>
+                     <ExerciseCard title="Упражнение 6: Перевод предложений">
                         <CardContent>
                             <Label htmlFor="ex6">Переведите на японский: 1. Это газета. 2. То учебник. 3. Это потолок. 4. То аудитория. 5. Это карандаш. 6. Это книга. 7. То окно. 8. То стена. 9. То карта. 10. Это фотография. 11. Это ручка. 12. То полка.</Label>
                             <Textarea id="ex6" value={answers['ex6'] || ''} onChange={e => handleInputChange('ex6', e.target.value)} className="font-japanese mt-2" placeholder="1. これは新聞です。..." />
                             {createExerciseCheckButton('ex6', ['これは新聞です。それは教科書です。これは天井です。あれは教室です。これは鉛筆です。これは本です。あれは窓です。あれは壁です。あれは地図です。これは写真です。これはペンです。あれは棚です。'])}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 9: Отрицание и дополнение</CardTitle>
-                            <CardDescription>Скажите предложения в отрицательной форме, дополнив правильным вариантом из скобок.</CardDescription>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 9: Отрицание и дополнение" description="Скажите предложения в отрицательной форме, дополнив правильным вариантом из скобок.">
                         <CardContent className="space-y-4">
                             {[
-                                { id: 'ex9-1', sentence: grammarAnalyses.ex_9_1, option: '(本)', answer: 'それはノートではありません。本です。' },
-                                { id: 'ex9-2', sentence: grammarAnalyses.ex_9_2, option: '(絵)', answer: 'あれは地図ではありません。絵です。' },
-                                { id: 'ex9-3', sentence: grammarAnalyses.ex_9_3, option: '(壁)', answer: 'これはドアではありません。壁です。' },
-                                { id: 'ex9-4', sentence: grammarAnalyses.ex_9_4, option: '(カタカナ)', answer: 'それはひらがなではありません。カタカナです。' },
+                                { id: 'ex9-1', sentence: 'それはノートです。', option: '(本)', answer: 'それはノートではありません。本です。' },
+                                { id: 'ex9-2', sentence: 'あれは地図です。', option: '(絵)', answer: 'あれは地図ではありません。絵です。' },
+                                { id: 'ex9-3', sentence: 'これはドアです。', option: '(壁)', answer: 'これはドアではありません。壁です。' },
+                                { id: 'ex9-4', sentence: 'それはひらがなです。', option: '(カタカナ)', answer: 'それはひらがなではありません。カタカナです。' },
                             ].map(q => (
                                 <div key={q.id}>
-                                    <Label htmlFor={q.id}><InteractiveText analysis={q.sentence} /> {q.option}</Label>
+                                    <Label htmlFor={q.id}><Furigana text={q.sentence} className="font-japanese" /> {q.option}</Label>
                                     <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
                             ))}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
                     
-                    <Card>
-                        <CardHeader>
-                             <CardTitle>Упражнение 10: Перевод на японский</CardTitle>
-                        </CardHeader>
+                     <ExerciseCard title="Упражнение 10: Перевод на японский">
                         <CardContent>
                              <Label htmlFor="ex10">Переведите предложения:</Label>
                              <ul className='list-decimal list-inside text-sm text-muted-foreground my-2'>
@@ -353,13 +340,9 @@ export default function GrammarLesson7Page() {
                              <Textarea id="ex10" value={answers['ex10'] || ''} onChange={e => handleInputChange('ex10', e.target.value)} placeholder="Введите переводы через точку..." className="font-japanese"/>
                              {createExerciseCheckButton('ex10', ['これは何ですか。机です。','これは何ですか。本です。','あれは何ですか。ドアです。','これは紙ですか。いいえ、紙ではありません。新聞です。','あれは地図ですか。いいえ、地図ではありません。絵です。','それはノートです、これは本です。','これはドアではありませんか。いいえ、ドアではありません。壁です。','これはひらがなではありませんか。いいえ、ひらがなではありません。カタカナです。','これは花ではありませんか。はい、花ではありません。','これは箱ではありませんか。はい、箱です。','これは電話ではありませんか。はい、電話です。','田中さんは学生ではありませんか。いいえ、学生ではありません。','先生は山田さんではありませんか。はい、山田さんです。'])}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 11: Частица も</CardTitle>
-                            <CardDescription>Дополните предложения словами в скобках, используя частицу も.</CardDescription>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 11: Частица も" description="Дополните предложения словами в скобках, используя частицу も.">
                         <CardContent className="space-y-4">
                             {[
                                 { id: 'ex11-1', sentence: 'これは椅子です。', option: '(それ)', answer: 'これは椅子です。それも椅子です。' },
@@ -368,18 +351,15 @@ export default function GrammarLesson7Page() {
                                 { id: 'ex11-4', sentence: 'わたしは先生です。', option: '(あの人)', answer: 'わたしは先生です。あの人も先生です。' },
                             ].map(q => (
                                 <div key={q.id}>
-                                    <Label htmlFor={q.id}>{q.sentence} {q.option}</Label>
+                                    <Label htmlFor={q.id}><Furigana text={q.sentence} className="font-japanese"/> {q.option}</Label>
                                     <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
                             ))}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
                     
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 12: Перевод с частицей も</CardTitle>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 12: Перевод с частицей も">
                         <CardContent>
                             <Label htmlFor="ex12">Переведите:</Label>
                              <ul className='list-decimal list-inside text-sm text-muted-foreground my-2'>
@@ -392,13 +372,9 @@ export default function GrammarLesson7Page() {
                             <Textarea id="ex12" value={answers['ex12'] || ''} onChange={e => handleInputChange('ex12', e.target.value)} className="font-japanese mt-1" />
                              {createExerciseCheckButton('ex12', ['これは箱です。それも箱です。', 'これは椅子です。あれも椅子です。', 'これもあれも新聞です。', 'アンナさんもインナさんも大学生です。', 'わたしも彼も医者ではありません。'])}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 13: Вопросы с 何</CardTitle>
-                            <CardDescription>Поставьте к предложениям вопросы с вопросительным словом.</CardDescription>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 13: Вопросы с 何">
                         <CardContent className="space-y-4">
                             {[
                                 { id: 'ex13-1', sentence: 'それは鉛筆です。', answer: 'それは何ですか。' },
@@ -407,33 +383,30 @@ export default function GrammarLesson7Page() {
                                 { id: 'ex13-4', sentence: '田中さんが学生です。', answer: '学生は誰ですか。' },
                             ].map(q => (
                                 <div key={q.id}>
-                                    <Label htmlFor={q.id}>{q.sentence}</Label>
+                                    <Label htmlFor={q.id}><Furigana text={q.sentence} className="font-japanese" /></Label>
                                     <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                     {createExerciseCheckButton(q.id, q.answer)}
                                 </div>
                             ))}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 14: Ответы на вопросы</CardTitle>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 14: Ответы на вопросы">
                         <CardContent className="space-y-4">
                            {[
                                 { id: 'ex14-1', question: 'どれが辞書ですか。', option: '(それ)', answer: 'それが辞書です。' },
                                 { id: 'ex14-2', question: 'どれが地図ですか。', option: '(あれ)', answer: 'あれが地図です。' },
                                 { id: 'ex14-3', question: 'だれが先生ですか。', option: '(山田さん)', answer: '山田さんが先生です。' },
-                                { id: 'ex14-4', question: 'だれが医者ですか。', option: '(田中さん)', answer: '田中さんが医者です。' },
+                                { id: 'ex14-4', question: 'だれが医者ですか。', option: ' (田中さん)', answer: '田中さんが医者です。' },
                            ].map(q => (
                                <div key={q.id}>
-                                   <Label htmlFor={q.id}>{q.question} {q.option}</Label>
+                                   <Label htmlFor={q.id}><Furigana text={q.question} className="font-japanese" /> {q.option}</Label>
                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                    {createExerciseCheckButton(q.id, q.answer)}
                                </div>
                            ))}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
                     <Card>
                         <CardHeader><CardTitle>Упражнения 15, 16, 17, 21, 22</CardTitle></CardHeader>
@@ -447,10 +420,7 @@ export default function GrammarLesson7Page() {
                         </CardContent>
                     </Card>
 
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 18: Заполните пропуски</CardTitle>
-                        </CardHeader>
+                     <ExerciseCard title="Упражнение 18: Заполните пропуски">
                         <CardContent className="space-y-6">
                             <div>
                                 <p>а) Вставьте は или も:</p>
@@ -485,12 +455,9 @@ export default function GrammarLesson7Page() {
                                  {createExerciseCheckButton('ex18-d1', 'だれ')}
                             </div>
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 19: Составьте вопросы</CardTitle>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 19: Составьте вопросы">
                         <CardContent className="space-y-4">
                            {[
                                { id: 'ex19-1', answer: 'これが辞書です。', question: 'どれが辞書ですか。' },
@@ -500,18 +467,15 @@ export default function GrammarLesson7Page() {
                                { id: 'ex19-5', answer: 'いいえ、本ではありません。ノートです。', question: 'これは本ですか。' },
                            ].map(q => (
                                <div key={q.id}>
-                                   <Label htmlFor={q.id}>Ответ: {q.answer}</Label>
+                                   <Label htmlFor={q.id}>Ответ: <Furigana text={q.answer} className="font-japanese" /></Label>
                                    <Input id={q.id} value={answers[q.id] || ''} onChange={e => handleInputChange(q.id, e.target.value)} className="font-japanese mt-1" />
                                    {createExerciseCheckButton(q.id, q.question)}
                                </div>
                            ))}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Упражнение 20: Составьте предложения</CardTitle>
-                        </CardHeader>
+                    <ExerciseCard title="Упражнение 20: Составьте предложения">
                         <CardContent className="space-y-4">
                            {[
                                { id: 'ex20-1', words: 'これ, は, 何, ですか', answer: 'これは何ですか。' },
@@ -526,7 +490,7 @@ export default function GrammarLesson7Page() {
                                </div>
                            ))}
                         </CardContent>
-                    </Card>
+                    </ExerciseCard>
                 </div>
 
                  <div className="mt-12 text-center flex flex-col items-center gap-4">
