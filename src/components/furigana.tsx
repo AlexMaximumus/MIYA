@@ -2,7 +2,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import * as wanakana from 'wanakana';
+// The toRuby function is not on the top-level export, we need to import it directly.
+import { toRuby } from 'wanakana/toRuby';
 
 interface FuriganaProps {
   text: string;
@@ -23,7 +24,7 @@ export default function Furigana({ text, className }: FuriganaProps) {
     const [rubyHtml, setRubyHtml] = useState('');
 
     useEffect(() => {
-        setRubyHtml(wanakana.toRuby(text));
+        setRubyHtml(toRuby(text));
     }, [text]);
 
     if (!rubyHtml) {
